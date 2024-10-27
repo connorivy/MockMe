@@ -1,5 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Text;
+﻿global using MockMe.Tests;
+using System.Collections.Concurrent;
 using HarmonyLib;
 using MockMe.Mocks;
 using static MockMe.Tests._01_CalculatorMockSetup;
@@ -12,11 +12,13 @@ public class _01_CalculatorTests
     [Fact]
     public void ReplaceMethod_SwapsMethodFunctionality()
     {
+        var x = Mock.Me<_01_Calculator>();
+        var y = Mock.Me<_01_Calculator>();
         var calculatorMock = MockStore.GetMock();
-        calculatorMock.Setup.Add(3, 5).Return((x, y) => x * y);
 
         int firstArg = 0;
-        calculatorMock.Setup.Add(0, 0).Callback((x, _) => firstArg = x);
+        calculatorMock.Setup.Add(3, 5).Return(999).Callback((x, _) => firstArg = x);
+
         Assert.Equal(8, new _01_Calculator().Add(3, 5));
         Assert.Equal(999, calculatorMock.Value.Add(3, 5));
         calculatorMock.Assert.Add(3, 5).WasCalled();
@@ -29,6 +31,8 @@ public class _01_Calculator
 {
     public int Add(int x, int y) => x + y;
 }
+
+public class TestClass { }
 
 public static class MockStore
 {
@@ -122,7 +126,7 @@ public class _01_CalculatorMock : Mock<_01_Calculator>
 
 public class _01_CalculatorMockSetup : MockSetup
 {
-    private readonly List<ArgBag<int, int, MemberMock<int, int, int>>> AddBagStore = [];
+    private readonly List<ArgBag<int, int, int>> AddBagStore = [];
 
     public MemberMock<int, int, int> Add(Arg<int> x, Arg<int> y) => SetupMethod(AddBagStore, x, y);
 
@@ -130,7 +134,7 @@ public class _01_CalculatorMockSetup : MockSetup
     {
         private readonly List<ValueTuple<int, int>> callStore = [];
 
-        public int Add(int x, int y) => CallReplacedCode(setup.AddBagStore, callStore, x, y);
+        public int Add(int x, int y) => CallMemberMock(setup.AddBagStore, callStore, x, y);
 
         public class _01_CalculatorMockAsserter(_01_CalculatorMockCallTracker tracker)
             : MockAsserter
