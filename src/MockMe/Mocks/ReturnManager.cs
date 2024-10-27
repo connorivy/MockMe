@@ -1,4 +1,4 @@
-﻿namespace MockMe.Mocks;
+namespace MockMe.Mocks;
 
 internal class ReturnManager<TReturnCall>(CallbackManager callbackManager)
 {
@@ -7,20 +7,20 @@ internal class ReturnManager<TReturnCall>(CallbackManager callbackManager)
     public void Returns(TReturnCall returnThis, params TReturnCall[]? thenReturnThese)
     {
         callbackManager.ReturnCalled();
-        ReturnCalls ??= [];
-        ReturnCalls.Enqueue(returnThis);
+        this.ReturnCalls ??= [];
+        this.ReturnCalls.Enqueue(returnThis);
         if (thenReturnThese is not null)
         {
             foreach (var returnVal in thenReturnThese)
             {
-                ReturnCalls.Enqueue(returnVal);
+                this.ReturnCalls.Enqueue(returnVal);
             }
         }
     }
 
     internal TReturnCall? GetReturnCall()
     {
-        if (ReturnCalls is not null && ReturnCalls.TryDequeue(out var returnCall))
+        if (this.ReturnCalls is not null && this.ReturnCalls.TryDequeue(out var returnCall))
         {
             return returnCall;
         }
@@ -29,11 +29,11 @@ internal class ReturnManager<TReturnCall>(CallbackManager callbackManager)
     }
 }
 
-internal class ReturnManager<TReturn, TReturnCall>(
+internal sealed class ReturnManager<TReturn, TReturnCall>(
     CallbackManager callbackManager,
     Func<TReturn, TReturnCall> toReturnCall
 ) : ReturnManager<TReturnCall>(callbackManager)
 {
     public void Returns(TReturn returnThis, params TReturn[]? thenReturnThese) =>
-        Returns(toReturnCall(returnThis), thenReturnThese?.Select(toReturnCall).ToArray());
+        this.Returns(toReturnCall(returnThis), thenReturnThese?.Select(toReturnCall).ToArray());
 }

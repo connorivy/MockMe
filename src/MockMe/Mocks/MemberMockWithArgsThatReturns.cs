@@ -19,13 +19,13 @@ public abstract class MemberMockWithArgsThatReturns<TReturn, TSelf, TCallback, T
         this.returnManager = new(callbackManager, toReturnCall);
     }
 
-    public TSelf Return(TReturnFunc returnThis, params TReturnFunc[] thenReturnThese)
+    public TSelf Returns(TReturnFunc returnThis, params TReturnFunc[] thenReturnThese)
     {
         returnManager.Returns(returnThis, thenReturnThese);
         return (TSelf)this;
     }
 
-    public TSelf Return(TReturn returnThis, params TReturn[] thenReturnThese)
+    public TSelf Returns(TReturn returnThis, params TReturn[] thenReturnThese)
     {
         returnManager.Returns(returnThis, thenReturnThese);
         return (TSelf)this;

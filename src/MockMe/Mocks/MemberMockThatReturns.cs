@@ -15,7 +15,7 @@ public class MemberMock<TReturn>
 
     private readonly ReturnManager<TReturn> returnManager;
 
-    public MemberMock<TReturn> Return(TReturn returnThis, params TReturn[] thenReturnThese)
+    public MemberMock<TReturn> Returns(TReturn returnThis, params TReturn[] thenReturnThese)
     {
         returnManager.Returns(returnThis, thenReturnThese);
         return this;

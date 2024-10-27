@@ -1,4 +1,6 @@
-﻿namespace MockMe;
+using System.Diagnostics;
+
+namespace MockMe;
 
 public class Arg<T>
 {
@@ -19,12 +21,17 @@ public class Arg<T>
 
     public bool IsSatisfiedBy(T other)
     {
-        if (value is not null)
+        if (this.value is not null)
         {
-            return value.Equals(other);
+            return this.value.Equals(other);
         }
 
-        return predicate(other);
+        if (this.predicate is not null)
+        {
+            return this.predicate(other);
+        }
+
+        throw new UnreachableException("The value and predicate should never both be null");
     }
 
     public static implicit operator Arg<T>(T value) => new(value);

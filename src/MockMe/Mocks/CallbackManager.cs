@@ -1,12 +1,12 @@
-﻿namespace MockMe.Mocks;
+namespace MockMe.Mocks;
 
 internal abstract class CallbackManager
 {
-    protected int? NumCallbacksRegisteredBeforeReturn { get; private set; } = null;
+    protected int? NumCallbacksRegisteredBeforeReturn { get; private set; }
 
     internal void ReturnCalled()
     {
-        this.NumCallbacksRegisteredBeforeReturn ??= GetNumCallbacks();
+        this.NumCallbacksRegisteredBeforeReturn ??= this.GetNumCallbacks();
     }
 
     protected abstract int GetNumCallbacks();
@@ -18,55 +18,49 @@ internal class ActionCallbackManager<TCallback> : CallbackManager
 
     public void AddCallback(TCallback action)
     {
-        Callbacks ??= [];
-        Callbacks.Add(action);
+        this.Callbacks ??= [];
+        this.Callbacks.Add(action);
     }
 
     internal IEnumerable<TCallback> GetCallbacksRegisteredBeforeReturnCall()
     {
-        if (Callbacks is null)
+        if (this.Callbacks is null)
         {
             return [];
         }
 
-        if (NumCallbacksRegisteredBeforeReturn is null)
+        if (this.NumCallbacksRegisteredBeforeReturn is null)
         {
             // user never called return
             // so give all callbacks
-            return Callbacks.AsReadOnly();
+            return this.Callbacks.AsReadOnly();
         }
 
-        return Callbacks.Take(NumCallbacksRegisteredBeforeReturn.Value);
+        return this.Callbacks.Take(this.NumCallbacksRegisteredBeforeReturn.Value);
     }
 
     internal IEnumerable<TCallback> GetCallbacksRegisteredAfterReturnCall()
     {
-        if (Callbacks is null)
+        if (this.Callbacks is null)
         {
             return [];
         }
 
-        if (NumCallbacksRegisteredBeforeReturn is null)
+        if (this.NumCallbacksRegisteredBeforeReturn is null)
         {
             // user never called return
             // so give all callbacks were given in the before method
             return [];
         }
 
-        return Callbacks.Skip(NumCallbacksRegisteredBeforeReturn.Value);
+        return this.Callbacks.Skip(this.NumCallbacksRegisteredBeforeReturn.Value);
     }
 
-    protected override int GetNumCallbacks() => Callbacks?.Count ?? 0;
+    protected override int GetNumCallbacks() => this.Callbacks?.Count ?? 0;
 }
 
-internal class CallbackManager<TCallback> : ActionCallbackManager<TCallback>
+internal sealed class CallbackManager<TCallback>(Func<Action, TCallback> toCallback)
+    : ActionCallbackManager<TCallback>
 {
-    private readonly Func<Action, TCallback> toCallback;
-
-    public CallbackManager(Func<Action, TCallback> toCallback)
-    {
-        this.toCallback = toCallback;
-    }
-
-    public void AddCallback(Action action) => AddCallback(toCallback(action));
+    public void AddCallback(Action action) => this.AddCallback(toCallback(action));
 }

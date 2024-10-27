@@ -1,5 +1,3 @@
-﻿using MockMe.Mocks;
-
 namespace MockMe;
 
 public interface IArgBag<TArgCollection, TCallback, TReturnCall>
@@ -34,7 +32,7 @@ public interface IMockCallbackAndReturnCallRetriever<TCallback, TReturnCall>
 
 public class MockCallTracker
 {
-    public static TReturn CallMemberMock<TArg1, TReturn>(
+    public static TReturn? CallMemberMock<TArg1, TReturn>(
         List<ArgBag<TArg1, TReturn>> mockStore,
         List<TArg1> argStore,
         TArg1 arg1
@@ -49,7 +47,7 @@ public class MockCallTracker
         );
     }
 
-    public static TReturn CallMemberMock<TArg1, TArg2, TReturn>(
+    public static TReturn? CallMemberMock<TArg1, TArg2, TReturn>(
         List<ArgBag<TArg1, TArg2, TReturn>> mockStore,
         List<ValueTuple<TArg1, TArg2>> argStore,
         TArg1 arg1,
@@ -65,7 +63,7 @@ public class MockCallTracker
         );
     }
 
-    private static TReturn CallMemberMock<TReturn, TArgCollection, TCallback, TReturnCall>(
+    private static TReturn? CallMemberMock<TReturn, TArgCollection, TCallback, TReturnCall>(
         IReadOnlyList<IArgBag<TArgCollection, TCallback, TReturnCall>> mockStore,
         List<TArgCollection> argStore,
         TArgCollection argCollection,
@@ -90,7 +88,7 @@ public class MockCallTracker
             TReturnCall? returnFunc = argBag.Mock.GetReturnValue();
             TReturn? returnVal = returnFunc is not null
                 ? returnCallFunc(argCollection, returnFunc)
-                : default(TReturn);
+                : default;
 
             foreach (TCallback callback in argBag.Mock.GetCallbacksRegisteredAfterReturnCall())
             {
