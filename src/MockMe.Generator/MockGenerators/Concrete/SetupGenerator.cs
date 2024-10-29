@@ -33,6 +33,16 @@ internal class SetupGenerator
                 continue;
             }
 
+            if (methodSymbol.MethodKind == MethodKind.PropertyGet)
+            {
+                continue;
+            }
+
+            if (methodSymbol.MethodKind == MethodKind.PropertySet)
+            {
+                continue;
+            }
+
             string returnType = methodSymbol.ReturnType.ToDisplayString();
             string paramsWithTypesAndMods = methodSymbol.GetParametersWithArgTypesAndModifiers();
             string paramTypeString = methodSymbol.GetParameterTypesWithoutModifiers();

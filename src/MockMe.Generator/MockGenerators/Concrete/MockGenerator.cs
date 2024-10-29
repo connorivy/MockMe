@@ -56,6 +56,16 @@ namespace MockMe.Generated.{typeSymbol.ContainingNamespace};
                 continue;
             }
 
+            if (methodSymbol.MethodKind == MethodKind.PropertyGet)
+            {
+                continue;
+            }
+
+            if (methodSymbol.MethodKind == MethodKind.PropertySet)
+            {
+                continue;
+            }
+
             string returnType = methodSymbol.ReturnType.ToDisplayString();
             string paramsWithTypesAndMods =
                 methodSymbol.GetParametersWithOriginalTypesAndModifiers();

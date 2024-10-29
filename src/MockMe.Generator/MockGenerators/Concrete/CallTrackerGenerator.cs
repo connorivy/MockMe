@@ -39,6 +39,16 @@ internal class CallTrackerGenerator
                 continue;
             }
 
+            if (methodSymbol.MethodKind == MethodKind.PropertyGet)
+            {
+                continue;
+            }
+
+            if (methodSymbol.MethodKind == MethodKind.PropertySet)
+            {
+                continue;
+            }
+
             string argCollection = methodSymbol.GetMethodArgumentsAsCollection();
             string paramsWithTypesAndMods =
                 methodSymbol.GetParametersWithOriginalTypesAndModifiers();

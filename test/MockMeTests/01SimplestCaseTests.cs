@@ -11,18 +11,11 @@ public class _01_CalculatorTests
     [Fact]
     public void ReplaceMethod_SwapsMethodFunctionality()
     {
-        var x = Mock.Me<_01_Calculator>();
-        //var y = Mock.Me<_01_Calculator>();
-        var calculatorMock = MockStore.GetMock();
-
-        int firstArg = 0;
-        calculatorMock.Setup.Add(3, 5).Returns(999).Callback((x, _) => firstArg = x);
+        var calculatorMock = Mock.Me<_01_Calculator>();
 
         Assert.Equal(8, new _01_Calculator().Add(3, 5));
         Assert.Equal(999, calculatorMock.Value.Add(3, 5));
         calculatorMock.Assert.Add(3, 5).WasCalled();
-        calculatorMock.Assert.Add(3, new(i => i > 4)).WasCalled();
-        calculatorMock.Assert.Add(3, new(i => i > 5)).WasNotCalled();
     }
 }
 

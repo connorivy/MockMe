@@ -29,6 +29,7 @@
 
     <WarningsNotAsErrors>
       NU1903; <!-- Package has a known security vulnerability. Can't always help it. -->
+      $(WarningsNotAsErrors)
     </WarningsNotAsErrors>
     
     <!--<WarningsAsErrors>

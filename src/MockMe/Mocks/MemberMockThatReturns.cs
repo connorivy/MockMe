@@ -1,4 +1,4 @@
-﻿namespace MockMe.Mocks;
+namespace MockMe.Mocks;
 
 public class MemberMock<TReturn>
     : VoidMemberNoArgsBaseMock<MemberMock<TReturn>>,
@@ -17,7 +17,7 @@ public class MemberMock<TReturn>
 
     public MemberMock<TReturn> Returns(TReturn returnThis, params TReturn[] thenReturnThese)
     {
-        returnManager.Returns(returnThis, thenReturnThese);
+        this.returnManager.Returns(returnThis, thenReturnThese);
         return this;
     }
 }

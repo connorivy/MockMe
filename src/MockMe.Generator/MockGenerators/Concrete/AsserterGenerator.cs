@@ -38,6 +38,16 @@ internal class AsserterGenerator
                 continue;
             }
 
+            if (methodSymbol.MethodKind == MethodKind.PropertyGet)
+            {
+                continue;
+            }
+
+            if (methodSymbol.MethodKind == MethodKind.PropertySet)
+            {
+                continue;
+            }
+
             var parametersDefinition = methodSymbol.GetParametersWithArgTypesAndModifiers();
             var parameters = methodSymbol.GetParametersWithoutTypesAndModifiers();
 

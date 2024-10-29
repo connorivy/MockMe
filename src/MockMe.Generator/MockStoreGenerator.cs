@@ -30,7 +30,7 @@ public class MockStoreGenerator : IIncrementalGenerator
             methodDeclarations.Collect()
         );
 
-        //System.Diagnostics.Debugger.Launch();
+        System.Diagnostics.Debugger.Launch();
         context.RegisterSourceOutput(
             compilationAndMethods,
             (ctx, source) =>
