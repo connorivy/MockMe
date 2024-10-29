@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace MockMe;
 
 public class Arg<T>
@@ -31,7 +29,8 @@ public class Arg<T>
             return this.predicate(other);
         }
 
-        throw new UnreachableException("The value and predicate should never both be null");
+        throw new InvalidOperationException("The value and predicate should never both be null");
+        //throw new System.Diagnostics.UnreachableException("The value and predicate should never both be null");
     }
 
     public static implicit operator Arg<T>(T value) => new(value);
@@ -46,6 +45,8 @@ public static class Arg
     //private Arg() { }
 
     public static AnyArg Any { get; } = new AnyArg();
+
+    public static Arg<T> Where<T>(Func<T, bool> predicate) => new(predicate);
 }
 
 public class AnyArg

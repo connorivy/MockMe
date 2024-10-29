@@ -1,15 +1,10 @@
-﻿using MockMe.Exceptions;
+using MockMe.Exceptions;
 
 namespace MockMe;
 
-public class MemberAsserter
+public class MemberAsserter(int numTimesCalled)
 {
-    private readonly int numTimesCalled;
-
-    public MemberAsserter(int numTimesCalled)
-    {
-        this.numTimesCalled = numTimesCalled;
-    }
+    private readonly int numTimesCalled = numTimesCalled;
 
     public void WasCalled() => this.WasCalled(NumTimes.AtLeast, 1);
 

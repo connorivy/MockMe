@@ -1,4 +1,4 @@
-﻿namespace MockMe;
+namespace MockMe;
 
 public class MockAsserter
 {
@@ -24,17 +24,24 @@ public class MockAsserter
     //    return new(numTimesCalled);
     //}
 
+    private static readonly MemberAsserter defaultAsserter = new(0);
+
     protected static MemberAsserter GetMemberAsserter<TArg1>()
     {
         return new(0);
     }
 
     protected static MemberAsserter GetMemberAsserter<TArg1, TArg2>(
-        List<ValueTuple<TArg1, TArg2>> callStore,
+        List<ValueTuple<TArg1, TArg2>>? callStore,
         Arg<TArg1> arg1,
         Arg<TArg2> arg2
     )
     {
+        if (callStore is null)
+        {
+            return defaultAsserter;
+        }
+
         int numTimesCalled = 0;
         for (int i = callStore.Count - 1; i >= 0; i--)
         {

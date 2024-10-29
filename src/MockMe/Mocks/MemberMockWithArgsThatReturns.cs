@@ -1,4 +1,4 @@
-﻿using MockMe.Extensions;
+using MockMe.Extensions;
 
 namespace MockMe.Mocks;
 
@@ -21,18 +21,18 @@ public abstract class MemberMockWithArgsThatReturns<TReturn, TSelf, TCallback, T
 
     public TSelf Returns(TReturnFunc returnThis, params TReturnFunc[] thenReturnThese)
     {
-        returnManager.Returns(returnThis, thenReturnThese);
+        this.returnManager.Returns(returnThis, thenReturnThese);
         return (TSelf)this;
     }
 
     public TSelf Returns(TReturn returnThis, params TReturn[] thenReturnThese)
     {
-        returnManager.Returns(returnThis, thenReturnThese);
+        this.returnManager.Returns(returnThis, thenReturnThese);
         return (TSelf)this;
     }
 
     TReturnFunc? IMockReturnCallRetriever<TReturnFunc>.GetReturnValue() =>
-        returnManager.GetReturnCall();
+        this.returnManager.GetReturnCall();
 }
 
 public class MemberMock<TArg1, TReturn>

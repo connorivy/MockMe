@@ -6,14 +6,14 @@ public interface IArgBag<TArgCollection, TCallback, TReturnCall>
     public IMockCallbackAndReturnCallRetriever<TCallback, TReturnCall> Mock { get; }
 }
 
-public interface IArgBag<TArgCollection, TCallback, TReturnCall, TSelf>
-    : IArgBag<TArgCollection, TCallback, TReturnCall>
-{
-    public static abstract TSelf Construct(
-        TArgCollection collection,
-        IMockCallbackAndReturnCallRetriever<TCallback, TReturnCall> mock
-    );
-}
+//public interface IArgBag<TArgCollection, TCallback, TReturnCall, TSelf>
+//    : IArgBag<TArgCollection, TCallback, TReturnCall>
+//{
+//    public static abstract TSelf Construct(
+//        TArgCollection collection,
+//        IMockCallbackAndReturnCallRetriever<TCallback, TReturnCall> mock
+//    );
+//}
 
 public interface IMockCallbackRetriever<TCallback>
 {
@@ -48,7 +48,7 @@ public class MockCallTracker
     }
 
     public static TReturn? CallMemberMock<TArg1, TArg2, TReturn>(
-        List<ArgBag<TArg1, TArg2, TReturn>> mockStore,
+        List<ArgBag<TArg1, TArg2, TReturn>>? mockStore,
         List<ValueTuple<TArg1, TArg2>> argStore,
         TArg1 arg1,
         TArg2 arg2
@@ -64,13 +64,18 @@ public class MockCallTracker
     }
 
     private static TReturn? CallMemberMock<TReturn, TArgCollection, TCallback, TReturnCall>(
-        IReadOnlyList<IArgBag<TArgCollection, TCallback, TReturnCall>> mockStore,
+        IReadOnlyList<IArgBag<TArgCollection, TCallback, TReturnCall>>? mockStore,
         List<TArgCollection> argStore,
         TArgCollection argCollection,
         Action<TArgCollection, TCallback> callbackAction,
         Func<TArgCollection, TReturnCall, TReturn> returnCallFunc
     )
     {
+        if (mockStore is null)
+        {
+            return default;
+        }
+
         for (int i = mockStore.Count - 1; i >= 0; i--)
         {
             var argBag = mockStore[i];

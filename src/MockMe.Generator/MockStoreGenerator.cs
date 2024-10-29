@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using MockMe.Generator.MockGenerators.Concrete;
 
 namespace MockMe.Generator;
 
@@ -53,11 +54,20 @@ namespace {NamespaceName}
                 {
                     sourceBuilder.AppendLine(
                         @$"
-        public static Mock<T> {StoreMethodName}<T>(global::{typeToMock}? unusedInstance = null) 
+        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMock.Name}Mock {StoreMethodName}<T>(global::{typeToMock}? unusedInstance = null) 
             where T : global::{typeToMock} 
         {{
-            throw new NotImplementedException();
+            EnsurePatch();
+            return new();
         }}"
+                    );
+
+                    ctx.AddSource(
+                        $"{typeToMock.Name}Mock.g.cs",
+                        SourceText.From(
+                            MockGenerator.CreateMockForConcreteType(typeToMock).ToString(),
+                            Encoding.UTF8
+                        )
                     );
                 }
 
@@ -102,7 +112,8 @@ namespace {NamespaceName}
                 var genericArgSymbol = model
                     .GetTypeInfo(genericName.TypeArgumentList.Arguments[0])
                     .Type;
-                if (usedSymbols.Add(genericArgSymbol))
+
+                if (genericArgSymbol is not null && usedSymbols.Add(genericArgSymbol))
                 {
                     yield return genericArgSymbol;
                 }
@@ -124,6 +135,22 @@ namespace {NamespaceName}
             where T : global::{NamespaceName}.DummyClass
         {{
             throw new NotImplementedException();
+        }}
+
+        private static bool isPatched;
+        private static readonly object LockObj = new();
+
+        private static void EnsurePatch()
+        {{
+            lock (LockObj)
+            {{
+                if (!isPatched)
+                {{
+                    var harmony = new global::HarmonyLib.Harmony(""com.mockme.patch"");
+                    harmony.PatchAll();
+                    isPatched = true;
+                }}
+            }}
         }}
     }}
 }}
