@@ -123,7 +123,7 @@ namespace MockMe.Tests
                     //        method.Parameters[j].ParameterType = importedNewType;
                     //    }
                     //}
-
+                    //var methodRelinker = new Relinker(assembly.MainModule);
                     foreach (var instruction in method.Body.Instructions)
                     {
                         if (
@@ -138,45 +138,47 @@ namespace MockMe.Tests
                             && methodRef.DeclaringType.FullName == typeToRemove.FullName
                         )
                         {
-                            //var newMethod = newType.Methods.First(m => m.Name == methodRef.Name);
-                            //var importedMethod = assembly.MainModule.ImportReference(newMethod);
+                            var newMethod = newType.Methods.First(m => m.Name == methodRef.Name);
+                            var importedMethod = assembly.MainModule.ImportReference(newMethod);
 
-                            var newMethodRef = new MethodReference(
-                                methodRef.Name,
-                                methodRef.ReturnType,
-                                importedNewType
-                            )
-                            {
-                                HasThis = methodRef.HasThis,
-                                ExplicitThis = methodRef.ExplicitThis,
-                                CallingConvention = methodRef.CallingConvention
-                            };
-                            foreach (var parameter in methodRef.Parameters)
+                            //var newMethodRef = new MethodReference(
+                            //    methodRef.Name,
+                            //    assembly.MainModule.ImportReference(methodRef.ReturnType),
+                            //    importedNewType
+                            //)
+                            //{
+                            //    HasThis = methodRef.HasThis,
+                            //    ExplicitThis = methodRef.ExplicitThis,
+                            //    CallingConvention = methodRef.CallingConvention
+                            //};
+                            foreach (var parameter in importedMethod.Parameters)
                             {
                                 //newMethodRef.Parameters.Add(
                                 //    new ParameterDefinition(parameter.ParameterType)
                                 //);
-                                newMethodRef.Parameters.Add(
-                                    new ParameterDefinition(
-                                        parameter.Name,
-                                        Mono.Cecil.ParameterAttributes.None,
-                                        parameter.ParameterType
-                                    )
-                                );
+                                //newMethodRef.Parameters.Add(
+                                //    new ParameterDefinition(
+                                //        parameter.Name,
+                                //        Mono.Cecil.ParameterAttributes.None,
+                                //        parameter.ParameterType
+                                //    )
+                                //);
+                                assembly.MainModule.ImportReference(parameter.ParameterType);
                             }
                             if (methodRef is GenericInstanceMethod genericInstanceMethodRef)
                             {
-                                GenericInstanceMethod newGenericInstanceMethod = new(newMethodRef);
+                                //var gp_T_5 = new Mono.Cecil.GenericParameter("T", method);
+                                //newMethodRef.ReturnType = gp_T_5;
+
+                                GenericInstanceMethod newGenericInstanceMethod =
+                                    new(importedMethod);
                                 foreach (
                                     var genericArg in genericInstanceMethodRef.GenericArguments
                                 )
                                 {
-                                    //var genericParam = new GenericParameter(genericArg)
-                                    var importedGenericArg = assembly.MainModule.ImportReference(
-                                        genericArg
-                                    );
+                                    //assembly.MainModule.ImportReference(genericArg);
                                     newGenericInstanceMethod.GenericArguments.Add(
-                                        importedGenericArg
+                                        assembly.MainModule.ImportReference(genericArg)
                                     );
                                 }
                                 //methodRef.Relink(new(), newGenericInstanceMethod);
@@ -184,13 +186,13 @@ namespace MockMe.Tests
                             }
                             else
                             {
-                                foreach (var genericParam in methodRef.GenericParameters)
-                                {
-                                    newMethodRef.GenericParameters.Add(
-                                        new GenericParameter(genericParam.Name, newMethodRef)
-                                    );
-                                }
-                                instruction.Operand = newMethodRef;
+                                //foreach (var genericParam in methodRef.GenericParameters)
+                                //{
+                                //    newMethodRef.GenericParameters.Add(
+                                //        new GenericParameter(genericParam.Name, newMethodRef)
+                                //    );
+                                //}
+                                instruction.Operand = importedMethod;
                             }
                         }
                         else if (
@@ -280,6 +282,15 @@ namespace MockMe.Tests
                 Instruction importedInstruction = instruction;
                 if (instruction.Operand is MethodReference methodRef)
                 {
+                    assembly.MainModule.ImportReference(methodRef.ReturnType);
+                    foreach (var parameter in methodRef.Parameters)
+                    {
+                        assembly.MainModule.ImportReference(parameter.ParameterType);
+                    }
+                    foreach (var parameter in methodRef.GenericParameters)
+                    {
+                        //assembly.MainModule.ImportReference(parameter.Type);
+                    }
                     var importedMethodRef = ImportReference(assembly.MainModule, methodRef);
                     importedInstruction = ilProcessor.Create(instruction.OpCode, importedMethodRef);
                 }
@@ -288,7 +299,7 @@ namespace MockMe.Tests
                     var importedFieldRef = ImportReference(assembly.MainModule, fieldRef);
                     importedInstruction = ilProcessor.Create(instruction.OpCode, importedFieldRef);
                 }
-                else if (instruction.Operand is TypeReference typeRef)
+                else if (instruction.Operand is Mono.Cecil.TypeReference typeRef)
                 {
                     var importedTypeRef = ImportReference(assembly.MainModule, typeRef);
                     importedInstruction = ilProcessor.Create(instruction.OpCode, importedTypeRef);

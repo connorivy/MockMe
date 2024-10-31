@@ -45,6 +45,6 @@ public class Calculator2
 
     public T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
     {
-        return (T)(object)99;
+        return (T)(object)99.0;
     }
 }
