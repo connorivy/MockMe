@@ -10,6 +10,8 @@ using MockMe.Tests.SampleClasses;
 //using MockMe.SampleMocks.CalculatorSample;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
+using Mono.CompilerServices.SymbolWriter;
 using MonoMod.Utils;
 
 namespace MockMe.Tests
@@ -257,7 +259,7 @@ namespace MockMe.Tests
             var typeToRemove = assembly.MainModule.Types.FirstOrDefault(t =>
                 t.Name == "Calculator"
             );
-            var firstMethod = typeToRemove.Methods.First(m =>
+            var targetMethod = typeToRemove.Methods.First(m =>
                 m.Name == nameof(Calculator2.AddUpAllOfThese2)
             );
 
@@ -265,19 +267,26 @@ namespace MockMe.Tests
                 Assembly.GetExecutingAssembly().Location
             );
             var newType = newTypeAssembly.MainModule.Types.First(t => t.Name == "Calculator2");
-            var secondMethod = newType.Methods.First(m =>
+            var sourceMethod = newType.Methods.First(m =>
                 m.Name == nameof(Calculator2.AddUpAllOfThese2)
             );
+            //assembly.MainModule.ImportReference(newType);
+            //assembly.MainModule.ImportReference(secondMethod);
             //var newTypeRef = assembly.MainModule.ImportReference(secondMethod.ReturnType);
             //var importedNewType = assembly.MainModule.ImportReference(secondMethod);
 
+            var instructionsToCopy = new List<Instruction>(sourceMethod.Body.Instructions);
+
             //var module = firstMethod.Module;
+            var firstReturnType = targetMethod.ReturnType;
+            var secondReturnType = sourceMethod.ReturnType;
+            //assembly.MainModule.ImportReference(secondMethod.ReturnType, secondMethod);
 
             // Clear the body of the first method
-            firstMethod.Body.Instructions.Clear(); // Copy the IL from the second method to the first method
+            targetMethod.Body.Instructions.Clear(); // Copy the IL from the second method to the first method
 
-            var ilProcessor = firstMethod.Body.GetILProcessor();
-            foreach (var instruction in secondMethod.Body.Instructions)
+            var ilProcessor = targetMethod.Body.GetILProcessor();
+            foreach (var instruction in sourceMethod.Body.Instructions)
             {
                 Instruction importedInstruction = instruction;
                 if (instruction.Operand is MethodReference methodRef)
@@ -286,6 +295,13 @@ namespace MockMe.Tests
                     foreach (var parameter in methodRef.Parameters)
                     {
                         assembly.MainModule.ImportReference(parameter.ParameterType);
+                    }
+                    if (methodRef is GenericInstanceMethod genericInstanceMethodRef)
+                    {
+                        foreach (var genericArg in genericInstanceMethodRef.GenericArguments)
+                        {
+                            assembly.MainModule.ImportReference(genericArg);
+                        }
                     }
                     foreach (var parameter in methodRef.GenericParameters)
                     {
@@ -301,11 +317,56 @@ namespace MockMe.Tests
                 }
                 else if (instruction.Operand is Mono.Cecil.TypeReference typeRef)
                 {
-                    var importedTypeRef = ImportReference(assembly.MainModule, typeRef);
+                    TypeReference importedTypeRef;
+                    if (typeRef.IsGenericParameter)
+                    {
+                        var genericParam = typeRef as GenericParameter;
+                        if (genericParam.Owner is MethodDefinition)
+                        {
+                            // Method generic parameter
+                            importedTypeRef = targetMethod.GenericParameters[genericParam.Position];
+                        }
+                        else
+                        {
+                            // Type generic parameter
+                            var declaringType = targetMethod.DeclaringType as TypeDefinition;
+                            importedTypeRef = declaringType.GenericParameters[
+                                genericParam.Position
+                            ];
+                        }
+                    }
+                    else
+                    {
+                        importedTypeRef = assembly.MainModule.ImportReference(typeRef);
+                    }
+                    //importedTypeRef = assembly.MainModule.ImportReference(typeRef);
+
                     importedInstruction = ilProcessor.Create(instruction.OpCode, importedTypeRef);
                 }
-                ilProcessor.Append(importedInstruction);
+                ilProcessor.Emit(importedInstruction.OpCode, importedInstruction.Operand);
             }
+
+            //foreach (var variable in sourceMethod.Body.Variables)
+            //{
+            //    var importedVariableType = assembly.MainModule.ImportReference(
+            //        variable.VariableType
+            //    );
+            //    targetMethod.Body.Variables.Add(new VariableDefinition(importedVariableType));
+            //}
+
+            //secondMethod.ReturnType = firstMethod.ReturnType;
+            //secondMethod.GenericParameters.Clear();
+            //foreach (var parameter in firstMethod.GenericParameters)
+            //{
+            //    secondMethod.GenericParameters.Add(parameter);
+            //}
+            //secondMethod.Parameters.Clear();
+            //foreach (var parameter in firstMethod.Parameters)
+            //{
+            //    secondMethod.Parameters.Add(parameter);
+            //}
+
+            targetMethod.Body.OptimizeMacros();
 
             assembly.Write(assemblyPath);
             assembly.Write(newAssemblyPath);

@@ -43,8 +43,12 @@ public class Calculator2
         return values.First();
     }
 
-    public T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
+    public TReplacement AddUpAllOfThese2<TReplacement>(
+        int hello,
+        TReplacement[] values,
+        double goodbye
+    )
     {
-        return (T)(object)99.0;
+        return (TReplacement)(object)99.0;
     }
 }
