@@ -3,6 +3,7 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)..\'))" />
 
   <PropertyGroup>
+    <LangVersion>10</LangVersion>
     <WarningsNotAsErrors>
       CA1822; <!-- Mark members as static -->
       $(WarningsNotAsErrors)
