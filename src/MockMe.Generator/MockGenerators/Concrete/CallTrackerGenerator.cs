@@ -49,17 +49,34 @@ internal class CallTrackerGenerator
                 continue;
             }
 
-            string argCollection = methodSymbol.GetMethodArgumentsAsCollection();
-            string paramsWithTypesAndMods =
-                methodSymbol.GetParametersWithOriginalTypesAndModifiers();
-            string paramString = methodSymbol.GetParametersWithoutTypesAndModifiers();
+            string voidPrefix = returnType == "void" ? "Void" : string.Empty;
+            int numParameters = methodSymbol.Parameters.Length;
 
-            sb.AppendLine(
-                $@"
-            private List<{argCollection}>? {methodName}CallStore;
+            if (numParameters == 0)
+            {
+                sb.AppendLine(
+                    $@"
+            private int {methodName}CallStore;
 
-            public {returnType} {methodName}({paramsWithTypesAndMods}) => CallMemberMock(this.setup.{methodName}BagStore, this.{methodName}CallStore ??= new(), {paramString});"
-            );
+            public {returnType} {methodName}()
+            {{
+                this.{methodName}CallStore++;
+                {(returnType == "void" ? string.Empty : "return ")}Call{voidPrefix}MemberMock(this.setup.{methodName}BagStore);
+            }}"
+                );
+            }
+            else
+            {
+                string paramsWithTypesAndMods =
+                    methodSymbol.GetParametersWithOriginalTypesAndModifiers();
+                string paramString = methodSymbol.GetParametersWithoutTypesAndModifiers();
+                sb.AppendLine(
+                    $@"
+            private List<{methodSymbol.GetMethodArgumentsAsCollection()}>? {methodName}CallStore;
+
+            public {returnType} {methodName}({paramsWithTypesAndMods}) => Call{voidPrefix}MemberMock(this.setup.{methodName}BagStore, this.{methodName}CallStore ??= new(), {paramString});"
+                );
+            }
         }
 
         AsserterGenerator.CreateMemberAsserterForConcreteType(typeSymbol, sb);

@@ -28,7 +28,7 @@ internal class SetupGenerator
 
             var methodName = methodSymbol.Name;
 
-            if (methodName == ".ctor")
+            if (methodSymbol.MethodKind == MethodKind.Constructor)
             {
                 continue;
             }
@@ -43,17 +43,31 @@ internal class SetupGenerator
                 continue;
             }
 
+            int numParameters = methodSymbol.Parameters.Length;
             string returnType = methodSymbol.ReturnType.ToDisplayString();
-            string paramsWithTypesAndMods = methodSymbol.GetParametersWithArgTypesAndModifiers();
             string paramTypeString = methodSymbol.GetParameterTypesWithoutModifiers();
-            string paramString = methodSymbol.GetParametersWithoutTypesAndModifiers();
 
-            sb.AppendLine(
-                $@"
-        private List<ArgBag<{paramTypeString}, {returnType}>>? {methodName}BagStore;
-
-        public MemberMock<{paramTypeString}, {returnType}> {methodName}({paramsWithTypesAndMods}) => SetupMethod(this.{methodName}BagStore ??= new(), {paramString});"
-            );
+            string voidPrefix = returnType == "void" ? "Void" : string.Empty;
+            string memberMockType = GetMemberMockWithProperGeneric(returnType, paramTypeString);
+            if (numParameters == 0)
+            {
+                sb.AppendLine(
+                    $@"
+        private {voidPrefix}{memberMockType}? {methodName}BagStore;
+        public {voidPrefix}{memberMockType} {methodName}() => this.{methodName}BagStore ??= new();"
+                );
+            }
+            else
+            {
+                string paramsWithTypesAndMods =
+                    methodSymbol.GetParametersWithArgTypesAndModifiers();
+                string paramString = methodSymbol.GetParametersWithoutTypesAndModifiers();
+                sb.AppendLine(
+                    $@"
+        private List<ArgBagWith{voidPrefix}{memberMockType}>? {methodName}BagStore;
+        public {voidPrefix}{memberMockType} {methodName}({paramsWithTypesAndMods}) => Setup{voidPrefix}Method(this.{methodName}BagStore ??= new(), {paramString});"
+                );
+            }
         }
 
         CallTrackerGenerator.CreateCallTrackerForConcreteType(typeSymbol, sb);
@@ -64,6 +78,24 @@ internal class SetupGenerator
         );
 
         return sb;
+    }
+
+    private static string GetMemberMockWithProperGeneric(string returnType, string paramTypeString)
+    {
+        string returnSuffix =
+            returnType == "void"
+                ? string.Empty
+                : paramTypeString.Length == 0
+                    ? returnType
+                    : $", {returnType}";
+
+        string memberMock = "MemberMock";
+        if (paramTypeString.Length + returnSuffix.Length == 0)
+        {
+            return memberMock;
+        }
+
+        return memberMock + $"<{paramTypeString}{returnSuffix}>";
     }
 }
 

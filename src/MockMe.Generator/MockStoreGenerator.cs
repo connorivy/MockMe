@@ -30,7 +30,7 @@ public class MockStoreGenerator : IIncrementalGenerator
             methodDeclarations.Collect()
         );
 
-        System.Diagnostics.Debugger.Launch();
+        //System.Diagnostics.Debugger.Launch();
         context.RegisterSourceOutput(
             compilationAndMethods,
             (ctx, source) =>
@@ -50,6 +50,7 @@ namespace {NamespaceName}
 "
                 );
 
+                Dictionary<string, int> typeNameUsageCounts = [];
                 foreach (var typeToMock in GetTypesToBeMocked(source.Left, source.Right))
                 {
                     sourceBuilder.AppendLine(
@@ -62,8 +63,19 @@ namespace {NamespaceName}
         }}"
                     );
 
+                    string classNameSuffix = string.Empty;
+                    if (typeNameUsageCounts.TryGetValue(typeToMock.Name, out int numUsages))
+                    {
+                        classNameSuffix = $"-{numUsages}";
+                        typeNameUsageCounts[typeToMock.Name] = numUsages + 1;
+                    }
+                    else
+                    {
+                        typeNameUsageCounts.Add(typeToMock.Name, 1);
+                    }
+
                     ctx.AddSource(
-                        $"{typeToMock.Name}Mock.g.cs",
+                        $"{typeToMock.Name}Mock{classNameSuffix}.g.cs",
                         SourceText.From(
                             MockGenerator.CreateMockForConcreteType(typeToMock).ToString(),
                             Encoding.UTF8

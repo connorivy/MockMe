@@ -26,15 +26,20 @@ public class MockAsserter
 
     private static readonly MemberAsserter defaultAsserter = new(0);
 
-    protected static MemberAsserter GetMemberAsserter<TArg1>()
-    {
-        return new(0);
-    }
+    protected static MemberAsserter GetMemberAsserter<TArg1>(
+        List<TArg1>? callStore,
+        Arg<TArg1> arg1
+    ) => GetMemberAsserterBase(callStore, new ArgBag<TArg1>(arg1));
 
     protected static MemberAsserter GetMemberAsserter<TArg1, TArg2>(
         List<ValueTuple<TArg1, TArg2>>? callStore,
         Arg<TArg1> arg1,
         Arg<TArg2> arg2
+    ) => GetMemberAsserterBase(callStore, new ArgBag<TArg1, TArg2>(arg1, arg2));
+
+    private static MemberAsserter GetMemberAsserterBase<TArgCollection>(
+        IList<TArgCollection>? callStore,
+        IArgBag<TArgCollection> argBag
     )
     {
         if (callStore is null)
@@ -45,8 +50,8 @@ public class MockAsserter
         int numTimesCalled = 0;
         for (int i = callStore.Count - 1; i >= 0; i--)
         {
-            var argBag = callStore[i];
-            if (arg1.IsSatisfiedBy(argBag.Item1) && arg2.IsSatisfiedBy(argBag.Item2))
+            var argCollection = callStore[i];
+            if (argBag.AllArgsSatisfy(argCollection))
             {
                 numTimesCalled++;
             }

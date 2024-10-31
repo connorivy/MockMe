@@ -1,8 +1,10 @@
-﻿using MockMe.Extensions;
+using MockMe.Extensions;
 
 namespace MockMe.Mocks;
 
-public abstract class VoidMemberNoArgsBaseMock<TSelf> : IVoidMemberMock<TSelf>
+public abstract class VoidMemberNoArgsBaseMock<TSelf>
+    : IVoidMemberMock<TSelf>,
+        IMockCallbackRetriever<Action>
     where TSelf : VoidMemberNoArgsBaseMock<TSelf>
 {
     private readonly ActionCallbackManager<Action> callbackManager;
@@ -14,9 +16,15 @@ public abstract class VoidMemberNoArgsBaseMock<TSelf> : IVoidMemberMock<TSelf>
 
     public TSelf Callback(Action callback)
     {
-        callbackManager.AddCallback(callback);
+        this.callbackManager.AddCallback(callback);
         return (TSelf)this;
     }
+
+    IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredAfterReturnCall() =>
+        this.callbackManager.GetCallbacksRegisteredAfterReturnCall();
+
+    IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredBeforeReturnCall() =>
+        this.callbackManager.GetCallbacksRegisteredBeforeReturnCall();
 }
 
 public class VoidMemberMock : VoidMemberNoArgsBaseMock<VoidMemberMock>
@@ -42,21 +50,21 @@ public abstract class VoidMemberMockWithArgsBase<TSelf, TCallback>
 
     public TSelf Callback(TCallback callback)
     {
-        callbackManager.AddCallback(callback);
+        this.callbackManager.AddCallback(callback);
         return (TSelf)this;
     }
 
     public TSelf Callback(Action callback)
     {
-        callbackManager.AddCallback(callback);
+        this.callbackManager.AddCallback(callback);
         return (TSelf)this;
     }
 
     IEnumerable<TCallback> IMockCallbackRetriever<TCallback>.GetCallbacksRegisteredAfterReturnCall() =>
-        callbackManager.GetCallbacksRegisteredAfterReturnCall();
+        this.callbackManager.GetCallbacksRegisteredAfterReturnCall();
 
     IEnumerable<TCallback> IMockCallbackRetriever<TCallback>.GetCallbacksRegisteredBeforeReturnCall() =>
-        callbackManager.GetCallbacksRegisteredBeforeReturnCall();
+        this.callbackManager.GetCallbacksRegisteredBeforeReturnCall();
 }
 
 public class VoidMemberMock<TArg1>

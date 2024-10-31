@@ -6,7 +6,7 @@
   </PropertyGroup>
   <PropertyGroup Label="General Config">
     <TargetFramework>net8.0</TargetFramework>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
     <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>
     <NoWarn>
       CA1000; <!-- Do not declare static members on generic types -->

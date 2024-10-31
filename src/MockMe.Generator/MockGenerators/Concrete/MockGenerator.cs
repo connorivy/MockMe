@@ -8,6 +8,7 @@ namespace MockMe.Generator.MockGenerators.Concrete;
 internal class MockGenerator
 {
     private const string MockNamespace = "MockMe.Mocks.Generated";
+    private const string voidString = "void";
 
     public static StringBuilder CreateMockForConcreteType(ITypeSymbol typeSymbol)
     {
@@ -69,6 +70,11 @@ namespace MockMe.Generated.{typeSymbol.ContainingNamespace};
             string returnType = methodSymbol.ReturnType.ToDisplayString();
             string paramsWithTypesAndMods =
                 methodSymbol.GetParametersWithOriginalTypesAndModifiers();
+
+            if (!string.IsNullOrEmpty(paramsWithTypesAndMods))
+            {
+                paramsWithTypesAndMods = $", {paramsWithTypesAndMods}";
+            }
             string paramTypeString = methodSymbol.GetParameterTypesWithoutModifiers();
             string paramString = methodSymbol.GetParametersWithoutTypesAndModifiers();
 
@@ -77,11 +83,11 @@ namespace MockMe.Generated.{typeSymbol.ContainingNamespace};
         [HarmonyPatch(typeof(global::{typeSymbol}), nameof(global::{typeSymbol}.{method.Name}))]
         internal sealed class Patch{Guid.NewGuid():N}
         {{
-            private static bool Prefix(global::{typeSymbol} __instance, ref {returnType} __result, {paramsWithTypesAndMods})
+            private static bool Prefix(global::{typeSymbol} __instance{(returnType == "void" ? string.Empty : $", ref {returnType} __result")}{paramsWithTypesAndMods})
             {{
                 if (mockStore.TryGetValue(__instance, out var mock))
                 {{
-                    __result = mock.CallTracker.{method.Name}({paramString});
+                    {(returnType == "void" ? string.Empty : "__result = ")}mock.CallTracker.{method.Name}({paramString});
                     return false;
                 }}
                 return true;

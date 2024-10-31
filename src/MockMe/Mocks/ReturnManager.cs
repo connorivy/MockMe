@@ -20,9 +20,15 @@ internal class ReturnManager<TReturnCall>(CallbackManager callbackManager)
 
     internal TReturnCall? GetReturnCall()
     {
-        if (this.ReturnCalls is not null && this.ReturnCalls.TryDequeue(out var returnCall))
+        if (this.ReturnCalls is not null && this.ReturnCalls.Count > 0)
         {
-            return returnCall;
+            if (this.ReturnCalls.Count == 1)
+            {
+                // don't dequeue the last configured return call
+                return this.ReturnCalls.Peek();
+            }
+
+            return this.ReturnCalls.Dequeue();
         }
 
         return default;

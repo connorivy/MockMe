@@ -48,16 +48,28 @@ internal class AsserterGenerator
                 continue;
             }
 
-            var parametersDefinition = methodSymbol.GetParametersWithArgTypesAndModifiers();
-            var parameters = methodSymbol.GetParametersWithoutTypesAndModifiers();
+            int numParameters = methodSymbol.Parameters.Length;
+            if (numParameters == 0)
+            {
+                sb.AppendLine(
+                    $@"
+                public MemberAsserter {methodName}() =>
+                    new(this.tracker.{methodName}CallStore);"
+                );
+            }
+            else
+            {
+                var parametersDefinition = methodSymbol.GetParametersWithArgTypesAndModifiers();
+                var parameters = methodSymbol.GetParametersWithoutTypesAndModifiers();
 
-            sb.AppendLine(
-                $@"
+                sb.AppendLine(
+                    $@"
                 public MemberAsserter {methodName}({parametersDefinition})
                 {{
                     return GetMemberAsserter(this.tracker.{methodName}CallStore, {parameters});
                 }}"
-            );
+                );
+            }
         }
 
         sb.AppendLine(

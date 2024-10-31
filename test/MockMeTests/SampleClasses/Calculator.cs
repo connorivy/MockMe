@@ -6,9 +6,14 @@ public class Calculator
 
     public double Multiply(double x, double y) => x * y;
 
-    public int RandomNumber() => 17;
-
     public CalculatorType CalculatorType { get; set; }
+
+    public void DivideByZero(double numToDivide) =>
+        throw new InvalidOperationException("Cannot divide by 0");
+
+    public bool IsOn() => true;
+
+    public void TurnOff() { }
 }
 
 public enum CalculatorType
