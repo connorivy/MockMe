@@ -34,4 +34,12 @@
       OverwriteReadOnlyFiles="true" ContinueOnError="true"/>
   </Target>-->
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo After Build: $(TargetPath) $(OutDir)MockMe.PostBuild.exe" />
+  </Target>
+
+  <Target Name="AfterBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="$(OutDir)MockMe.PostBuild.exe -- $(TargetPath)" />
+  </Target>
+
 </Project>

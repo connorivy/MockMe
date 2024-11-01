@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Abstractions", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.SampleMocks", "src\MockMe.SampleMocks\MockMe.SampleMocks.csproj", "{1C8CEE11-5494-4762-A4E7-62042CE51E56}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.PostBuild", "src\MockMe.PostBuild\MockMe.PostBuild.csproj", "{511CE2FA-4247-4553-BFE6-AB049DC5EB5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{1C8CEE11-5494-4762-A4E7-62042CE51E56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C8CEE11-5494-4762-A4E7-62042CE51E56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C8CEE11-5494-4762-A4E7-62042CE51E56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{511CE2FA-4247-4553-BFE6-AB049DC5EB5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{511CE2FA-4247-4553-BFE6-AB049DC5EB5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{511CE2FA-4247-4553-BFE6-AB049DC5EB5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{511CE2FA-4247-4553-BFE6-AB049DC5EB5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{FFC11A22-7908-4ADA-997E-99201DF96F75} = {AB32507E-2EED-4403-946B-1D1E7EC0D6F7}
 		{B134418F-FADA-49D5-AC6F-6297F2C22598} = {AB32507E-2EED-4403-946B-1D1E7EC0D6F7}
 		{1C8CEE11-5494-4762-A4E7-62042CE51E56} = {AB32507E-2EED-4403-946B-1D1E7EC0D6F7}
+		{511CE2FA-4247-4553-BFE6-AB049DC5EB5C} = {AB32507E-2EED-4403-946B-1D1E7EC0D6F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF07A0CA-1140-44DC-9E7E-F99E65D9EF97}
