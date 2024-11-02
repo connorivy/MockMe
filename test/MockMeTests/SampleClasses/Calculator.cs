@@ -1,8 +1,11 @@
+using MockMe.Abstractions;
+using MockMe.Tests.SampleClasses;
+
 namespace MockMe.Tests.SampleClasses
 {
     public class Calculator
     {
-        public int Add(int x, int y) => 99;
+        public int Add(int x, int y) => x + y;
 
         public double Multiply(double x, double y) => x * y;
 
@@ -43,13 +46,9 @@ namespace MockMe.Tests.SampleClasses
             return values.First();
         }
 
-        public TReplacement AddUpAllOfThese2<TReplacement>(
-            int hello,
-            TReplacement[] values,
-            double goodbye
-        )
+        public T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
         {
-            return (TReplacement)(object)99.0;
+            return (T)(object)99.0;
         }
     }
 }
@@ -58,12 +57,20 @@ namespace MockMe
 {
     public static partial class Mock
     {
-        public static List<(Type, string)> GenericTypes() =>
+        public static List<MockReplacementInfo> GenericTypes() =>
             new()
             {
-                (
-                    typeof(SampleMocks.CalculatorSample.Calculator),
-                    nameof(SampleMocks.CalculatorSample.Calculator.AddUpAllOfThese2)
+                new(
+                    typeToReplace: new GenericMethodInfo(
+                        assemblyName: "MockMe.SampleMocks",
+                        typeFullName: "MockMe.SampleMocks.CalculatorSample.Calculator",
+                        methodName: "AddUpAllOfThese2"
+                    ),
+                    sourceType: new GenericMethodInfo(
+                        assemblyName: typeof(Calculator2).Assembly.FullName,
+                        typeFullName: typeof(Calculator2).FullName,
+                        methodName: nameof(Calculator2.AddUpAllOfThese2)
+                    )
                 )
             };
     }

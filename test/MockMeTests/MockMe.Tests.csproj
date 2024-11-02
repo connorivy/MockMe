@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0;</TargetFrameworks>
+    <TargetFrameworks>net6.0;</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -34,12 +34,12 @@
       OverwriteReadOnlyFiles="true" ContinueOnError="true"/>
   </Target>-->
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo After Build: $(TargetPath) $(OutDir)MockMe.PostBuild.exe" />
-  </Target>
+  </Target>-->
 
-  <Target Name="AfterBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(OutDir)MockMe.PostBuild.exe -- $(TargetPath)" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="$(OutDir)MockMe.PostBuild.exe $(TargetPath)" />
   </Target>
 
 </Project>

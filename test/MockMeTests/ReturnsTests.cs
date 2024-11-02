@@ -19,7 +19,7 @@ public class ReturnsTests
     {
         var calculatorMock = Mock.Me<Calculator>();
 
-        calculatorMock.Setup.Add(Arg.Any, Arg.Any).Returns(9999);
+        calculatorMock.Setup.Add(1, 2).Returns(9999);
 
         Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
 

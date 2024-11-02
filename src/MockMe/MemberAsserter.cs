@@ -2,9 +2,14 @@ using MockMe.Exceptions;
 
 namespace MockMe;
 
-public class MemberAsserter(int numTimesCalled)
+public class MemberAsserter
 {
-    private readonly int numTimesCalled = numTimesCalled;
+    private readonly int numTimesCalled;
+
+    public MemberAsserter(int numTimesCalled)
+    {
+        this.numTimesCalled = numTimesCalled;
+    }
 
     public void WasCalled() => this.WasCalled(NumTimes.AtLeast, 1);
 
@@ -17,19 +22,19 @@ public class MemberAsserter(int numTimesCalled)
         switch (intComparison)
         {
             case NumTimes.Exactly:
-                if (numTimesCalled != this.numTimesCalled)
+                if (this.numTimesCalled != numTimesCalled)
                 {
                     throw new AssertionFailureException();
                 }
                 break;
             case NumTimes.AtLeast:
-                if (numTimesCalled < this.numTimesCalled)
+                if (this.numTimesCalled < numTimesCalled)
                 {
                     throw new AssertionFailureException();
                 }
                 break;
             case NumTimes.AtMost:
-                if (numTimesCalled > this.numTimesCalled)
+                if (this.numTimesCalled > numTimesCalled)
                 {
                     throw new AssertionFailureException();
                 }

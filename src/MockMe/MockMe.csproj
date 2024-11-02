@@ -16,4 +16,9 @@
     <Folder Include="Asserters\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MockMe.Abstractions\MockMe.Abstractions.csproj" />
+    <ProjectReference Include="..\MockMe.PostBuild\MockMe.PostBuild.csproj" />
+  </ItemGroup>
+
 </Project>
