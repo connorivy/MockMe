@@ -1,5 +1,15 @@
 using MockMe.Abstractions;
+using MockMe.Build;
 using MockMe.Tests.SampleClasses;
+
+[assembly: GenericMethodDefinition(
+    "MockMe.SampleMocks",
+    "MockMe.SampleMocks.CalculatorSample.Calculator",
+    "AddUpAllOfThese2",
+    "MockMe.Tests",
+    "MockMe.Tests.SampleClasses.Calculator2",
+    "AddUpAllOfThese2"
+)]
 
 namespace MockMe.Tests.SampleClasses
 {

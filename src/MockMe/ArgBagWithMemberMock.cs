@@ -30,8 +30,7 @@ public class ArgBagWithMemberMock<T1, TReturn>(
 ) : IArgBag<T1, Action<T1>, Func<T1, TReturn>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
-    public IMockCallbackAndReturnCallRetriever<Action<T1>, Func<T1, TReturn>> Mock { get; init; } =
-        mock;
+    public IMockCallbackAndReturnCallRetriever<Action<T1>, Func<T1, TReturn>> Mock { get; } = mock;
     IMockCallbackRetriever<Action<T1>> IArgBagWithMock<
         T1,
         IMockCallbackRetriever<Action<T1>>

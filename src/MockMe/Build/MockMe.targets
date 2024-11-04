@@ -1,0 +1,23 @@
+<Project>
+  
+  <PropertyGroup>
+    <MockMePath Condition="$(MockMePath) == ''">$(MSBuildThisFileDirectory)..\lib\netstandard2.0\</MockMePath>
+    <!--<FodyAssemblyDirectory Condition="$(MSBuildRuntimeType) == 'Core'">$(FodyPath)netstandardtask</FodyAssemblyDirectory>
+    <FodyAssemblyDirectory Condition="$(MSBuildRuntimeType) != 'Core'">$(FodyPath)netclassictask</FodyAssemblyDirectory>-->
+    <MockMeAssembly Condition="$(MockMeAssembly) == ''">$(MockMePath)MockMe.dll</MockMeAssembly>
+  </PropertyGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo After Build: $(MockMeAssembly) $(MockMePath)" />
+  </Target>
+  
+  <!--<UsingTask TaskName="MockMe.Build.ReplaceGenericMethods" AssemblyFile="$(MockMeAssembly)" />-->
+
+  <Target Name="ReplaceGenericMethods" AfterTargets="PostBuildEvent">
+    <Exec Command="$(OutputPath)MockMe.PostBuild.exe $(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll" />
+    <!--<MockMe.Build.ReplaceGenericMethods TestAssemblyPath="$(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll">
+      
+    </MockMe.Build.ReplaceGenericMethods>-->
+    
+  </Target>
+</Project>

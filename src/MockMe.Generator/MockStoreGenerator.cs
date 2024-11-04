@@ -193,14 +193,14 @@ namespace {NamespaceName}
         //var outputPath = "MockMe.SampleMocks.dll";
     }
 
-    static Assembly HandleTypeResolve(object sender, ResolveEventArgs args)
-    {
-        Console.WriteLine("TypeResolve event handler.");
+    //static Assembly HandleTypeResolve(object sender, ResolveEventArgs args)
+    //{
+    //    Console.WriteLine("TypeResolve event handler.");
 
-        // Save the dynamic assembly, and then load it using its
-        // display name. Return the loaded assembly.
-        //
-        //ab.Save(moduleName);
-        return Assembly.Load(Assembly.GetExecutingAssembly().Location);
-    }
+    //    // Save the dynamic assembly, and then load it using its
+    //    // display name. Return the loaded assembly.
+    //    //
+    //    //ab.Save(moduleName);
+    //    return Assembly.Load(Assembly.GetExecutingAssembly().Location);
+    //}
 }

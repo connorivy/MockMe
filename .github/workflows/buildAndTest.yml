@@ -1,0 +1,77 @@
+name: Build / Test / Lint
+
+on:
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    strategy:
+      # fail-fast: false
+      matrix:
+        dotnet:
+          - '9.0'
+          - '8.0'
+          - '7.0'
+          - '6.0'
+    env:
+      ContinuousIntegrationBuild: true
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev.$GITHUB_RUN_ID"
+
+    - name: Create local package feed
+      run: dotnet nuget add source "$(pwd)/artifacts" -n LocalNuGet
+
+    - name: Pack
+      run: dotnet pack -c Release --no-build
+
+    - name: Push to Local NuGet Feed
+      run: dotnet nuget push **/bin/Release/*.nupkg --source LocalNuGet
+
+    - name: Test
+      run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+
+    - name: ReportGenerator
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
+      with:
+        reports: './tests/**/*.info'
+        targetdir: './tests/TestResults'
+        reporttypes: 'lcov'
+        filefilters: '-*\*.g.cs'
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ./tests/TestResults/lcov.info
+
+  check_formatting:
+    runs-on: ubuntu-latest
+    name: Check Formatting
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore csharpier tool
+      run: dotnet tool restore
+
+    - name: Check formatting
+      run: dotnet csharpier --check .
+
+    

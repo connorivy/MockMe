@@ -1,17 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using MockMe.SampleMocks.CalculatorSample;
 using MockMe.Tests.SampleClasses;
 //using MockMe.SampleMocks.CalculatorSample;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
-using Mono.CompilerServices.SymbolWriter;
 using MonoMod.Utils;
 
 namespace MockMe.Tests
@@ -219,7 +212,7 @@ namespace MockMe.Tests
                 $"Type '{typeToRemove.Name}' removed and saved to '{newAssemblyPath}'"
             );
 
-            DoCalculatorStuff();
+            this.DoCalculatorStuff();
         }
 
         [Fact]
@@ -374,7 +367,7 @@ namespace MockMe.Tests
                 $"Type '{typeToRemove.Name}' removed and saved to '{newAssemblyPath}'"
             );
 
-            DoCalculatorStuff();
+            this.DoCalculatorStuff();
         }
 
         //public class CalcMock : asdfasdf

@@ -17,7 +17,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\MockMe\MockMe.csproj" />
+    <ProjectReference Include="..\MockMe\MockMe.csproj" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

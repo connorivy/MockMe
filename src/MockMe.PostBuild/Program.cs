@@ -1,37 +1,39 @@
 // See https://aka.ms/new-console-template for more information
-using System.Reflection;
 using MockMe.Abstractions;
 using MockMe.PostBuild;
 using Mono.Cecil;
 
-//System.Diagnostics.Debugger.Launch();
-Console.WriteLine("Hello, World!");
+System.Diagnostics.Debugger.Launch();
+Console.WriteLine("Hello, Task!");
 
-//var testAssemblyPath =
-//    "C:\\Users\\conno\\Documents\\GitHub\\MockMe\\test\\MockMeTests\\bin\\Debug\\net6.0\\MockMe.Tests.dll";
 var testAssemblyPath = args[0];
 var binLocation = Path.GetDirectoryName(testAssemblyPath);
 
-var dllAssembly = Assembly.LoadFrom(testAssemblyPath);
-var mockType = dllAssembly
-    .GetTypes()
-    .Where(t => t.Namespace == "MockMe" && t.Name == "Mock")
-    .First();
-
-var methods = mockType.GetMethods();
-
-List<MockReplacementInfo> genericTypes =
-    (List<MockReplacementInfo>)
-        mockType
-            .GetMethod("GenericTypes", BindingFlags.Public | BindingFlags.Static)
-            .Invoke(null, null);
-
-if (genericTypes.Count == 0)
-{
-    System.Environment.Exit(0);
-}
-
 using var definitionAssembly = AssemblyDefinition.ReadAssembly(testAssemblyPath);
+
+List<MockReplacementInfo> genericTypes = [];
+foreach (var assemblyAttr in definitionAssembly.CustomAttributes)
+{
+    if (assemblyAttr.AttributeType.Name != nameof(GenericMethodDefinitionAttribute))
+    {
+        continue;
+    }
+
+    genericTypes.Add(
+        new(
+            new(
+                (string)assemblyAttr.ConstructorArguments[0].Value,
+                (string)assemblyAttr.ConstructorArguments[1].Value,
+                (string)assemblyAttr.ConstructorArguments[2].Value
+            ),
+            new(
+                (string)assemblyAttr.ConstructorArguments[3].Value,
+                (string)assemblyAttr.ConstructorArguments[4].Value,
+                (string)assemblyAttr.ConstructorArguments[5].Value
+            )
+        )
+    );
+}
 
 foreach (var group in genericTypes.GroupBy(info => info.TypeToReplace.AssemblyName))
 {
