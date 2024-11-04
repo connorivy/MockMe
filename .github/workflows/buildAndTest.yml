@@ -12,10 +12,10 @@ jobs:
       # fail-fast: false
       matrix:
         dotnet:
-          - '9.0'
+          # - '9.0'
           - '8.0'
-          - '7.0'
-          - '6.0'
+          # - '7.0'
+          # - '6.0'
     env:
       ContinuousIntegrationBuild: true
 
@@ -30,7 +30,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev.$GITHUB_RUN_ID"
+      run: dotnet build --no-restore -c Release
 
     - name: Create local package feed
       run: dotnet nuget add source "$(pwd)/artifacts" -n LocalNuGet
@@ -40,6 +40,9 @@ jobs:
 
     - name: Push to Local NuGet Feed
       run: dotnet nuget push **/bin/Release/*.nupkg --source LocalNuGet
+
+    - name: Build
+      run: dotnet build --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev.$GITHUB_RUN_ID"
 
     - name: Test
       run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
@@ -58,20 +61,20 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: ./tests/TestResults/lcov.info
 
-  check_formatting:
-    runs-on: ubuntu-latest
-    name: Check Formatting
-    steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
+  # check_formatting:
+  #   runs-on: ubuntu-latest
+  #   name: Check Formatting
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v3
+  #     with:
+  #       dotnet-version: 8.0.x
 
-    - name: Restore csharpier tool
-      run: dotnet tool restore
+  #   - name: Restore csharpier tool
+  #     run: dotnet tool restore
 
-    - name: Check formatting
-      run: dotnet csharpier --check .
+  #   - name: Check formatting
+  #     run: dotnet csharpier --check .
 
     

@@ -54,7 +54,7 @@ namespace {NamespaceName}
 "
                 );
 
-                Dictionary<string, int> typeNameUsageCounts = [];
+                Dictionary<string, int> typeNameUsageCounts = new();
                 foreach (var typeToMock in GetTypesToBeMocked(source.Left, source.Right))
                 {
                     sourceBuilder.AppendLine(
@@ -112,7 +112,7 @@ namespace {NamespaceName}
             yield break;
         }
 
-        HashSet<ITypeSymbol> usedSymbols = [];
+        HashSet<ITypeSymbol> usedSymbols = new();
         foreach (var method in methods.Distinct())
         {
             if (

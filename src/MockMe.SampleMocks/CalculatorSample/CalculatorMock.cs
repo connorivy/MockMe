@@ -175,31 +175,31 @@ public class CalculatorMock : Mock<Calculator>
             return default;
         }
 
-        public static IEnumerable<CodeInstruction> PrefixList6(
-            IEnumerable<CodeInstruction> instructions
-        )
-        {
-            //List<CodeInstruction> additional = [];
-            //additional.Add(new(OpCodes.Ldarg, 1));
-            //additional.Add(new(OpCodes.Ldarg, 2));
-            //additional.Add(new(OpCodes.Ldarg, 3));
-            //additional.Add(new(OpCodes.Call, typeof(Hook).GetMethod(nameof(PrefixList7))));
-            //additional.Add(new(OpCodes.Ret));
+        //public static IEnumerable<CodeInstruction> PrefixList6(
+        //    IEnumerable<CodeInstruction> instructions
+        //)
+        //{
+        //    //List<CodeInstruction> additional = [];
+        //    //additional.Add(new(OpCodes.Ldarg, 1));
+        //    //additional.Add(new(OpCodes.Ldarg, 2));
+        //    //additional.Add(new(OpCodes.Ldarg, 3));
+        //    //additional.Add(new(OpCodes.Call, typeof(Hook).GetMethod(nameof(PrefixList7))));
+        //    //additional.Add(new(OpCodes.Ret));
 
-            return
-            [
-                new(OpCodes.Ldarg_1),
-                new(OpCodes.Ldarg_2),
-                new(OpCodes.Ldarg_3),
-                new(
-                    OpCodes.Call,
-                    typeof(Hook).GetMethod(nameof(PrefixList7)).MakeGenericMethod(typeof(object))
-                ),
-                new(OpCodes.Ret)
-            ];
+        //    return
+        //    [
+        //        new(OpCodes.Ldarg_1),
+        //        new(OpCodes.Ldarg_2),
+        //        new(OpCodes.Ldarg_3),
+        //        new(
+        //            OpCodes.Call,
+        //            typeof(Hook).GetMethod(nameof(PrefixList7)).MakeGenericMethod(typeof(object))
+        //        ),
+        //        new(OpCodes.Ret)
+        //    ];
 
-            //return additional;
-        }
+        //    //return additional;
+        //}
 
         //public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         //{

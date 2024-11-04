@@ -15,6 +15,7 @@
     <PackageReference Include="Mono.Cecil" Version="0.11.6" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Framework" Version="17.12.6" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.12.6" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <!--<PackageReference Include="Tenekon.MSBuild.Packaging.ProjectBuildInPackage" Version="2.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -57,13 +58,13 @@
     <Exec Command="echo targetName : $(TargetName)" />
   </Target>
 
-  <!--<ItemGroup Condition="'$(TargetName)' == 'Pack'">
+  <ItemGroup Condition="'$(TargetName)' == 'Pack'">
     <None Update="Build\MockMe.targets" Pack="true" PackagePath="build\MockMe.targets" />
     <None Include="$(MSBuildProjectDirectory)\..\MockMe.Abstractions\$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(MSBuildProjectDirectory)\..\MockMe.Abstractions\$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
     <None Include="$(NugetPackageRoot)\mono.cecil\0.11.6\lib\netstandard2.0\Mono.Cecil.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
-    <None Update="$(OutputPath)\Mono.Cecil.Rocks.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="false" />
+    <None Include="$(OutputPath)\Mono.Cecil.Rocks.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="false" />
     <None Include="$(MSBuildProjectDirectory)\..\MockMe.Generator\$(OutputPath)MockMe.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-  </ItemGroup>-->
+  </ItemGroup>
 
 </Project>

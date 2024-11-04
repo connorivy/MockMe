@@ -1,5 +1,4 @@
 using MockMe.Abstractions;
-using MockMe.Build;
 using MockMe.Tests.SampleClasses;
 
 [assembly: GenericMethodDefinition(

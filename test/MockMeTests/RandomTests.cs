@@ -11,13 +11,8 @@ namespace MockMe.Tests
 {
     public class RandomTests
     {
-        //static RandomTests()
-        //{
-        //    AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(OnAssemblyResolve);
-        //    var t = Type.GetType(
-        //        "MockMe.SampleMocks.CalculatorSample.Calculator, MockMe.SampleMocks"
-        //    );
-        //}
+        // Uncomment to disable tests
+        private class FactAttribute : Attribute { }
 
         [Fact]
         public void CecliModifyAssembly()

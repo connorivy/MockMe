@@ -14,7 +14,9 @@
   <!--<UsingTask TaskName="MockMe.Build.ReplaceGenericMethods" AssemblyFile="$(MockMeAssembly)" />-->
 
   <Target Name="ReplaceGenericMethods" AfterTargets="PostBuildEvent">
-    <Exec Command="$(OutputPath)MockMe.PostBuild.exe $(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll" />
+    <Exec Command="ls $(OutputPath)" />
+    <Exec Command="dotnet $(OutputPath)MockMe.PostBuild.dll $(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <Exec Command="dotnet $(OutputPath)MockMe.PostBuild.dll $(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <!--<MockMe.Build.ReplaceGenericMethods TestAssemblyPath="$(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll">
       
     </MockMe.Build.ReplaceGenericMethods>-->

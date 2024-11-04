@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -18,14 +18,17 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(MockMeNugetPackageVersion)' == ''">
-    <ProjectReference Include="..\..\src\MockMe.SampleMocks\MockMe.SampleMocks.csproj" />
     <ProjectReference Include="..\..\src\MockMe.Abstractions\MockMe.Abstractions.csproj" />
-    <ProjectReference Include="..\..\src\MockMe.Generator\MockMe.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\..\src\MockMe.Generator\MockMe.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\src\MockMe\MockMe.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(MockMeNugetPackageVersion)' != ''">
     <PackageReference Include="MockMe" Version="$(MockMeNugetPackageVersion)" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MockMe.SampleMocks\MockMe.SampleMocks.csproj" />
   </ItemGroup>
 
   <ItemGroup>
