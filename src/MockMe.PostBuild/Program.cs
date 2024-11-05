@@ -1,11 +1,10 @@
 // See https://aka.ms/new-console-template for more information
-using System.Runtime.InteropServices;
 using MockMe.Abstractions;
 using MockMe.PostBuild;
 using Mono.Cecil;
 
 # if DEBUG
-//System.Diagnostics.Debugger.Launch();
+System.Diagnostics.Debugger.Launch();
 # endif
 
 Console.WriteLine("Hello, Task!");

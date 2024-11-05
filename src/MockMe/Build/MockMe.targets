@@ -1,7 +1,7 @@
 <Project>
   
   <PropertyGroup>
-    <MockMePath Condition="$(MockMePath) == ''">$(MSBuildThisFileDirectory)..\lib\netstandard2.0\</MockMePath>
+    <MockMePath Condition="$(MockMePath) == ''">$(MSBuildThisFileDirectory)..\lib\net6.0\</MockMePath>
     <!--<FodyAssemblyDirectory Condition="$(MSBuildRuntimeType) == 'Core'">$(FodyPath)netstandardtask</FodyAssemblyDirectory>
     <FodyAssemblyDirectory Condition="$(MSBuildRuntimeType) != 'Core'">$(FodyPath)netclassictask</FodyAssemblyDirectory>-->
     <MockMeAssembly Condition="$(MockMeAssembly) == ''">$(MockMePath)MockMe.dll</MockMeAssembly>
@@ -10,11 +10,18 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo After Build: $(MockMeAssembly) $(MockMePath)" />
   </Target>
+
+  <ItemGroup>
+    <JsonFiles Include="$(MockMePath)*.json" />
+  </ItemGroup>
+  <Target Name="CopyRuntimeConfig" BeforeTargets="ReplaceGenericMethods">
+    <Exec Command="echo CopyRuntimeConfig: $(OutputPath) $(MockMePath)" />
+    <Copy SourceFiles="@(JsonFiles)" DestinationFolder="$(OutputPath)" />
+  </Target>
   
   <!--<UsingTask TaskName="MockMe.Build.ReplaceGenericMethods" AssemblyFile="$(MockMeAssembly)" />-->
 
   <Target Name="ReplaceGenericMethods" AfterTargets="PostBuildEvent">
-    <Exec Command="ls $(OutputPath)" />
     <Exec Command="dotnet $(OutputPath)MockMe.PostBuild.dll $(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <Exec Command="dotnet $(OutputPath)MockMe.PostBuild.dll $(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <!--<MockMe.Build.ReplaceGenericMethods TestAssemblyPath="$(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll">

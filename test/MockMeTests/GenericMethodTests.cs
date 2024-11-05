@@ -7,7 +7,7 @@ public class GenericMethodTests
     [Fact]
     public void GenericMethod_DefinedInDifferentAssembly_ShouldBeMockedSuccessfully()
     {
-        var ilReplacedObject = new MockMe.SampleMocks.CalculatorSample.Calculator();
+        var ilReplacedObject = new MockMe.Tests.ExampleClasses.ComplexCalculator();
         var randomReplaced = ilReplacedObject.AddUpAllOfThese2<double>(
             0,
             new double[] { 1, 2, 3, 4, 5 },

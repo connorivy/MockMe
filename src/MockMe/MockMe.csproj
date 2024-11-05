@@ -15,7 +15,10 @@
     <PackageReference Include="Mono.Cecil" Version="0.11.6" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Framework" Version="17.12.6" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.12.6" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="PolySharp" Version="1.14.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <!--<PackageReference Include="Tenekon.MSBuild.Packaging.ProjectBuildInPackage" Version="2.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -26,11 +29,11 @@
     <Folder Include="Asserters\" />
   </ItemGroup>
 
-  <!--<Target Name="PushLocal" AfterTargets="Pack" Condition="Exists('$(NugetFeedPath)')">
+  <Target Name="PushLocal" AfterTargets="Pack" Condition="Exists('$(NugetFeedPath)')">
     <Exec Command="echo After Pack: $(PackageOutputPath)$(MSBuildProjectName).$(Version).nupkg $(NugetFeedPath)" />
     <Exec Command="echo nuget package root: $(NugetPackageRoot)" />
     <Exec Command="dotnet nuget push $(PackageOutputPath)$(MSBuildProjectName).$(Version).nupkg -s $(NugetFeedPath)" />
-  </Target>-->
+  </Target>
 
   <!--<Target Name="ClearExisting" AfterTargets="Pack">
     <RemoveDir Directories="$(NugetPackageRoot)/$(PackageId.ToLower())/$(Version)" />
@@ -45,7 +48,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MockMe.Abstractions\MockMe.Abstractions.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\MockMe.Generator\MockMe.Generator.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\MockMe.PostBuild\MockMe.PostBuild.csproj" />    
+    <ProjectReference Include="..\MockMe.PostBuild\MockMe.PostBuild.csproj" PrivateAssets="all"/>    
   </ItemGroup>
 
   <PropertyGroup>
@@ -58,13 +61,17 @@
     <Exec Command="echo targetName : $(TargetName)" />
   </Target>
 
-  <ItemGroup Condition="'$(TargetName)' == 'Pack'">
+  <ItemGroup Condition="'$(Version)' != ''">
     <None Update="Build\MockMe.targets" Pack="true" PackagePath="build\MockMe.targets" />
-    <None Include="$(MSBuildProjectDirectory)\..\MockMe.Abstractions\$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="$(MSBuildProjectDirectory)\..\MockMe.Abstractions\$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
-    <None Include="$(NugetPackageRoot)\mono.cecil\0.11.6\lib\netstandard2.0\Mono.Cecil.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
-    <None Include="$(OutputPath)\Mono.Cecil.Rocks.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="false" />
-    <None Include="$(MSBuildProjectDirectory)\..\MockMe.Generator\$(OutputPath)MockMe.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(MSBuildProjectDirectory)\..\MockMe.Generator\bin\$(Configuration)\netstandard2.0\MockMe.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(MSBuildProjectDirectory)\..\MockMe.Abstractions\bin\$(Configuration)\netstandard2.0\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    
+    <None Include="$(MSBuildProjectDirectory)\..\MockMe.Abstractions\bin\$(Configuration)\netstandard2.0\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="lib/$(TargetFramework)" Visible="true" />
+    <None Include="$(MSBuildProjectDirectory)\..\MockMe.PostBuild\bin\$(Configuration)\$(TargetFramework)\MockMe.PostBuild.dll" Pack="true" PackagePath="lib/$(TargetFramework)" Visible="true" />
+    <None Include="$(MSBuildProjectDirectory)\..\MockMe.PostBuild\bin\$(Configuration)\$(TargetFramework)\MockMe.PostBuild.runtimeconfig.json" Pack="true" PackagePath="lib/$(TargetFramework)" Visible="true" />
+
+    <None Include="$(NugetPackageRoot)\mono.cecil\0.11.6\lib\netstandard2.0\Mono.Cecil.dll" Pack="true" PackagePath="lib/$(TargetFramework)" Visible="true" />
+    <None Include="$(NugetPackageRoot)\mono.cecil\0.11.6\lib\netstandard2.0\Mono.Cecil.Rocks.dll" Pack="true" PackagePath="lib/$(TargetFramework)" Visible="false" />
   </ItemGroup>
 
 </Project>

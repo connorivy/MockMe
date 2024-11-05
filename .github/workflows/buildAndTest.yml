@@ -5,7 +5,35 @@ on:
     branches: [ main, dev ]
 
 jobs:
-  build_and_test:
+  build_and_pack:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Pack NuGet Packages
+      # run: dotnet pack --configuration Release --no-build --output ./packages --version 0.0.1-dev.$GITHUB_RUN_ID
+      run: dotnet pack --configuration Release --no-build --output ./packages /p:Version=0.0.1-dev
+
+    - name: Upload NuGet Packages
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget-packages
+        path: ./packages
+
+  test_linux:
     name: Build and Test
     runs-on: ubuntu-latest
     strategy:
@@ -13,11 +41,13 @@ jobs:
       matrix:
         dotnet:
           # - '9.0'
-          - '8.0'
+          # - '8.0'
           # - '7.0'
-          # - '6.0'
+          - '6.0'
     env:
       ContinuousIntegrationBuild: true
+
+    needs: build_and_pack
 
     steps:
     - uses: actions/checkout@v4
@@ -26,23 +56,23 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet }}
 
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Build
-      run: dotnet build --no-restore -c Release
-
+    - name: Download NuGet Packages
+      uses: actions/download-artifact@v2
+      with:
+        name: nuget-packages
+        path: ./packages
+    
     - name: Create local package feed
-      run: dotnet nuget add source "$(pwd)/artifacts" -n LocalNuGet
+      run: dotnet nuget add source $GITHUB_WORKSPACE/packages --name localNuGet
 
-    - name: Pack
-      run: dotnet pack -c Release --no-build
+    - name: Print NuGet Sources
+      run: dotnet nuget list source
 
-    - name: Push to Local NuGet Feed
-      run: dotnet nuget push **/bin/Release/*.nupkg --source LocalNuGet
+    - name: Restore dependencies
+      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Build
-      run: dotnet build --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev.$GITHUB_RUN_ID"
+      run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
       run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
@@ -61,20 +91,36 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: ./tests/TestResults/lcov.info
 
-  # check_formatting:
-  #   runs-on: ubuntu-latest
-  #   name: Check Formatting
+  # test-windows:
+  #   runs-on: windows-latest
+  #   strategy:
+  #     matrix:
+  #       dotnet-version: ['6.0.x', '7.0.x', '8.0.x']
+
+  #   needs: build_and_pack
+
   #   steps:
-  #   - uses: actions/checkout@v4
-  #   - name: Setup .NET
+  #   - name: Checkout Code
+  #     uses: actions/checkout@v4
+
+  #   - name: Setup .NET ${{ matrix.dotnet-version }}
   #     uses: actions/setup-dotnet@v3
   #     with:
-  #       dotnet-version: 8.0.x
+  #       dotnet-version: ${{ matrix.dotnet-version }}
 
-  #   - name: Restore csharpier tool
-  #     run: dotnet tool restore
+  #   - name: Download NuGet Packages
+  #     uses: actions/download-artifact@v2
+  #     with:
+  #       name: nuget-packages
+  #       path: ./packages
 
-  #   - name: Check formatting
-  #     run: dotnet csharpier --check .
+  #   - name: Add Local NuGet Source
+  #     run: dotnet nuget add source ./packages --name localNuGet
+
+  #   - name: Restore Dependencies with Local Source
+  #     run: dotnet restore --source ./packages
+
+  #   - name: Run Tests
+  #     run: dotnet test --no-build --verbosity normal
 
     

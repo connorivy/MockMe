@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\src\MockMe.Abstractions\MockMe.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\MockMe.Generator\MockMe.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\src\MockMe\MockMe.csproj" />
+    <ProjectReference Include="..\..\src\MockMe.PostBuild\MockMe.PostBuild.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(MockMeNugetPackageVersion)' != ''">
@@ -28,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MockMe.SampleMocks\MockMe.SampleMocks.csproj" />
+    <ProjectReference Include="..\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
   </ItemGroup>
 
   <ItemGroup>

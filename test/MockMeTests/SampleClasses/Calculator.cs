@@ -2,8 +2,8 @@ using MockMe.Abstractions;
 using MockMe.Tests.SampleClasses;
 
 [assembly: GenericMethodDefinition(
-    "MockMe.SampleMocks",
-    "MockMe.SampleMocks.CalculatorSample.Calculator",
+    "MockMe.Tests.ExampleClasses",
+    "MockMe.Tests.ExampleClasses.ComplexCalculator",
     "AddUpAllOfThese2",
     "MockMe.Tests",
     "MockMe.Tests.SampleClasses.Calculator2",
