@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
@@ -17,43 +16,27 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
+  </ItemGroup>
+
+  <!-- Use project references locally -->
   <ItemGroup Condition="'$(MockMeNugetPackageVersion)' == ''">
     <ProjectReference Include="..\..\src\MockMe.Abstractions\MockMe.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\MockMe.Generator\MockMe.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\src\MockMe\MockMe.csproj" />
     <ProjectReference Include="..\..\src\MockMe.PostBuild\MockMe.PostBuild.csproj" />
   </ItemGroup>
-
-  <ItemGroup Condition="'$(MockMeNugetPackageVersion)' != ''">
-    <PackageReference Include="MockMe" Version="$(MockMeNugetPackageVersion)" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
-  </ItemGroup>
-
-  <!--<Import Project="..\..\src\MockMe\Build\MockMe.targets" />-->
-
-  <!--<Target Name="RestoreLocalNuget" BeforeTargets="Build">
-    <Exec Command="dotnet restore" />
-  </Target>-->
-
-
+  
   <PropertyGroup Condition="'$(MockMeNugetPackageVersion)' == ''">
     <MockMePath>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\</MockMePath>
   </PropertyGroup>
 
   <Import Project="..\..\src\MockMe\Build\MockMe.targets" Condition="'$(MockMeNugetPackageVersion)' == ''" />
-  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo After Build: $(TargetPath) $(OutDir)MockMe.PostBuild.exe" />
-  </Target>-->
 
-  <!--<Target Name="MockMeTarget" AfterTargets="PostBuildEvent">
-    <Exec Command="$(OutDir)MockMe.PostBuild.exe $(TargetPath)" />
-  </Target>-->
+  <!-- Use nuget in ci to make sure packing process is correct -->
+  <ItemGroup Condition="'$(MockMeNugetPackageVersion)' != ''">
+    <PackageReference Include="MockMe" Version="$(MockMeNugetPackageVersion)" PrivateAssets="all" />
+  </ItemGroup>
 
 </Project>

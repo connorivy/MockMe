@@ -18,14 +18,17 @@ internal class MockGenerator
         sb.AppendLine(
             $@"
 #nullable enable
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using HarmonyLib;
+using MockMe;
 using MockMe.Mocks;
 using static {thisNamespace}.{typeSymbol.Name}MockSetup;
 using static {thisNamespace}.{typeSymbol.Name}MockSetup.{typeSymbol.Name}MockCallTracker;
 
-namespace MockMe.Generated.{typeSymbol.ContainingNamespace};
-
+namespace {thisNamespace}
+{{
     public class {typeSymbol.Name}Mock : Mock<global::{typeSymbol}>
     {{
         private static readonly ConcurrentDictionary<global::{typeSymbol}, {typeSymbol.Name}Mock> mockStore = new();
@@ -102,6 +105,11 @@ namespace MockMe.Generated.{typeSymbol.ContainingNamespace};
         );
 
         SetupGenerator.CreateSetupForConcreteType(typeSymbol, sb);
+
+        sb.AppendLine(
+            @$"
+}}"
+        );
 
         return sb;
     }

@@ -8,7 +8,6 @@
   </PropertyGroup>
   
   <PropertyGroup Label="General Config">
-    <RollForward>major</RollForward>
     <LangVersion>preview</LangVersion>
     <!--<TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>-->
     <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>

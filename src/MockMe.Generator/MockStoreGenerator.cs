@@ -143,6 +143,8 @@ namespace {NamespaceName}
     {
         const string mockStoreSource =
             $@"
+using System;
+
 namespace {NamespaceName}
 {{
     public static partial class {StoreClassName}

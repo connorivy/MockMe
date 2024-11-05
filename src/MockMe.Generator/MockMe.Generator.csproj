@@ -6,6 +6,10 @@
 	  <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <Nullable>enable</Nullable>
     <IncludeBuildOutput>false</IncludeBuildOutput>
+
+    <ROSLYN_VERSION Condition="'$(ROSLYN_VERSION)' == ''">4.11</ROSLYN_VERSION>
+    <DefineConstants Condition="'$(ROSLYN_VERSION).0.0' >= '4.4.0.0'">$(DefineConstants);ROSLYN4_4_OR_GREATER</DefineConstants>
+    <DefineConstants Condition="'$(ROSLYN_VERSION).0.0' >= '4.7.0.0'">$(DefineConstants);ROSLYN4_7_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
 	<ItemGroup>

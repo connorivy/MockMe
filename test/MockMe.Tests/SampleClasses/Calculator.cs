@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MockMe.Abstractions;
 using MockMe.Tests.SampleClasses;
 
@@ -32,7 +35,7 @@ namespace MockMe.Tests.SampleClasses
     {
         Standard,
         Scientific,
-        Graphing
+        Graphing,
     }
 
     public class Calculator2
@@ -80,7 +83,7 @@ namespace MockMe
                         typeFullName: typeof(Calculator2).FullName,
                         methodName: nameof(Calculator2.AddUpAllOfThese2)
                     )
-                )
+                ),
             };
     }
 }

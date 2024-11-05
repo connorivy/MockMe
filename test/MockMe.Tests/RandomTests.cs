@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 //using MockMe.SampleMocks.CalculatorSample;
 using MockMe.Tests.SampleClasses;
@@ -458,6 +459,6 @@ namespace MockMe.Tests
     {
         Standard,
         Scientific,
-        Graphing
+        Graphing,
     }
 }

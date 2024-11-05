@@ -1,58 +1,60 @@
 using MockMe.Tests.SampleClasses;
+using Xunit;
 
-namespace MockMe.Tests;
-
-public class ReturnsTests
+namespace MockMe.Tests
 {
-    [Fact]
-    public void CalculatorAdd_ShouldReturnConfiguredValue()
+    public class ReturnsTests
     {
-        var calculatorMock = Mock.Me<Calculator>();
+        [Fact]
+        public void CalculatorAdd_ShouldReturnConfiguredValue()
+        {
+            var calculatorMock = Mock.Me<Calculator>();
 
-        calculatorMock.Setup.Add(1, 2).Returns(9999);
+            calculatorMock.Setup.Add(1, 2).Returns(9999);
 
-        Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-    }
+            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+        }
 
-    [Fact]
-    public void CalculatorAdd_WhenCalledByANonMock_ShouldCallOriginalCode()
-    {
-        var calculatorMock = Mock.Me<Calculator>();
+        [Fact]
+        public void CalculatorAdd_WhenCalledByANonMock_ShouldCallOriginalCode()
+        {
+            var calculatorMock = Mock.Me<Calculator>();
 
-        calculatorMock.Setup.Add(1, 2).Returns(9999);
+            calculatorMock.Setup.Add(1, 2).Returns(9999);
 
-        Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
 
-        Assert.Equal(3, new Calculator().Add(1, 2));
-        Assert.Equal(10, new Calculator().Add(6, 4));
-        Assert.Equal(2, new Calculator().Add(6, -4));
-    }
+            Assert.Equal(3, new Calculator().Add(1, 2));
+            Assert.Equal(10, new Calculator().Add(6, 4));
+            Assert.Equal(2, new Calculator().Add(6, -4));
+        }
 
-    [Fact]
-    public void CalculatorAdd_WhenReturnIsCalledManyTimes_ShouldReturnConfiguredValue()
-    {
-        var calculatorMock = Mock.Me<Calculator>();
+        [Fact]
+        public void CalculatorAdd_WhenReturnIsCalledManyTimes_ShouldReturnConfiguredValue()
+        {
+            var calculatorMock = Mock.Me<Calculator>();
 
-        calculatorMock.Setup.Add(1, 2).Returns(9999);
+            calculatorMock.Setup.Add(1, 2).Returns(9999);
 
-        Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-        Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-        Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-        Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-        Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-    }
+            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+        }
 
-    [Fact]
-    public void CalculatorAdd_WhenReturnIsCalledManyTimesWithDifferentValues_ShouldReturnConfiguredValue()
-    {
-        var calculatorMock = Mock.Me<Calculator>();
+        [Fact]
+        public void CalculatorAdd_WhenReturnIsCalledManyTimesWithDifferentValues_ShouldReturnConfiguredValue()
+        {
+            var calculatorMock = Mock.Me<Calculator>();
 
-        calculatorMock.Setup.Add(1, 2).Returns(9, 99, 999, 9999, 99999);
+            calculatorMock.Setup.Add(1, 2).Returns(9, 99, 999, 9999, 99999);
 
-        Assert.Equal(9, calculatorMock.Value.Add(1, 2));
-        Assert.Equal(99, calculatorMock.Value.Add(1, 2));
-        Assert.Equal(999, calculatorMock.Value.Add(1, 2));
-        Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-        Assert.Equal(99999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(99, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(99999, calculatorMock.Value.Add(1, 2));
+        }
     }
 }
