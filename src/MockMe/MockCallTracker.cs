@@ -187,6 +187,7 @@ public class MockCallTracker
         Func<TArgCollection, TReturnCall, TReturn>? returnCallFunc = null
     )
     {
+        argStore.Add(argCollection);
         if (mockStore is null)
         {
             return default;
@@ -199,7 +200,6 @@ public class MockCallTracker
             {
                 continue;
             }
-            argStore.Add(argCollection);
 
             return CallMemberMock(argBag.Mock, argCollection, callbackAction, returnCallFunc);
         }
