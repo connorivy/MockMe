@@ -53,7 +53,7 @@ public static class MethodSymbolExtensions
                     RefKind.Ref => "ref ",
                     RefKind.Out => "out ",
                     RefKind.In => "in ",
-                    RefKind.RefReadOnlyParameter => "ref readonly ",
+                    //RefKind.RefReadOnlyParameter => "ref readonly ",
                     RefKind.None or _ => p.IsParams ? "params " : ""
                 };
                 var paramString =

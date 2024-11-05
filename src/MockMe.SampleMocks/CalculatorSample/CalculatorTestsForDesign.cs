@@ -4,7 +4,6 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using Xunit;
 
 namespace MockMe.SampleMocks.CalculatorSample;
 

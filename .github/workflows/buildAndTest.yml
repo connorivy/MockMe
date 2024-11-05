@@ -15,7 +15,7 @@ jobs:
     - name: Setup .NET 8
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '8.0.x'
 
     - name: Restore Dependencies
       run: dotnet restore
@@ -75,21 +75,21 @@ jobs:
       run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
-      run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+      run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
 
-    - name: ReportGenerator
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
-      with:
-        reports: './tests/**/*.info'
-        targetdir: './tests/TestResults'
-        reporttypes: 'lcov'
-        filefilters: '-*\*.g.cs'
+    # - name: ReportGenerator
+    #   uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
+    #   with:
+    #     reports: './tests/**/*.info'
+    #     targetdir: './tests/TestResults'
+    #     reporttypes: 'lcov'
+    #     filefilters: '-*\*.g.cs'
 
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ./tests/TestResults/lcov.info
+    # - name: Coveralls
+    #   uses: coverallsapp/github-action@master
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     path-to-lcov: ./tests/TestResults/lcov.info
 
   # test-windows:
   #   runs-on: windows-latest
