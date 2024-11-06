@@ -1,37 +1,38 @@
-namespace MockMe.Tests.NuGet;
-
-public class ReturnsTests
+namespace MockMe.Tests.NuGet
 {
-    //[Fact]
-    //public void CalculatorAdd_ShouldReturnConfiguredValue()
-    //{
-    //    var calculatorMock = Mock.Me<Calculator>();
+    public class ReturnsTests
+    {
+        //[Fact]
+        //public void CalculatorAdd_ShouldReturnConfiguredValue()
+        //{
+        //    var calculatorMock = Mock.Me<Calculator>();
 
-    //    calculatorMock.Setup.Add(1, 2).Returns(9999);
+        //    calculatorMock.Setup.Add(1, 2).Returns(9999);
 
-    //    Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-    //}
-}
+        //    Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+        //}
+    }
 
-public class Calculator
-{
-    public int Add(int x, int y) => x + y;
+    public class Calculator
+    {
+        public int Add(int x, int y) => x + y;
 
-    public double Multiply(double x, double y) => x * y;
+        public double Multiply(double x, double y) => x * y;
 
-    public CalculatorType CalculatorType { get; set; }
+        public CalculatorType CalculatorType { get; set; }
 
-    public void DivideByZero(double numToDivide) =>
-        throw new InvalidOperationException("Cannot divide by 0");
+        public void DivideByZero(double numToDivide) =>
+            throw new InvalidOperationException("Cannot divide by 0");
 
-    public bool IsOn() => true;
+        public bool IsOn() => true;
 
-    public void TurnOff() { }
-}
+        public void TurnOff() { }
+    }
 
-public enum CalculatorType
-{
-    Standard,
-    Scientific,
-    Graphing
+    public enum CalculatorType
+    {
+        Standard,
+        Scientific,
+        Graphing,
+    }
 }

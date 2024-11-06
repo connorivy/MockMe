@@ -9,9 +9,9 @@ namespace MockMe.Tests
         [Fact]
         public void TestWasCalled_ForMethodWithNoArgsAndNoReturnVal()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me<SimpleCalculator>();
 
-            Calculator calculator = (Calculator)calculatorMock;
+            SimpleCalculator calculator = (SimpleCalculator)calculatorMock;
             calculator.TurnOff();
             calculator.TurnOff();
             calculator.TurnOff();

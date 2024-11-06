@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MockMe.Tests.ExampleClasses
@@ -23,6 +24,10 @@ namespace MockMe.Tests.ExampleClasses
             return values.First();
         }
 
+        private Dictionary<string, int> hello = new();
+
+        public IReadOnlyDictionary<string, int> GetDict() => hello;
+
         public T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
         {
             return values.First();
@@ -33,6 +38,6 @@ namespace MockMe.Tests.ExampleClasses
     {
         Standard,
         Scientific,
-        Graphing
+        Graphing,
     }
 }

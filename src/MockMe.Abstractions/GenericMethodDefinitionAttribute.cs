@@ -8,7 +8,7 @@ public class GenericMethodDefinitionAttribute : Attribute
     public GenericMethodDefinitionAttribute(
         string typeToReplaceAssemblyName,
         string typeToReplaceTypeFullName,
-        string typeToReplaceMethoName,
+        string typeToReplaceMethodName,
         string sourceTypeAssemblyName,
         string sourceTypeFullName,
         string sourceTypeMethodName
@@ -16,7 +16,7 @@ public class GenericMethodDefinitionAttribute : Attribute
     {
         this.TypeToReplaceAssemblyName = typeToReplaceAssemblyName;
         this.TypeToReplaceTypeFullName = typeToReplaceTypeFullName;
-        this.TypeToReplaceMethoName = typeToReplaceMethoName;
+        this.TypeToReplaceMethoName = typeToReplaceMethodName;
         this.SourceTypeAssemblyName = sourceTypeAssemblyName;
         this.SourceTypeFullName = sourceTypeFullName;
         this.SourceTypeMethodName = sourceTypeMethodName;
@@ -28,4 +28,16 @@ public class GenericMethodDefinitionAttribute : Attribute
     public string SourceTypeAssemblyName { get; }
     public string SourceTypeFullName { get; }
     public string SourceTypeMethodName { get; }
+}
+
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+public class GenericMethodDefinition2Attribute : Attribute
+{
+    public GenericMethodDefinition2Attribute(
+        string typeToReplaceAssemblyName,
+        string typeToReplaceTypeFullName,
+        string typeToReplaceMethodName,
+        string mockClassNamespace,
+        string mockClassName
+    ) { }
 }

@@ -1,9 +1,11 @@
 using System.Reflection;
-using HarmonyLib;
+using MockMe.Tests;
+using MockMe.Tests.ExampleClasses;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
+using Mono.Cecil.Rocks;
+using Mono.CompilerServices.SymbolWriter;
+using Xunit;
 
 namespace MockMe.SampleMocks.CalculatorSample;
 
@@ -11,6 +13,325 @@ public class CalculatorTestsForDesign
 {
     // Uncomment to disable tests
     //private class FactAttribute : Attribute { }
+
+    static Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
+    {
+        string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+        if (!File.Exists(assemblyPath))
+            return null;
+        Assembly assembly = Assembly.LoadFrom(assemblyPath);
+        return assembly;
+    }
+
+    [Fact]
+    public void TestMe()
+    {
+        AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(LoadFromSameFolder);
+
+        var resolver = new DefaultAssemblyResolver();
+        resolver.AddSearchDirectory(Path.GetDirectoryName(typeof(object).Assembly.Location));
+        resolver.AddSearchDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
+        string assemblyLoc = Assembly.GetExecutingAssembly().Location;
+        string binLocation = Path.GetDirectoryName(assemblyLoc);
+        string mockedObjPath = Path.Combine(binLocation, "MockMe.Tests.ExampleClasses.dll");
+        string mockPath = Path.Combine(binLocation, "MockMe.Tests.dll");
+
+        using var mockedObjAssembly = AssemblyDefinition.ReadAssembly(
+            mockedObjPath,
+            new ReaderParameters
+            {
+                ReadWrite = true,
+                ReadingMode = ReadingMode.Immediate,
+                InMemory = true,
+                AssemblyResolver = resolver,
+            }
+        );
+
+        //var systemRuntimeAssembly = mockedObjAssembly.MainModule.AssemblyResolver.Resolve(
+        //    AssemblyNameReference.Parse("System.Runtime")
+        //);
+        //var readOnlyDic = systemRuntimeAssembly
+        //    .MainModule.ExportedTypes.First(t =>
+        //        t.FullName == "System.Collections.Generic.IReadOnlyDictionary`2"
+        //    )
+        //    .Resolve();
+
+        //readOnlyDict = mockedObjAssembly.MainModule.ImportReference(readOnlyDic);
+        //var x = readOnlyDic.Resolve();
+
+        TypeDefinition typeToReplace = mockedObjAssembly.MainModule.GetType(
+            "MockMe.Tests.ExampleClasses.ComplexCalculator"
+        );
+        MethodDefinition method = typeToReplace.Methods.First(m => m.Name == "AddUpAllOfThese2");
+
+        using var mockAssembly = AssemblyDefinition.ReadAssembly(mockPath);
+        TypeDefinition mock = mockAssembly.MainModule.GetType("MockMe.Tests.TempCalcMock");
+
+        //MethodDefinition getStore = mock.Methods.First(m => m.Name == "GetStore");
+        //var getStoreRef = ImportReference(mockedObjAssembly.MainModule, getStore);
+
+
+
+        MethodDefinition getCallTracker = mock.Methods.First(m => m.Name == "GetCallTracker");
+        var getCallTrackerRef = ImportReference(mockedObjAssembly.MainModule, getCallTracker);
+
+        TypeDefinition setupType = mockAssembly.MainModule.GetType(
+            "MockMe.Tests.TempCalcMockSetup"
+        );
+        TypeDefinition callTrackerType = setupType.NestedTypes.First(n =>
+            n.Name == "TempCalcMockCallTracker"
+        );
+
+        MethodDefinition addUpAllOfThese2 = callTrackerType.Methods.First(m =>
+            m.Name == "AddUpAllOfThese2"
+        );
+        var addUpAllOfThese2Ref = ImportReference(mockedObjAssembly.MainModule, addUpAllOfThese2);
+
+        using var storeAssembly = AssemblyDefinition.ReadAssembly(
+            Path.Combine(binLocation, "MockMe.Tests.NuGet.dll")
+        );
+        TypeDefinition store = storeAssembly.MainModule.Types.First(n =>
+            n.Name == "TempCalcMockState"
+        );
+        GenericInstanceType storeInstance = store.MakeGenericInstanceType(typeToReplace, mock);
+
+        MethodDefinition getStore = store.Methods.First(m => m.Name == "GetStore");
+
+        var getStoreRef = ImportReference(mockedObjAssembly.MainModule, getStore, storeInstance);
+
+        //var x = AssemblyNameReference.Parse("System.Runtime");
+        //AssemblyDefinition systemRuntimeAssembly =
+        //    mockedObjAssembly.MainModule.AssemblyResolver.Resolve(
+        //        AssemblyNameReference.Parse("System.Runtime")
+        //    );
+
+        //TypeReference iReadOnlyDictionaryType = systemRuntimeAssembly.MainModule.GetType(
+        //    "System.Collections.Generic.IReadOnlyDictionary`2"
+        //);
+
+        //Type iReadOnlyDictionaryType = typeof(System.Collections.Generic.IReadOnlyDictionary<,>);
+        //var iReadOnlyDictionaryAssembly = Assembly.Load(iReadOnlyDictionaryType.Assembly.FullName);
+
+        //TypeReference readOnlyDictGeneric = mockedObjAssembly.MainModule.ImportReference(
+        //    iReadOnlyDictionaryType
+        //);
+
+        //mockedObjAssembly.MainModule.ImportReference(typeof(IReadOnlyDictionary<,>));
+        //mockedObjAssembly.MainModule.ImportReference(typeof(IReadOnlyDictionary<,>));
+
+        //mockedObjAssembly.MainModule.ImportReference(typeof(IReadOnlyDictionary<,>));
+
+        //GenericInstanceType readOnlyDict = readOnlyDictGeneric.MakeGenericInstanceType(
+        //    typeToReplace,
+        //    mock
+        //);
+
+        //var readOnlyDictResolved = readOnlyDict.Resolve();
+
+        //MethodDefinition tryGetVal = readOnlyDic.Methods.First(m => m.Name == "TryGetValue");
+        var x = getStoreRef.ReturnType.Resolve();
+
+        MethodDefinition tryGetVal = getStoreRef
+            .ReturnType.Resolve()
+            .Methods.First(m => m.Name == "TryGetValue");
+
+        //MethodDefinition tryGetVal = readOnlyDictResolved.Methods.First(m =>
+        //    m.Name == "TryGetValue"
+        //);
+
+        var tryGetValRef = ImportReference(mockedObjAssembly.MainModule, tryGetVal);
+
+        var processor = method.Body.GetILProcessor();
+        var firstInstruction = method.Body.Instructions[0];
+
+        method.Body.Variables.Insert(
+            0,
+            new(ImportReference(mockedObjAssembly.MainModule, mock, method))
+        );
+
+        List<Instruction> newInstructions = new();
+        newInstructions.Add(processor.Create(OpCodes.Call, getStoreRef));
+        newInstructions.Add(processor.Create(OpCodes.Ldarg_0));
+        newInstructions.Add(processor.Create(OpCodes.Ldloca_S, method.Body.Variables[0]));
+        newInstructions.Add(processor.Create(OpCodes.Callvirt, tryGetValRef));
+        newInstructions.Add(processor.Create(OpCodes.Brfalse_S, firstInstruction));
+
+        newInstructions.Add(processor.Create(OpCodes.Ldloc_0));
+        newInstructions.Add(processor.Create(OpCodes.Callvirt, getCallTrackerRef));
+        newInstructions.Add(processor.Create(OpCodes.Ldarg_1));
+        newInstructions.Add(processor.Create(OpCodes.Ldarg_2));
+        newInstructions.Add(processor.Create(OpCodes.Ldarg_3));
+        newInstructions.Add(processor.Create(OpCodes.Callvirt, addUpAllOfThese2Ref));
+        newInstructions.Add(processor.Create(OpCodes.Ret));
+
+        foreach (var newInstruction in newInstructions)
+        {
+            processor.InsertBefore(firstInstruction, newInstruction);
+        }
+
+        var writeParams = new WriterParameters()
+        {
+            SymbolWriterProvider = new PortablePdbWriterProvider(),
+        };
+
+        mockedObjAssembly.Write(mockedObjPath, writeParams);
+
+        Test();
+    }
+
+    private void Test()
+    {
+        var x = new TempCalcMock();
+
+        var calc = (ComplexCalculator)x;
+
+        var y = new ComplexCalculator().GetDict();
+
+        var result = calc.AddUpAllOfThese2(0, [5, 4, 3, 2], 2.2);
+        ;
+    }
+
+    private static TypeReference readOnlyDict;
+
+    private static TypeReference ImportReference(
+        ModuleDefinition module,
+        TypeReference typeRef,
+        MethodDefinition methodToReplace
+    )
+    {
+        if (typeRef.FullName.StartsWith("System."))
+        {
+            ;
+        }
+        if (typeRef.FullName == "System.Collections.Generic.IReadOnlyDictionary`2")
+        {
+            ;
+            //return readOnlyDict;
+        }
+        if (typeRef is ArrayType arrayType)
+        {
+            return new ArrayType(ImportReference(module, arrayType.ElementType, methodToReplace));
+        }
+        if (typeRef is ByReferenceType byReferenceType)
+        {
+            return new ByReferenceType(
+                ImportReference(module, byReferenceType.ElementType, methodToReplace)
+            );
+        }
+        if (typeRef is GenericParameter genericParamRef)
+        {
+            return ImportReference(genericParamRef, methodToReplace);
+        }
+        if (typeRef is GenericInstanceType genericInstanceType)
+        {
+            var importedInstanceType = new GenericInstanceType(
+                ImportReference(module, genericInstanceType.ElementType, methodToReplace)
+            );
+            foreach (var genericParam in genericInstanceType.GenericParameters)
+            {
+                importedInstanceType.GenericArguments.Add(
+                    ImportReference(module, genericParam, methodToReplace)
+                );
+            }
+            foreach (var genericArg in genericInstanceType.GenericArguments)
+            {
+                importedInstanceType.GenericArguments.Add(
+                    ImportReference(module, genericArg, methodToReplace)
+                );
+            }
+            return importedInstanceType;
+        }
+        else
+        {
+            return module.ImportReference(typeRef);
+        }
+    }
+
+    private static GenericParameter ImportReference(
+        ModuleDefinition _,
+        GenericParameter genericParamRef,
+        MethodDefinition methodToReplace
+    ) => ImportReference(genericParamRef, methodToReplace);
+
+    private static GenericParameter ImportReference(
+        GenericParameter genericParamRef,
+        MethodDefinition methodToReplace
+    )
+    {
+        if (genericParamRef.Owner is MethodDefinition)
+        {
+            // Method generic parameter
+            return methodToReplace.GenericParameters[genericParamRef.Position];
+        }
+        else
+        {
+            // Type generic parameter
+            var declaringType = methodToReplace.DeclaringType;
+            return declaringType.GenericParameters[genericParamRef.Position];
+        }
+    }
+
+    private static MethodReference ImportReference(
+        ModuleDefinition module,
+        MethodReference methodRef,
+        TypeReference? declaringType = null
+    )
+    {
+        MethodDefinition methodDefinition = methodRef.Resolve();
+        declaringType ??= ImportReference(module, methodRef.DeclaringType, methodDefinition);
+        var returnType = ImportReference(module, methodRef.ReturnType, methodDefinition);
+
+        module.ImportReference(methodRef);
+        var newMethodRef = new MethodReference(methodRef.Name, returnType, declaringType)
+        {
+            HasThis = methodRef.HasThis,
+            ExplicitThis = methodRef.ExplicitThis,
+            CallingConvention = methodRef.CallingConvention,
+        };
+        foreach (var parameter in methodRef.Parameters)
+        {
+            //if (parameter.ParameterType.ContainsGenericParameter)
+            //{
+            //    continue;
+            //}
+            newMethodRef.Parameters.Add(
+                new ParameterDefinition(
+                    ImportReference(module, parameter.ParameterType, methodDefinition)
+                )
+            );
+        }
+        if (methodRef is GenericInstanceMethod genericInstanceMethod)
+        {
+            var newGenericInstanceMethod = new GenericInstanceMethod(newMethodRef);
+            foreach (var argument in genericInstanceMethod.GenericArguments)
+            {
+                newGenericInstanceMethod.GenericArguments.Add(module.ImportReference(argument));
+            }
+            return newGenericInstanceMethod;
+        }
+        else
+        {
+            foreach (var genericParam in methodRef.GenericParameters)
+            {
+                newMethodRef.GenericParameters.Add(
+                    ImportReference(module, genericParam, methodDefinition)
+                );
+            }
+        }
+        return newMethodRef;
+    }
+
+    private static FieldReference ImportReference(ModuleDefinition module, FieldReference fieldRef)
+    {
+        var declaringType = module.ImportReference(fieldRef.DeclaringType);
+        return new FieldReference(
+            fieldRef.Name,
+            module.ImportReference(fieldRef.FieldType),
+            declaringType
+        );
+    }
 
     //[Fact]
     //public void CalculatorDesignFiddle()

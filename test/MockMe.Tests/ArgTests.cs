@@ -9,9 +9,9 @@ namespace MockMe.Tests
         [Fact]
         public void ArgAny_ShouldCoverAnyArgument()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me<SimpleCalculator>();
 
-            var calculator = (Calculator)calculatorMock;
+            var calculator = (SimpleCalculator)calculatorMock;
 
             calculator.Add(0, 0);
             calculator.Add(1, -1);
@@ -24,6 +24,7 @@ namespace MockMe.Tests
             Assert.ThrowsAny<MockMeException>(
                 () => calculatorMock.Assert.Add(Arg.Any, Arg.Any).WasCalled(NumTimes.Exactly, 5)
             );
+
             calculatorMock.Assert.Add(-234, Arg.Any).WasCalled(NumTimes.Exactly, 3);
             Assert.ThrowsAny<MockMeException>(
                 () => calculatorMock.Assert.Add(-234, Arg.Any).WasCalled(NumTimes.Exactly, 5)

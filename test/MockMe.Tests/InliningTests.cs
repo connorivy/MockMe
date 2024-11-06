@@ -8,9 +8,9 @@ namespace MockMe.Tests
     {
         public class CalculatorManager
         {
-            private readonly Calculator calculator;
+            private readonly SimpleCalculator calculator;
 
-            public CalculatorManager(Calculator calculator)
+            public CalculatorManager(SimpleCalculator calculator)
             {
                 this.calculator = calculator;
             }
@@ -27,7 +27,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me<SimpleCalculator>();
             calculatorMock.Setup.Add(3, 5).Returns(99, 999, 9999);
             CalculatorManager calculatorManager = new(calculatorMock);
 

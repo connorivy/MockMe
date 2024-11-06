@@ -15,7 +15,7 @@ using MockMe.Tests.SampleClasses;
 
 namespace MockMe.Tests.SampleClasses
 {
-    public class Calculator
+    public class SimpleCalculator
     {
         public int Add(int x, int y) => x + y;
 

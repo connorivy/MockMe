@@ -24,6 +24,8 @@ public class CalculatorMock : Mock<Calculator>
     public CalculatorMockAsserter Assert { get; }
     private CalculatorMockCallTracker CallTracker { get; set; }
 
+    public static IReadOnlyDictionary<Calculator, CalculatorMock> GetMockStore() => mockStore;
+
     [HarmonyPatch(typeof(Calculator), nameof(Calculator.Add))]
     internal sealed class Patch00
     {
@@ -38,10 +40,10 @@ public class CalculatorMock : Mock<Calculator>
         }
     }
 
-    [HarmonyPatch(typeof(Calculator), nameof(Calculator.AddUpAllOfThese))]
+    //[HarmonyPatch(typeof(Calculator), nameof(Calculator.AddUpAllOfThese))]
     internal sealed class Patch01
     {
-        public static bool Prefix(Calculator __instance, ref object __result, List<int> values)
+        public static bool Prefix<T>(Calculator __instance, ref object __result, List<int> values)
         {
             //if (mockStore.TryGetValue(__instance, out var mock))
             //{
@@ -53,209 +55,6 @@ public class CalculatorMock : Mock<Calculator>
                 Console.WriteLine(x);
             }
             return true;
-        }
-    }
-
-    public sealed class Hook
-    {
-        public static int Add(Calculator self, int x, int y)
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-            return 7;
-        }
-
-        public static T Prefix<T>(Calculator self, T[] values)
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-            var y = typeof(T);
-            foreach (var x in values)
-            {
-                Console.WriteLine(x);
-            }
-            return default;
-        }
-
-        public static List<int> PrefixList(Calculator self, List<int>[] values)
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-            foreach (var x in values)
-            {
-                Console.WriteLine(x);
-            }
-            return default;
-        }
-
-        public static int PrefixList2(Calculator self, int hello, int[] values, double goodbye)
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-
-            var a = (int)(object)values;
-            var b = (List<int>[])(object)goodbye;
-
-            foreach (var x in values)
-            {
-                Console.WriteLine(x);
-            }
-            return default;
-        }
-
-        public static object PrefixList3(Calculator self, int hello, object values, double goodbye)
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-
-            var a = (int)(object)values;
-            var b = (List<int>[])(object)goodbye;
-
-            //foreach (var x in values)
-            //{
-            //    Console.WriteLine(x);
-            //}
-            return default;
-        }
-
-        public static T PrefixList4<T>(Calculator self, int hello, T[] values, double goodbye)
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-
-            var a = (int)(object)values;
-            var b = (List<int>[])(object)goodbye;
-
-            //foreach (var x in values)
-            //{
-            //    Console.WriteLine(x);
-            //}
-            return default;
-        }
-
-        public static bool PrefixList5(
-            Calculator __instance,
-            object __result,
-            int hello,
-            object values,
-            double goodbye
-        )
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-
-            var a = (int)(object)values;
-            var b = (List<int>[])(object)goodbye;
-
-            //foreach (var x in values)
-            //{
-            //    Console.WriteLine(x);
-            //}
-            return default;
-        }
-
-        //public static IEnumerable<CodeInstruction> PrefixList6(
-        //    IEnumerable<CodeInstruction> instructions
-        //)
-        //{
-        //    //List<CodeInstruction> additional = [];
-        //    //additional.Add(new(OpCodes.Ldarg, 1));
-        //    //additional.Add(new(OpCodes.Ldarg, 2));
-        //    //additional.Add(new(OpCodes.Ldarg, 3));
-        //    //additional.Add(new(OpCodes.Call, typeof(Hook).GetMethod(nameof(PrefixList7))));
-        //    //additional.Add(new(OpCodes.Ret));
-
-        //    return
-        //    [
-        //        new(OpCodes.Ldarg_1),
-        //        new(OpCodes.Ldarg_2),
-        //        new(OpCodes.Ldarg_3),
-        //        new(
-        //            OpCodes.Call,
-        //            typeof(Hook).GetMethod(nameof(PrefixList7)).MakeGenericMethod(typeof(object))
-        //        ),
-        //        new(OpCodes.Ret)
-        //    ];
-
-        //    //return additional;
-        //}
-
-        //public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        //{
-        //    // Without ILGenerator, the CodeMatcher will not be able to create labels
-        //    var codeMatcher = new CodeMatcher();
-
-        //    codeMatcher.
-
-
-        //    codeMatcher.MatchStartForward(
-        //            CodeMatch.Calls(() => default(DamageHandler).Kill(default(Player)))
-        //        )
-        //        .ThrowIfInvalid("Could not find call to DamageHandler.Kill")
-        //        .RemoveInstruction()
-        //        .InsertAndAdvance(
-        //            CodeInstruction.Call(() => MyDeathHandler(default, default))
-        //        )
-        //        .insertand
-
-        //    return codeMatcher.Instructions();
-        //}
-
-        public static T PrefixList7<T>(int hello, T[] values, double goodbye)
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-
-            var a = (int)(object)values;
-            var b = (List<int>[])(object)goodbye;
-
-            foreach (var x in values)
-            {
-                Console.WriteLine(x);
-            }
-            return default;
-        }
-
-        public static object PrefixList8(int hello, object[] values, double goodbye)
-        {
-            //if (mockStore.TryGetValue(__instance, out var mock))
-            //{
-            //    __result = mock.AddUpAllOfThese.Add(x, y);
-            //    return false;
-            //}
-
-            var a = (int)(object)values;
-            var b = (List<int>[])(object)goodbye;
-
-            foreach (var x in values)
-            {
-                Console.WriteLine(x);
-            }
-            return default;
         }
     }
 }
