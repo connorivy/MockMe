@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using MockMe.Mocks;
+using MockMe.Tests.ExampleClasses;
 using MockMe.Tests.NuGet;
 using static MockMe.Tests.TempCalcMockSetup;
 using static MockMe.Tests.TempCalcMockSetup.TempCalcMockCallTracker;
@@ -26,11 +28,8 @@ namespace MockMe.Tests
             this.CallTracker = new TempCalcMockCallTracker(this.Setup);
             this.Assert = new TempCalcMockAsserter(this.CallTracker);
 
-            TempCalcMockState<ExampleClasses.ComplexCalculator, TempCalcMock>.MockStore.TryAdd(
-                this.Value,
-                this
-            );
-            mockStore.TryAdd(this.Value, this);
+            TempCalcMockState<ExampleClasses.ComplexCalculator>.MockStore.TryAdd(this.Value, this);
+            //mockStore.TryAdd(this.Value, this);
         }
 
         //public ExampleClasses.ComplexCalculator Value { get; } = new();
@@ -43,7 +42,52 @@ namespace MockMe.Tests
             TempCalcMock
         > GetStore() => mockStore;
 
-        public TempCalcMockCallTracker GetCallTracker() => CallTracker;
+        private static T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
+        {
+            if (
+                TempCalcMockState<ComplexCalculator>
+                    .GetStore()
+                    .TryGetValue(default, out object mock)
+            )
+            {
+                //Type mockType = mock.GetType();
+                //var callTrackerPropInfo = mockType.GetProperty(
+                //    "CallTracker",
+                //    System.Reflection.BindingFlags.NonPublic
+                //        | System.Reflection.BindingFlags.Instance
+                //);
+                //var callTracker = callTrackerPropInfo.GetValue(mock);
+                var callTracker = mock.GetType()
+                    .GetProperty(
+                        "CallTracker",
+                        System.Reflection.BindingFlags.NonPublic
+                            | System.Reflection.BindingFlags.Instance
+                    )
+                    .GetValue(mock);
+
+                //var methodPropInfo = callTracker
+                //    .GetType()
+                //    .GetMethod(
+                //        "AddUpAllOfThese2",
+                //        System.Reflection.BindingFlags.Public
+                //            | System.Reflection.BindingFlags.Instance
+                //    )
+                //    .MakeGenericMethod(typeof(T));
+                //return (T)
+                //    methodPropInfo.Invoke(callTracker, new object[] { hello, values, goodbye });
+                return (T)
+                    callTracker
+                        .GetType()
+                        .GetMethod(
+                            "AddUpAllOfThese2",
+                            System.Reflection.BindingFlags.Public
+                                | System.Reflection.BindingFlags.Instance
+                        )
+                        .MakeGenericMethod(typeof(T))
+                        .Invoke(callTracker, new object[] { hello, values, goodbye });
+            }
+            return default;
+        }
 
         [HarmonyPatch(
             typeof(ExampleClasses.ComplexCalculator),

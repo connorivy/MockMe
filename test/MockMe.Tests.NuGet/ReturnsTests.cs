@@ -1,3 +1,5 @@
+using System;
+
 namespace MockMe.Tests.NuGet
 {
     public class ReturnsTests

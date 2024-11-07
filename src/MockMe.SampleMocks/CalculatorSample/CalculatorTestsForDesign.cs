@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using MockMe.Tests;
 using MockMe.Tests.ExampleClasses;
@@ -6,6 +7,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.CompilerServices.SymbolWriter;
 using Xunit;
+using static HarmonyLib.Code;
 
 namespace MockMe.SampleMocks.CalculatorSample;
 
@@ -49,18 +51,6 @@ public class CalculatorTestsForDesign
             }
         );
 
-        //var systemRuntimeAssembly = mockedObjAssembly.MainModule.AssemblyResolver.Resolve(
-        //    AssemblyNameReference.Parse("System.Runtime")
-        //);
-        //var readOnlyDic = systemRuntimeAssembly
-        //    .MainModule.ExportedTypes.First(t =>
-        //        t.FullName == "System.Collections.Generic.IReadOnlyDictionary`2"
-        //    )
-        //    .Resolve();
-
-        //readOnlyDict = mockedObjAssembly.MainModule.ImportReference(readOnlyDic);
-        //var x = readOnlyDic.Resolve();
-
         TypeDefinition typeToReplace = mockedObjAssembly.MainModule.GetType(
             "MockMe.Tests.ExampleClasses.ComplexCalculator"
         );
@@ -69,106 +59,111 @@ public class CalculatorTestsForDesign
         using var mockAssembly = AssemblyDefinition.ReadAssembly(mockPath);
         TypeDefinition mock = mockAssembly.MainModule.GetType("MockMe.Tests.TempCalcMock");
 
-        //MethodDefinition getStore = mock.Methods.First(m => m.Name == "GetStore");
+        MethodDefinition replacementLogic = mock.Methods.First(m => m.Name == "AddUpAllOfThese2");
         //var getStoreRef = ImportReference(mockedObjAssembly.MainModule, getStore);
-
-
-
-        MethodDefinition getCallTracker = mock.Methods.First(m => m.Name == "GetCallTracker");
-        var getCallTrackerRef = ImportReference(mockedObjAssembly.MainModule, getCallTracker);
-
-        TypeDefinition setupType = mockAssembly.MainModule.GetType(
-            "MockMe.Tests.TempCalcMockSetup"
-        );
-        TypeDefinition callTrackerType = setupType.NestedTypes.First(n =>
-            n.Name == "TempCalcMockCallTracker"
-        );
-
-        MethodDefinition addUpAllOfThese2 = callTrackerType.Methods.First(m =>
-            m.Name == "AddUpAllOfThese2"
-        );
-        var addUpAllOfThese2Ref = ImportReference(mockedObjAssembly.MainModule, addUpAllOfThese2);
-
-        using var storeAssembly = AssemblyDefinition.ReadAssembly(
-            Path.Combine(binLocation, "MockMe.Tests.NuGet.dll")
-        );
-        TypeDefinition store = storeAssembly.MainModule.Types.First(n =>
-            n.Name == "TempCalcMockState"
-        );
-        GenericInstanceType storeInstance = store.MakeGenericInstanceType(typeToReplace, mock);
-
-        MethodDefinition getStore = store.Methods.First(m => m.Name == "GetStore");
-
-        var getStoreRef = ImportReference(mockedObjAssembly.MainModule, getStore, storeInstance);
-
-        //var x = AssemblyNameReference.Parse("System.Runtime");
-        //AssemblyDefinition systemRuntimeAssembly =
-        //    mockedObjAssembly.MainModule.AssemblyResolver.Resolve(
-        //        AssemblyNameReference.Parse("System.Runtime")
-        //    );
-
-        //TypeReference iReadOnlyDictionaryType = systemRuntimeAssembly.MainModule.GetType(
-        //    "System.Collections.Generic.IReadOnlyDictionary`2"
-        //);
-
-        //Type iReadOnlyDictionaryType = typeof(System.Collections.Generic.IReadOnlyDictionary<,>);
-        //var iReadOnlyDictionaryAssembly = Assembly.Load(iReadOnlyDictionaryType.Assembly.FullName);
-
-        //TypeReference readOnlyDictGeneric = mockedObjAssembly.MainModule.ImportReference(
-        //    iReadOnlyDictionaryType
-        //);
-
-        //mockedObjAssembly.MainModule.ImportReference(typeof(IReadOnlyDictionary<,>));
-        //mockedObjAssembly.MainModule.ImportReference(typeof(IReadOnlyDictionary<,>));
-
-        //mockedObjAssembly.MainModule.ImportReference(typeof(IReadOnlyDictionary<,>));
-
-        //GenericInstanceType readOnlyDict = readOnlyDictGeneric.MakeGenericInstanceType(
-        //    typeToReplace,
-        //    mock
-        //);
-
-        //var readOnlyDictResolved = readOnlyDict.Resolve();
-
-        //MethodDefinition tryGetVal = readOnlyDic.Methods.First(m => m.Name == "TryGetValue");
-        var x = getStoreRef.ReturnType.Resolve();
-
-        MethodDefinition tryGetVal = getStoreRef
-            .ReturnType.Resolve()
-            .Methods.First(m => m.Name == "TryGetValue");
-
-        //MethodDefinition tryGetVal = readOnlyDictResolved.Methods.First(m =>
-        //    m.Name == "TryGetValue"
-        //);
-
-        var tryGetValRef = ImportReference(mockedObjAssembly.MainModule, tryGetVal);
-
-        var processor = method.Body.GetILProcessor();
+        var replacementIlProcessor = replacementLogic.Body.Instructions;
+        var ilProcessor = method.Body.GetILProcessor();
         var firstInstruction = method.Body.Instructions[0];
 
-        method.Body.Variables.Insert(
-            0,
-            new(ImportReference(mockedObjAssembly.MainModule, mock, method))
-        );
+        var tempCalcMockStateModule = mockedObjAssembly.MainModule;
+        //method.Body.Variables.Insert(
+        //    0,
+        //    new VariableDefinition(tempCalcMockStateModule.ImportReference(typeof(object)))
+        //);
+
+        //method.Body.Variables.Insert(
+        //    0,
+        //    new VariableDefinition(tempCalcMockStateModule.ImportReference(typeof(object)))
+        //);
+        method.Body.Variables.Clear();
+
+        foreach (var variable in replacementLogic.Body.Variables)
+        {
+            method.Body.Variables.Add(
+                new(ImportReference(tempCalcMockStateModule, variable.VariableType, method))
+            );
+        }
 
         List<Instruction> newInstructions = new();
-        newInstructions.Add(processor.Create(OpCodes.Call, getStoreRef));
-        newInstructions.Add(processor.Create(OpCodes.Ldarg_0));
-        newInstructions.Add(processor.Create(OpCodes.Ldloca_S, method.Body.Variables[0]));
-        newInstructions.Add(processor.Create(OpCodes.Callvirt, tryGetValRef));
-        newInstructions.Add(processor.Create(OpCodes.Brfalse_S, firstInstruction));
+        bool breakUntilNextBr = false;
+        foreach (var instruction in replacementLogic.Body.Instructions)
+        {
+            if (instruction.OpCode == OpCodes.Ldnull)
+            {
+                newInstructions.Add(ilProcessor.Create(OpCodes.Ldarg_0));
+            }
+            else if (instruction.OpCode == OpCodes.Brfalse_S)
+            {
+                newInstructions.Add(ilProcessor.Create(OpCodes.Brfalse_S, firstInstruction));
+            }
+            //else if (instruction.OpCode == OpCodes.Br_S)
+            //{
+            //    breakUntilNextBr = !breakUntilNextBr;
+            //}
+            //else if (breakUntilNextBr)
+            //{
+            //    continue;
+            //}
+            else
+            {
+                Instruction importedInstruction = instruction;
+                if (instruction.Operand is MethodReference methodRef)
+                {
+                    var importedMethodRef = ImportReference(
+                        mockedObjAssembly.MainModule,
+                        methodRef
+                    //typeToReplace
+                    );
+                    ////mockedObjAssembly.MainModule.ImportReference(methodRef.ReturnType);
+                    //foreach (var parameter in methodRef.Parameters)
+                    //{
+                    //    mockedObjAssembly.MainModule.ImportReference(parameter.ParameterType);
+                    //}
+                    //if (methodRef is GenericInstanceMethod genericInstanceMethodRef)
+                    //{
+                    //    foreach (var genericArg in genericInstanceMethodRef.GenericArguments)
+                    //    {
+                    //        mockedObjAssembly.MainModule.ImportReference(genericArg);
+                    //    }
+                    //}
+                    //foreach (var parameter in methodRef.GenericParameters)
+                    //{
+                    //    //assembly.MainModule.ImportReference(parameter.Type);
+                    //}
+                    //var importedMethodRef = ImportReference(
+                    //    mockedObjAssembly.MainModule,
+                    //    methodRef
+                    //);
+                    importedInstruction = ilProcessor.Create(instruction.OpCode, importedMethodRef);
+                }
+                else if (instruction.Operand is FieldReference fieldRef)
+                {
+                    var importedFieldRef = ImportReference(mockedObjAssembly.MainModule, fieldRef);
+                    importedInstruction = ilProcessor.Create(instruction.OpCode, importedFieldRef);
+                }
+                else if (instruction.Operand is TypeReference typeRef)
+                {
+                    TypeReference importedTypeRef = ImportReference(
+                        mockedObjAssembly.MainModule,
+                        typeRef,
+                        method
+                    );
 
-        newInstructions.Add(processor.Create(OpCodes.Ldloc_0));
-        newInstructions.Add(processor.Create(OpCodes.Callvirt, getCallTrackerRef));
-        newInstructions.Add(processor.Create(OpCodes.Ldarg_1));
-        newInstructions.Add(processor.Create(OpCodes.Ldarg_2));
-        newInstructions.Add(processor.Create(OpCodes.Ldarg_3));
-        newInstructions.Add(processor.Create(OpCodes.Callvirt, addUpAllOfThese2Ref));
-        newInstructions.Add(processor.Create(OpCodes.Ret));
+                    importedInstruction = ilProcessor.Create(instruction.OpCode, importedTypeRef);
+                }
+                //ilProcessor.Body.Instructions.Add(importedInstruction);
+                newInstructions.Add(importedInstruction);
+            }
+
+            if (instruction.OpCode == OpCodes.Ret)
+            {
+                break;
+            }
+        }
 
         foreach (var newInstruction in newInstructions)
         {
-            processor.InsertBefore(firstInstruction, newInstruction);
+            ilProcessor.InsertBefore(firstInstruction, newInstruction);
         }
 
         var writeParams = new WriterParameters()
@@ -190,6 +185,19 @@ public class CalculatorTestsForDesign
         var y = new ComplexCalculator().GetDict();
 
         var result = calc.AddUpAllOfThese2(0, [5, 4, 3, 2], 2.2);
+        ;
+    }
+
+    [Fact]
+    private void Test2()
+    {
+        var x = new TempCalcMock();
+
+        var calc = (ComplexCalculator)x;
+
+        var y = new ComplexCalculator().GetDict();
+
+        var result = calc.AddUpAllOfThese2_New(0, [5, 4, 3, 2], 2.2);
         ;
     }
 
@@ -280,7 +288,15 @@ public class CalculatorTestsForDesign
     )
     {
         MethodDefinition methodDefinition = methodRef.Resolve();
-        declaringType ??= ImportReference(module, methodRef.DeclaringType, methodDefinition);
+        if (declaringType == null)
+        {
+            declaringType = ImportReference(module, methodRef.DeclaringType, methodDefinition);
+        }
+        else
+        {
+            declaringType = ImportReference(module, declaringType, methodDefinition);
+        }
+
         var returnType = ImportReference(module, methodRef.ReturnType, methodDefinition);
 
         module.ImportReference(methodRef);
@@ -320,6 +336,7 @@ public class CalculatorTestsForDesign
                 );
             }
         }
+        module.ImportReference(newMethodRef);
         return newMethodRef;
     }
 
