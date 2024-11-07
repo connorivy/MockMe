@@ -42,7 +42,7 @@ namespace MockMe.Tests
             TempCalcMock
         > GetStore() => mockStore;
 
-        private static T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
+        private T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
         {
             if (
                 TempCalcMockState<ComplexCalculator>
