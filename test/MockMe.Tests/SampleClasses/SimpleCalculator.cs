@@ -64,26 +64,3 @@ namespace MockMe.Tests.SampleClasses
         }
     }
 }
-
-namespace MockMe
-{
-    public static partial class Mock
-    {
-        public static List<MockReplacementInfo> GenericTypes() =>
-            new()
-            {
-                new(
-                    typeToReplace: new GenericMethodInfo(
-                        assemblyName: "MockMe.SampleMocks",
-                        typeFullName: "MockMe.SampleMocks.CalculatorSample.Calculator",
-                        methodName: "AddUpAllOfThese2"
-                    ),
-                    sourceType: new GenericMethodInfo(
-                        assemblyName: typeof(Calculator2).Assembly.FullName,
-                        typeFullName: typeof(Calculator2).FullName,
-                        methodName: nameof(Calculator2.AddUpAllOfThese2)
-                    )
-                ),
-            };
-    }
-}

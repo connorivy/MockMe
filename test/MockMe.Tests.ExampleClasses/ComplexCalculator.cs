@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MockMe.Tests.NuGet;
+
+//using MockMe.Tests.NuGet;
 
 namespace MockMe.Tests.ExampleClasses
 {
@@ -34,32 +35,32 @@ namespace MockMe.Tests.ExampleClasses
             return values.First();
         }
 
-        public T AddUpAllOfThese2_New<T>(int hello, T[] values, double goodbye)
-        {
-            if (TempCalcMockState<ComplexCalculator>.GetStore().TryGetValue(this, out object mock))
-            {
-                Type mockType = mock.GetType();
-                var callTrackerPropInfo = mockType.GetProperty(
-                    "CallTracker",
-                    System.Reflection.BindingFlags.NonPublic
-                        | System.Reflection.BindingFlags.Instance
-                );
-                var callTracker = callTrackerPropInfo.GetValue(mock);
+        //public T AddUpAllOfThese2_New<T>(int hello, T[] values, double goodbye)
+        //{
+        //    if (TempCalcMockState<ComplexCalculator>.GetStore().TryGetValue(this, out object mock))
+        //    {
+        //        Type mockType = mock.GetType();
+        //        var callTrackerPropInfo = mockType.GetProperty(
+        //            "CallTracker",
+        //            System.Reflection.BindingFlags.NonPublic
+        //                | System.Reflection.BindingFlags.Instance
+        //        );
+        //        var callTracker = callTrackerPropInfo.GetValue(mock);
 
-                var methodPropInfo = callTracker
-                    .GetType()
-                    .GetMethod(
-                        "AddUpAllOfThese2",
-                        System.Reflection.BindingFlags.Public
-                            | System.Reflection.BindingFlags.Instance
-                    )
-                    .MakeGenericMethod(typeof(T));
-                return (T)
-                    methodPropInfo.Invoke(callTracker, new object[] { hello, values, goodbye });
-                //return ((dynamic)mock).CallTracker.AddUpAllOfThese2<T>(hello, values, goodbye);
-            }
-            return values.First();
-        }
+        //        var methodPropInfo = callTracker
+        //            .GetType()
+        //            .GetMethod(
+        //                "AddUpAllOfThese2",
+        //                System.Reflection.BindingFlags.Public
+        //                    | System.Reflection.BindingFlags.Instance
+        //            )
+        //            .MakeGenericMethod(typeof(T));
+        //        return (T)
+        //            methodPropInfo.Invoke(callTracker, new object[] { hello, values, goodbye });
+        //        //return ((dynamic)mock).CallTracker.AddUpAllOfThese2<T>(hello, values, goodbye);
+        //    }
+        //    return values.First();
+        //}
     }
 
     public enum CalculatorType

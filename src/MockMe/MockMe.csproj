@@ -48,7 +48,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MockMe.Abstractions\MockMe.Abstractions.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\MockMe.Generator\MockMe.Generator.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\MockMe.PostBuild\MockMe.PostBuild.csproj" PrivateAssets="all"/>    
+    <ProjectReference Include="..\MockMe.PostBuild\MockMe.PostBuild.csproj" PrivateAssets="all" />    
   </ItemGroup>
 
   <PropertyGroup>

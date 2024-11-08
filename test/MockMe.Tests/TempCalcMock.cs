@@ -28,7 +28,7 @@ namespace MockMe.Tests
             this.CallTracker = new TempCalcMockCallTracker(this.Setup);
             this.Assert = new TempCalcMockAsserter(this.CallTracker);
 
-            TempCalcMockState<ExampleClasses.ComplexCalculator>.MockStore.TryAdd(this.Value, this);
+            Mocks.Generic.MockStore<ComplexCalculator>.Store.TryAdd(this.Value, this);
             //mockStore.TryAdd(this.Value, this);
         }
 
@@ -45,8 +45,8 @@ namespace MockMe.Tests
         private T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
         {
             if (
-                TempCalcMockState<ComplexCalculator>
-                    .GetStore()
+                Mocks
+                    .Generic.MockStore<ComplexCalculator>.GetStore()
                     .TryGetValue(default, out object mock)
             )
             {
@@ -64,6 +64,8 @@ namespace MockMe.Tests
                             | System.Reflection.BindingFlags.Instance
                     )
                     .GetValue(mock);
+
+                //return (T)((dynamic)callTracker).AddUpAllOfThese2<T>(hello, values, goodbye);
 
                 //var methodPropInfo = callTracker
                 //    .GetType()

@@ -6,15 +6,19 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.CompilerServices.SymbolWriter;
-using Xunit;
 using static HarmonyLib.Code;
+#if DEBUG
+using Xunit;
+#endif
 
 namespace MockMe.SampleMocks.CalculatorSample;
 
 public class CalculatorTestsForDesign
 {
     // Uncomment to disable tests
-    //private class FactAttribute : Attribute { }
+#if !DEBUG
+    private class FactAttribute : Attribute { }
+#endif
 
     static Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
     {
@@ -182,24 +186,24 @@ public class CalculatorTestsForDesign
 
         var calc = (ComplexCalculator)x;
 
-        var y = new ComplexCalculator().GetDict();
+        var y = new ComplexCalculator().AddUpAllOfThese2(0, [5, 4, 3, 2], 2.2);
 
         var result = calc.AddUpAllOfThese2(0, [5, 4, 3, 2], 2.2);
         ;
     }
 
-    [Fact]
-    private void Test2()
-    {
-        var x = new TempCalcMock();
+    //[Fact]
+    //private void Test2()
+    //{
+    //    var x = new TempCalcMock();
 
-        var calc = (ComplexCalculator)x;
+    //    var calc = (ComplexCalculator)x;
 
-        var y = new ComplexCalculator().GetDict();
+    //    var y = new ComplexCalculator().GetDict();
 
-        var result = calc.AddUpAllOfThese2_New(0, [5, 4, 3, 2], 2.2);
-        ;
-    }
+    //    var result = calc.AddUpAllOfThese2_New(0, [5, 4, 3, 2], 2.2);
+    //    ;
+    //}
 
     private static TypeReference readOnlyDict;
 
