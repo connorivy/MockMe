@@ -21,16 +21,22 @@ namespace MockMe.Tests.ExampleClasses
 
         public void TurnOff() { }
 
-        public T AddUpAllOfThese<T>(T[] values)
+        public int ComputeHashForObjects<T>(T[] values)
+        {
+            const int seed = 487;
+            const int modifier = 31;
+            return values.Aggregate(
+                seed,
+                (current, type) => (current * modifier) + type.GetHashCode()
+            );
+        }
+
+        public T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
         {
             return values.First();
         }
 
-        private Dictionary<string, int> hello = new();
-
-        public IReadOnlyDictionary<string, int> GetDict() => hello;
-
-        public T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
+        public T GetItemWithNearestHashCodeToProductOfTwoNums<T>(int num1, double num2, T[] values)
         {
             return values.First();
         }

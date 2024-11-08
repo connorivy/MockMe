@@ -4,14 +4,14 @@ using System.Linq;
 using MockMe.Abstractions;
 using MockMe.Tests.SampleClasses;
 
-[assembly: GenericMethodDefinition(
-    "MockMe.Tests.ExampleClasses",
-    "MockMe.Tests.ExampleClasses.ComplexCalculator",
-    "AddUpAllOfThese2",
-    "MockMe.Tests",
-    "MockMe.Tests.SampleClasses.Calculator2",
-    "AddUpAllOfThese2"
-)]
+//[assembly: GenericMethodDefinition(
+//    "MockMe.Tests.ExampleClasses",
+//    "MockMe.Tests.ExampleClasses.ComplexCalculator",
+//    "AddUpAllOfThese2",
+//    "MockMe.Tests",
+//    "MockMe.Tests.SampleClasses.Calculator2",
+//    "AddUpAllOfThese2"
+//)]
 
 namespace MockMe.Tests.SampleClasses
 {

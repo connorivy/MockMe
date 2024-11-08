@@ -119,47 +119,27 @@ public class MockCallTracker
         );
     }
 
-    //private static TReturn? CallMemberMock<TReturn, TArgCollection, TCallback, TReturnCall>(
-    //    IReadOnlyList<IArgBag<TArgCollection, TCallback, TReturnCall>>? mockStore,
-    //    List<TArgCollection> argStore,
-    //    TArgCollection argCollection,
-    //    Action<TArgCollection, TCallback> callbackAction,
-    //    Func<TArgCollection, TReturnCall, TReturn> returnCallFunc
-    //)
-    //{
-    //    if (mockStore is null)
-    //    {
-    //        return default;
-    //    }
-
-    //    for (int i = mockStore.Count - 1; i >= 0; i--)
-    //    {
-    //        var argBag = mockStore[i];
-    //        if (!argBag.AllArgsSatisfy(argCollection))
-    //        {
-    //            continue;
-    //        }
-
-    //        argStore.Add(argCollection);
-    //        foreach (TCallback callback in argBag.Mock.GetCallbacksRegisteredBeforeReturnCall())
-    //        {
-    //            callbackAction(argCollection, callback);
-    //        }
-
-    //        TReturnCall? returnFunc = argBag.Mock.GetReturnValue();
-    //        TReturn? returnVal = returnFunc is not null
-    //            ? returnCallFunc(argCollection, returnFunc)
-    //            : default;
-
-    //        foreach (TCallback callback in argBag.Mock.GetCallbacksRegisteredAfterReturnCall())
-    //        {
-    //            callbackAction(argCollection, callback);
-    //        }
-    //        return returnVal;
-    //    }
-
-    //    return default;
-    //}
+    public static TReturn? CallMemberMock<TArg1, TArg2, TArg3, TReturn>(
+        List<ArgBagWithMemberMock<TArg1, TArg2, TArg3, TReturn>>? mockStore,
+        List<ValueTuple<TArg1, TArg2, TArg3>> argStore,
+        TArg1 arg1,
+        TArg2 arg2,
+        TArg3 arg3
+    )
+    {
+        return FindAndCallApplicableMemberMock<
+            TReturn,
+            ValueTuple<TArg1, TArg2, TArg3>,
+            Action<TArg1, TArg2, TArg3>,
+            Func<TArg1, TArg2, TArg3, TReturn>
+        >(
+            mockStore,
+            argStore,
+            (arg1, arg2, arg3),
+            (col, callback) => callback(col.Item1, col.Item2, col.Item3),
+            (col, returnCall) => returnCall(col.Item1, col.Item2, col.Item3)
+        );
+    }
 
     private static void CallVoidMemberMock<TArgCollection, TCallback>(
         IReadOnlyList<IArgBag<TArgCollection, TCallback>>? mockStore,
@@ -238,74 +218,31 @@ public class MockCallTracker
         return returnVal;
     }
 
-    //protected static TReturn CallMemberMock<TArg1, TReturn>(
-    //    List<ArgBag<TArg1, MemberMock<TArg1, TReturn>>> mockStore,
-    //    List<TArg1> argStore,
-    //    TArg1 arg1
-    //)
-    //{
-    //    for (int i = mockStore.Count - 1; i >= 0; i--)
-    //    {
-    //        var argBag = mockStore[i];
-    //        if (!argBag.AllArgsSatisfy(arg1))
-    //        {
-    //            continue;
-    //        }
+    protected static List<TArg1> GetGenericCallStore<TArg1>(
+        Dictionary<int, object> argStore,
+        int hashCode
+    ) => GetGenericCallStoreBase<TArg1>(argStore, hashCode);
 
-    //        argStore.Add(arg1);
-    //        foreach (var callback in argBag.Mock.GetCallbacksRegisteredBeforeReturnCall())
-    //        {
-    //            callback(arg1);
-    //        }
+    protected static List<ValueTuple<TArg1, TArg2>> GetGenericCallStore<TArg1, TArg2>(
+        Dictionary<int, object> argStore,
+        int hashCode
+    ) => GetGenericCallStoreBase<ValueTuple<TArg1, TArg2>>(argStore, hashCode);
 
-    //        var returnFunc = argBag.Mock.GetReturnValue();
-    //        TReturn? returnVal = returnFunc is not null ? returnFunc(arg1) : default(TReturn);
+    protected static List<ValueTuple<TArg1, TArg2, TArg3>> GetGenericCallStore<TArg1, TArg2, TArg3>(
+        Dictionary<int, object> argStore,
+        int hashCode
+    ) => GetGenericCallStoreBase<ValueTuple<TArg1, TArg2, TArg3>>(argStore, hashCode);
 
-    //        foreach (var callback in argBag.Mock.GetCallbacksRegisteredAfterReturnCall())
-    //        {
-    //            callback(arg1);
-    //        }
-    //        return returnVal;
-    //    }
-
-    //    return default;
-    //}
-
-    //protected static TReturn CallMemberMock<TArg1, TArg2, TReturn>(
-    //    List<ArgBag<TArg1, TArg2, MemberMock<TArg1, TArg2, TReturn>>> mockStore,
-    //    List<ValueTuple<TArg1, TArg2>> argStore,
-    //    TArg1 arg1,
-    //    TArg2 arg2
-    //)
-    //{
-    //    //for (int i = mockStore.Count - 1; i >= 0; i--)
-    //    //{
-    //    //    var argBag = mockStore[i];
-    //    //    if (!argBag.AllArgsSatisfy(arg1, arg2))
-    //    //    {
-    //    //        continue;
-    //    //    }
-
-    //    //    argStore.Add((arg1, arg2));
-    //    //    var returnVal = argBag.Mock.ReturnVal;
-
-    //    //    if (argBag.Mock.GenericActions is not null)
-    //    //    {
-    //    //        foreach (Action action in argBag.Mock.GenericActions)
-    //    //        {
-    //    //            action.Invoke();
-    //    //        }
-    //    //    }
-    //    //    if (argBag.Mock.Actions is not null)
-    //    //    {
-    //    //        foreach (var action in argBag.Mock.Actions)
-    //    //        {
-    //    //            action.Invoke(arg1, arg2);
-    //    //        }
-    //    //    }
-    //    //    return returnVal;
-    //    //}
-
-    //    return default;
-    //}
+    private static List<TArgCollection> GetGenericCallStoreBase<TArgCollection>(
+        Dictionary<int, object> argStore,
+        int hashCode
+    )
+    {
+        if (!argStore.TryGetValue(hashCode, out object? specificStore))
+        {
+            specificStore = new List<TArgCollection>();
+            argStore.Add(hashCode, specificStore);
+        }
+        return (List<TArgCollection>)specificStore;
+    }
 }

@@ -1,3 +1,4 @@
+using System.Reflection;
 using Mono.Cecil;
 
 namespace MockMe.PostBuild.Extensions;
@@ -57,7 +58,8 @@ internal static class ModuleDefinitionExtensions
         TypeReference? declaringType = null
     )
     {
-        MethodDefinition methodDefinition = methodRef.Resolve();
+        //MethodDefinition methodDef = module.AssemblyResolver.Resolve(methodRef)
+        MethodDefinition methodDefinition = module.MetadataResolver.Resolve(methodRef);
         if (declaringType == null)
         {
             declaringType = module.ImportMockMeReference(methodRef.DeclaringType, methodDefinition);
@@ -117,10 +119,5 @@ internal static class ModuleDefinitionExtensions
             module.ImportReference(fieldRef.FieldType),
             declaringType
         );
-    }
-
-    public static MethodReference GetType(this ModuleDefinition module, Type[] types)
-    {
-        ;
     }
 }

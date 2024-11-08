@@ -79,19 +79,10 @@ public class CalculatorMockSetup : MockSetup
 
     public VoidMemberMock TurnOff() => this.turnOffMockStore ??= new();
 
-    private Dictionary<Type, object>? AddUpAllOfTheseBagStore;
+    private Dictionary<int, object>? AddUpAllOfTheseBagStore;
 
-    public MemberMock<T[], T> AddUpAllOfThese<T>(Arg<T[]> values)
-    {
-        this.AddUpAllOfTheseBagStore ??= new();
-        if (!this.AddUpAllOfTheseBagStore.TryGetValue(typeof(T[]), out object? specificStore))
-        {
-            specificStore = new List<ArgBagWithMemberMock<T[], T>>();
-            this.AddUpAllOfTheseBagStore.Add(typeof(T[]), specificStore);
-        }
-        var typedStore = (List<ArgBagWithMemberMock<T[], T>>)specificStore;
-        return SetupMethod(typedStore, values);
-    }
+    public MemberMock<T[], T> AddUpAllOfThese<T>(Arg<T[]> values) =>
+        SetupMethod(SetupGenericStore<T[], T>(this.AddUpAllOfTheseBagStore ??= new()), values);
 
     public class CalculatorMockCallTracker : MockCallTracker
     {
@@ -132,29 +123,37 @@ public class CalculatorMockSetup : MockSetup
             CallVoidMemberMock(this.setup.turnOffMockStore);
         }
 
-        private Dictionary<Type, object>? AddUpAllOfTheseCallStore;
+        private Dictionary<int, object>? AddUpAllOfTheseCallStore;
 
         public T AddUpAllOfThese<T>(T[] values)
         {
-            this.AddUpAllOfTheseCallStore ??= new();
-            if (!this.AddUpAllOfTheseCallStore.TryGetValue(typeof(T[]), out object? specificStore))
-            {
-                specificStore = new List<T[]>();
-                this.AddUpAllOfTheseCallStore.Add(typeof(T[]), specificStore);
-            }
-            var typedCallStore = (List<T[]>)specificStore;
+            int genericTypeHashCode = GetUniqueIntFromTypes(typeof(T));
+            //this.AddUpAllOfTheseCallStore ??= new();
+            //if (!this.AddUpAllOfTheseCallStore.TryGetValue(0, out object? specificStore))
+            //{
+            //    specificStore = new List<T[]>();
+            //    this.AddUpAllOfTheseCallStore.Add(0, specificStore);
+            //}
+            //var typedCallStore = (List<T[]>)specificStore;
 
-            this.setup.AddUpAllOfTheseBagStore ??= new();
-            if (
-                !this.setup.AddUpAllOfTheseBagStore.TryGetValue(typeof(T[]), out object? setupStore)
-            )
-            {
-                setupStore = new List<ArgBagWithMemberMock<T[], T>>();
-                this.setup.AddUpAllOfTheseBagStore.Add(typeof(T[]), setupStore);
-            }
-            var typedStore = (List<ArgBagWithMemberMock<T[], T>>)setupStore;
+            //this.setup.AddUpAllOfTheseBagStore ??= new();
+            //if (
+            //    !this.setup.AddUpAllOfTheseBagStore.TryGetValue(0, out object? setupStore)
+            //)
+            //{
+            //    setupStore = new List<ArgBagWithMemberMock<T[], T>>();
+            //    this.setup.AddUpAllOfTheseBagStore.Add(0, setupStore);
+            //}
+            //var typedStore = (List<ArgBagWithMemberMock<T[], T>>)setupStore;
+            var mockStore =
+                this.setup.AddUpAllOfTheseBagStore?.GetValueOrDefault(genericTypeHashCode)
+                as List<ArgBagWithMemberMock<T[], T>>;
 
-            return CallMemberMock(typedStore, typedCallStore, values);
+            return CallMemberMock(
+                mockStore,
+                GetGenericCallStore<T[]>(AddUpAllOfTheseCallStore ??= new(), genericTypeHashCode),
+                values
+            );
         }
 
         public class CalculatorMockAsserter : MockAsserter
@@ -180,18 +179,18 @@ public class CalculatorMockSetup : MockSetup
             {
                 this.tracker.AddUpAllOfTheseCallStore ??= new();
                 if (
-                    !this.tracker.AddUpAllOfTheseCallStore.TryGetValue(
-                        typeof(T[]),
-                        out object? specificStore
-                    )
+                    !this.tracker.AddUpAllOfTheseCallStore.TryGetValue(0, out object? specificStore)
                 )
                 {
                     specificStore = new List<T[]>();
-                    this.tracker.AddUpAllOfTheseCallStore.Add(typeof(T[]), specificStore);
+                    this.tracker.AddUpAllOfTheseCallStore.Add(0, specificStore);
                 }
                 var typedCallStore = (List<T[]>)specificStore;
 
-                return GetMemberAsserter(typedCallStore, values);
+                return GetMemberAsserter(
+                    this.tracker.AddUpAllOfTheseCallStore?.GetValueOrDefault(0) as List<T[]>,
+                    values
+                );
             }
         }
     }

@@ -7,6 +7,8 @@ namespace MockMe.PostBuild;
 
 internal class ILManipulator
 {
+    //public static void InsertMethodBodyBeforeExisting() { }
+
     public static void InsertMethodBodyBeforeExisting(
         AssemblyDefinition methodAssembly,
         MethodDefinition originalMethod,

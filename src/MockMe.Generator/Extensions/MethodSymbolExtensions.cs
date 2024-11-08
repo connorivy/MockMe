@@ -44,6 +44,11 @@ public static class MethodSymbolExtensions
         string? typePostfix = null
     )
     {
+        if (method.Parameters.Length == 0)
+        {
+            return string.Empty;
+        }
+
         return string.Join(
             ", ",
             method.Parameters.Select(p =>
@@ -54,7 +59,7 @@ public static class MethodSymbolExtensions
                     RefKind.Out => "out ",
                     RefKind.In => "in ",
                     //RefKind.RefReadOnlyParameter => "ref readonly ",
-                    RefKind.None or _ => p.IsParams ? "params " : ""
+                    RefKind.None or _ => p.IsParams ? "params " : "",
                 };
                 var paramString =
                     $"{modifiers}{typePrefix}{p.Type.ToDisplayString()}{typePostfix} {p.Name}";
@@ -74,4 +79,17 @@ public static class MethodSymbolExtensions
 
     public static string GetParameterTypesWithoutModifiers(this IMethodSymbol method) =>
         string.Join(", ", method.Parameters.Select(p => p.Type.ToDisplayString()));
+
+    public static string GetGenericParameterString(this IMethodSymbol method) =>
+        string.Join(", ", method.TypeParameters.Select(p => p.Name));
+
+    public static string GetGenericParameterStringInBrackets(this IMethodSymbol method)
+    {
+        if (method.TypeParameters.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        return $"<{method.GetGenericParameterString()}>";
+    }
 }

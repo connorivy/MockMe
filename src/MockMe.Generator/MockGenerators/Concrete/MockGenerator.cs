@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
@@ -10,7 +11,10 @@ internal class MockGenerator
     private const string MockNamespace = "MockMe.Mocks.Generated";
     private const string voidString = "void";
 
-    public static StringBuilder CreateMockForConcreteType(ITypeSymbol typeSymbol)
+    public static StringBuilder CreateMockForConcreteType(
+        ITypeSymbol typeSymbol,
+        StringBuilder assemblyAttributesSource
+    )
     {
         var thisNamespace = $"MockMe.Generated.{typeSymbol.ContainingNamespace}";
         StringBuilder sb = new();
@@ -21,6 +25,7 @@ internal class MockGenerator
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 using HarmonyLib;
 using MockMe;
 using MockMe.Mocks;
@@ -31,13 +36,12 @@ namespace {thisNamespace}
 {{
     public class {typeSymbol.Name}Mock : Mock<global::{typeSymbol}>
     {{
-        private static readonly ConcurrentDictionary<global::{typeSymbol}, {typeSymbol.Name}Mock> mockStore = new();
         public {typeSymbol.Name}Mock()
         {{
             this.Setup = new {typeSymbol.Name}MockSetup();
             this.CallTracker = new {typeSymbol.Name}MockCallTracker(this.Setup);
             this.Assert = new {typeSymbol.Name}MockAsserter(this.CallTracker);
-            mockStore.TryAdd(this.Value, this);
+            global::MockMe.Tests.NuGet.MockStore<global::{typeSymbol}>.Store.TryAdd(this.Value, this);
         }}
 
         public {typeSymbol.Name}MockSetup Setup {{ get; }}
@@ -73,22 +77,19 @@ namespace {thisNamespace}
             string returnType = methodSymbol.ReturnType.ToDisplayString();
             string paramsWithTypesAndMods =
                 methodSymbol.GetParametersWithOriginalTypesAndModifiers();
-
-            if (!string.IsNullOrEmpty(paramsWithTypesAndMods))
-            {
-                paramsWithTypesAndMods = $", {paramsWithTypesAndMods}";
-            }
             string paramTypeString = methodSymbol.GetParameterTypesWithoutModifiers();
             string paramString = methodSymbol.GetParametersWithoutTypesAndModifiers();
 
-            sb.AppendLine(
-                $@"
+            if (methodSymbol.TypeParameters.Length == 0)
+            {
+                sb.AppendLine(
+                    $@"
         [HarmonyPatch(typeof(global::{typeSymbol}), nameof(global::{typeSymbol}.{method.Name}))]
         internal sealed class Patch{Guid.NewGuid():N}
         {{
-            private static bool Prefix(global::{typeSymbol} __instance{(returnType == "void" ? string.Empty : $", ref {returnType} __result")}{paramsWithTypesAndMods})
+            private static bool Prefix(global::{typeSymbol} __instance{(returnType == "void" ? string.Empty : $", ref {returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
             {{
-                if (mockStore.TryGetValue(__instance, out var mock))
+                if (global::MockMe.Tests.NuGet.MockStore<global::{typeSymbol}>.TryGetValue<{typeSymbol.Name}Mock>(__instance, out var mock))
                 {{
                     {(returnType == "void" ? string.Empty : "__result = ")}mock.CallTracker.{method.Name}({paramString});
                     return false;
@@ -96,7 +97,62 @@ namespace {thisNamespace}
                 return true;
             }}
         }}"
-            );
+                );
+            }
+            else
+            {
+                sb.AppendLine(
+                    $@"
+        private {returnType} {method.Name}{methodSymbol.GetGenericParameterStringInBrackets()}({paramsWithTypesAndMods})
+        {{
+            if (global::MockMe.Tests.NuGet.MockStore<global::{typeSymbol}>.GetStore().TryGetValue(default, out var mock))
+            {{
+                var callTracker = mock.GetType()
+                    .GetProperty(
+                        ""CallTracker"",
+                        System.Reflection.BindingFlags.NonPublic
+                            | System.Reflection.BindingFlags.Instance
+                    )
+                    .GetValue(mock);
+
+                return ({returnType})
+                    callTracker
+                        .GetType()
+                        .GetMethod(
+                            ""{method.Name}"",
+                            System.Reflection.BindingFlags.Public
+                                | System.Reflection.BindingFlags.Instance
+                        )
+                        .MakeGenericMethod({string.Join(", ", methodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")")))})
+                        .Invoke(callTracker, new object[] {{ {paramString} }});
+            }}
+            return default;
+        }}
+"
+                );
+
+                assemblyAttributesSource.AppendLine(
+                    $@"
+[assembly: global::MockMe.Abstractions.GenericMethodDefinition(
+    ""{typeSymbol.ContainingNamespace}"",
+    ""{typeSymbol}"",
+    ""{methodSymbol.Name}"",
+    ""{thisNamespace}"",
+    ""{thisNamespace}.{typeSymbol.Name}Mock"",
+    ""{methodName}""
+)]
+"
+                );
+
+                //public GenericMethodDefinitionAttribute(
+                //    string typeToReplaceAssemblyName,
+                //    string typeToReplaceTypeFullName,
+                //    string typeToReplaceMethodName,
+                //    string sourceTypeAssemblyName,
+                //    string sourceTypeFullName,
+                //    string sourceTypeMethodName
+                //)
+            }
         }
 
         sb.AppendLine(

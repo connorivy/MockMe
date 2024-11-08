@@ -37,6 +37,13 @@ public class MockAsserter
         Arg<TArg2> arg2
     ) => GetMemberAsserterBase(callStore, new ArgBag<TArg1, TArg2>(arg1, arg2));
 
+    protected static MemberAsserter GetMemberAsserter<TArg1, TArg2, TArg3>(
+        List<ValueTuple<TArg1, TArg2, TArg3>>? callStore,
+        Arg<TArg1> arg1,
+        Arg<TArg2> arg2,
+        Arg<TArg3> arg3
+    ) => GetMemberAsserterBase(callStore, new ArgBag<TArg1, TArg2, TArg3>(arg1, arg2, arg3));
+
     private static MemberAsserter GetMemberAsserterBase<TArgCollection>(
         IList<TArgCollection>? callStore,
         IArgBag<TArgCollection> argBag

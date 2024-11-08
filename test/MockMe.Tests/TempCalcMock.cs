@@ -1,12 +1,9 @@
 #nullable enable
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using MockMe.Mocks;
 using MockMe.Tests.ExampleClasses;
-using MockMe.Tests.NuGet;
 using static MockMe.Tests.TempCalcMockSetup;
 using static MockMe.Tests.TempCalcMockSetup.TempCalcMockCallTracker;
 
@@ -17,10 +14,12 @@ namespace MockMe.Tests
 {
     public class TempCalcMock : Mock<ExampleClasses.ComplexCalculator>
     {
-        private static readonly ConcurrentDictionary<
+        private static readonly IReadOnlyDictionary<
             ExampleClasses.ComplexCalculator,
             TempCalcMock
-        > mockStore = new();
+        > mockStore =
+            (IReadOnlyDictionary<ComplexCalculator, TempCalcMock>)
+                MockStore<ComplexCalculator>.GetStore();
 
         public TempCalcMock()
         {
@@ -28,7 +27,7 @@ namespace MockMe.Tests
             this.CallTracker = new TempCalcMockCallTracker(this.Setup);
             this.Assert = new TempCalcMockAsserter(this.CallTracker);
 
-            Mocks.Generic.MockStore<ComplexCalculator>.Store.TryAdd(this.Value, this);
+            MockStore<ComplexCalculator>.Store.TryAdd(this.Value, this);
             //mockStore.TryAdd(this.Value, this);
         }
 
@@ -44,19 +43,8 @@ namespace MockMe.Tests
 
         private T AddUpAllOfThese2<T>(int hello, T[] values, double goodbye)
         {
-            if (
-                Mocks
-                    .Generic.MockStore<ComplexCalculator>.GetStore()
-                    .TryGetValue(default, out object mock)
-            )
+            if (MockStore<ComplexCalculator>.TryGetValue<object>(default, out var mock))
             {
-                //Type mockType = mock.GetType();
-                //var callTrackerPropInfo = mockType.GetProperty(
-                //    "CallTracker",
-                //    System.Reflection.BindingFlags.NonPublic
-                //        | System.Reflection.BindingFlags.Instance
-                //);
-                //var callTracker = callTrackerPropInfo.GetValue(mock);
                 var callTracker = mock.GetType()
                     .GetProperty(
                         "CallTracker",
@@ -65,18 +53,6 @@ namespace MockMe.Tests
                     )
                     .GetValue(mock);
 
-                //return (T)((dynamic)callTracker).AddUpAllOfThese2<T>(hello, values, goodbye);
-
-                //var methodPropInfo = callTracker
-                //    .GetType()
-                //    .GetMethod(
-                //        "AddUpAllOfThese2",
-                //        System.Reflection.BindingFlags.Public
-                //            | System.Reflection.BindingFlags.Instance
-                //    )
-                //    .MakeGenericMethod(typeof(T));
-                //return (T)
-                //    methodPropInfo.Invoke(callTracker, new object[] { hello, values, goodbye });
                 return (T)
                     callTracker
                         .GetType()
@@ -126,7 +102,9 @@ namespace MockMe.Tests
                 double y
             )
             {
-                if (mockStore.TryGetValue(__instance, out var mock))
+                if (
+                    MockStore<ComplexCalculator>.TryGetValue<TempCalcMock>(__instance, out var mock)
+                )
                 {
                     __result = mock.CallTracker.Multiply(x, y);
                     return false;

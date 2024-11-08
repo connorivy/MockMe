@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
@@ -49,7 +51,21 @@ internal class AsserterGenerator
             }
 
             int numParameters = methodSymbol.Parameters.Length;
-            if (numParameters == 0)
+            var parametersDefinition = methodSymbol.GetParametersWithArgTypesAndModifiers();
+            var parameters = methodSymbol.GetParametersWithoutTypesAndModifiers();
+
+            if (methodSymbol.TypeParameters.Length > 0)
+            {
+                sb.AppendLine(
+                    $@"
+                public MemberAsserter {methodName}{methodSymbol.GetGenericParameterStringInBrackets()}({parametersDefinition})
+                {{
+                    int genericTypeHashCode = GetUniqueIntFromTypes({string.Join(", ", methodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")")))});
+                    return GetMemberAsserter(this.tracker.{methodName}CallStore?.GetValueOrDefault(genericTypeHashCode) as List<{methodSymbol.GetMethodArgumentsAsCollection()}>, {parameters});
+                }}"
+                );
+            }
+            else if (numParameters == 0)
             {
                 sb.AppendLine(
                     $@"
@@ -59,9 +75,6 @@ internal class AsserterGenerator
             }
             else
             {
-                var parametersDefinition = methodSymbol.GetParametersWithArgTypesAndModifiers();
-                var parameters = methodSymbol.GetParametersWithoutTypesAndModifiers();
-
                 sb.AppendLine(
                     $@"
                 public MemberAsserter {methodName}({parametersDefinition})
