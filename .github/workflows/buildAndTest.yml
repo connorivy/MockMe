@@ -63,7 +63,7 @@ jobs:
         path: ./packages
     
     - name: Create local package feed
-      run: dotnet nuget add source $GITHUB_WORKSPACE/packages --name localNuGet
+      run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
 
     - name: Print NuGet Sources
       run: dotnet nuget list source
@@ -75,7 +75,7 @@ jobs:
       run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
-      run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
+      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
 
     # - name: ReportGenerator
     #   uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
@@ -119,7 +119,7 @@ jobs:
         path: ./packages
     
     - name: Create local package feed
-      run: dotnet nuget add source $GITHUB_WORKSPACE/packages --name localNuGet
+      run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
 
     - name: Print NuGet Sources
       run: dotnet nuget list source
@@ -131,6 +131,6 @@ jobs:
       run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
-      run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
+      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
 
     
