@@ -26,32 +26,6 @@ using var definitionAssembly = AssemblyDefinition.ReadAssembly(
 
 List<MockReplacementInfo> genericTypes = definitionAssembly.GetMockReplacementInfo();
 
-string libExtensions = ".dll";
-
-//if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-//{
-//    libExtensions = ".dll";
-//}
-//else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-//{
-//    libExtensions = ".so";
-//}
-//else
-//{
-//    throw new NotImplementedException("mac not implemented");
-//}
-
-using var storeAssembly = AssemblyDefinition.ReadAssembly(
-    Path.Combine(binLocation, "MockMe.Tests.NuGet.dll"),
-    new ReaderParameters
-    {
-        //ReadWrite = true,
-        //ReadingMode = ReadingMode.Immediate,
-        //InMemory = true,
-        //AssemblyResolver = new CustomResolver(),
-    }
-);
-
 foreach (var group in genericTypes.GroupBy(info => info.TypeToReplace.AssemblyName))
 {
     string currentAssemblyPath = Path.Combine(binLocation, group.Key + ".dll");
@@ -62,8 +36,8 @@ foreach (var group in genericTypes.GroupBy(info => info.TypeToReplace.AssemblyNa
             ReadWrite = true,
             ReadingMode = ReadingMode.Immediate,
             InMemory = true,
-            AssemblyResolver = new CustomResolver(storeAssembly),
-            MetadataResolver = new CustomMetaResolver(new CustomResolver(storeAssembly)),
+            AssemblyResolver = new CustomResolver(binLocation),
+            MetadataResolver = new CustomMetaResolver(new CustomResolver(binLocation)),
         }
     );
 
@@ -90,45 +64,34 @@ foreach (var group in genericTypes.GroupBy(info => info.TypeToReplace.AssemblyNa
     assembly.Write(currentAssemblyPath);
 }
 
-internal class CustomResolver : BaseAssemblyResolver
+internal class CustomResolver(string binLocation) : BaseAssemblyResolver
 {
-    private readonly AssemblyDefinition definition;
-    private DefaultAssemblyResolver _defaultResolver;
-
-    public CustomResolver(AssemblyDefinition definition)
-    {
-        _defaultResolver = new DefaultAssemblyResolver();
-        this.definition = definition;
-    }
+    private readonly DefaultAssemblyResolver defaultResolver = new();
 
     public override AssemblyDefinition Resolve(
         AssemblyNameReference name,
         ReaderParameters readerParameters
     )
     {
-        if (name.Name == "MockMe.Tests.NuGet")
-        {
-            return definition;
-        }
         AssemblyDefinition assembly;
         try
         {
-            assembly = _defaultResolver.Resolve(name);
+            assembly = this.defaultResolver.Resolve(name);
         }
-        catch (AssemblyResolutionException ex)
+        catch (AssemblyResolutionException)
         {
-            ;
-            throw;
+            assembly = AssemblyDefinition.ReadAssembly(
+                Path.Combine(binLocation, name.Name + ".dll"),
+                readerParameters
+            );
         }
         return assembly;
     }
 }
 
-internal class CustomMetaResolver : Mono.Cecil.MetadataResolver
+internal class CustomMetaResolver(IAssemblyResolver assemblyResolver)
+    : MetadataResolver(assemblyResolver)
 {
-    public CustomMetaResolver(IAssemblyResolver assemblyResolver)
-        : base(assemblyResolver) { }
-
     public override MethodDefinition Resolve(MethodReference method)
     {
         return base.Resolve(method);

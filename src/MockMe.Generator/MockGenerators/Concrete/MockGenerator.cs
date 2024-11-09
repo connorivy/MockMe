@@ -41,7 +41,7 @@ namespace {thisNamespace}
             this.Setup = new {typeSymbol.Name}MockSetup();
             this.CallTracker = new {typeSymbol.Name}MockCallTracker(this.Setup);
             this.Assert = new {typeSymbol.Name}MockAsserter(this.CallTracker);
-            global::MockMe.Tests.NuGet.MockStore<global::{typeSymbol}>.Store.TryAdd(this.Value, this);
+            global::MockMe.MockStore<global::{typeSymbol}>.Store.TryAdd(this.Value, this);
         }}
 
         public {typeSymbol.Name}MockSetup Setup {{ get; }}
@@ -89,7 +89,7 @@ namespace {thisNamespace}
         {{
             private static bool Prefix(global::{typeSymbol} __instance{(returnType == "void" ? string.Empty : $", ref {returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
             {{
-                if (global::MockMe.Tests.NuGet.MockStore<global::{typeSymbol}>.TryGetValue<{typeSymbol.Name}Mock>(__instance, out var mock))
+                if (global::MockMe.MockStore<global::{typeSymbol}>.TryGetValue<{typeSymbol.Name}Mock>(__instance, out var mock))
                 {{
                     {(returnType == "void" ? string.Empty : "__result = ")}mock.CallTracker.{method.Name}({paramString});
                     return false;
@@ -105,7 +105,7 @@ namespace {thisNamespace}
                     $@"
         private {returnType} {method.Name}{methodSymbol.GetGenericParameterStringInBrackets()}({paramsWithTypesAndMods})
         {{
-            if (global::MockMe.Tests.NuGet.MockStore<global::{typeSymbol}>.GetStore().TryGetValue(default, out var mock))
+            if (global::MockMe.MockStore<global::{typeSymbol}>.GetStore().TryGetValue(default, out var mock))
             {{
                 var callTracker = mock.GetType()
                     .GetProperty(
