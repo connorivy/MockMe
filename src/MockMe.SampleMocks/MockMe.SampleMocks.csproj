@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoMod" Version="22.7.31.1" />
+    <PackageReference Include="MonoMod.RuntimeDetour" Version="25.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\test\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
+    <ProjectReference Include="..\..\test\MockMe.Tests.NuGet\MockMe.Tests.NuGet.csproj" />
+    <ProjectReference Include="..\..\test\MockMe.Tests\MockMe.Tests.csproj" />
+    <ProjectReference Include="..\MockMe\MockMe.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

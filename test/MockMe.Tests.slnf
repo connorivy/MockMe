@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "..\\MockMe.sln",
+    "projects": [
+      "test\\MockMe.Tests.NuGet\\MockMe.Tests.NuGet.csproj",
+      "test\\MockMe.Tests\\MockMe.Tests.csproj"
+    ]
+  }
+}

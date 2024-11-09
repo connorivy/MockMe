@@ -1,4 +1,4 @@
-﻿namespace MockMe;
+namespace MockMe;
 
 public class MockAsserter
 {
@@ -24,22 +24,41 @@ public class MockAsserter
     //    return new(numTimesCalled);
     //}
 
-    protected static MemberAsserter GetMemberAsserter<TArg1>()
-    {
-        return new(0);
-    }
+    private static readonly MemberAsserter defaultAsserter = new(0);
+
+    protected static MemberAsserter GetMemberAsserter<TArg1>(
+        List<TArg1>? callStore,
+        Arg<TArg1> arg1
+    ) => GetMemberAsserterBase(callStore, new ArgBag<TArg1>(arg1));
 
     protected static MemberAsserter GetMemberAsserter<TArg1, TArg2>(
-        List<ValueTuple<TArg1, TArg2>> callStore,
+        List<ValueTuple<TArg1, TArg2>>? callStore,
         Arg<TArg1> arg1,
         Arg<TArg2> arg2
+    ) => GetMemberAsserterBase(callStore, new ArgBag<TArg1, TArg2>(arg1, arg2));
+
+    protected static MemberAsserter GetMemberAsserter<TArg1, TArg2, TArg3>(
+        List<ValueTuple<TArg1, TArg2, TArg3>>? callStore,
+        Arg<TArg1> arg1,
+        Arg<TArg2> arg2,
+        Arg<TArg3> arg3
+    ) => GetMemberAsserterBase(callStore, new ArgBag<TArg1, TArg2, TArg3>(arg1, arg2, arg3));
+
+    private static MemberAsserter GetMemberAsserterBase<TArgCollection>(
+        IList<TArgCollection>? callStore,
+        IArgBag<TArgCollection> argBag
     )
     {
+        if (callStore is null)
+        {
+            return defaultAsserter;
+        }
+
         int numTimesCalled = 0;
         for (int i = callStore.Count - 1; i >= 0; i--)
         {
-            var argBag = callStore[i];
-            if (arg1.IsSatisfiedBy(argBag.Item1) && arg2.IsSatisfiedBy(argBag.Item2))
+            var argCollection = callStore[i];
+            if (argBag.AllArgsSatisfy(argCollection))
             {
                 numTimesCalled++;
             }

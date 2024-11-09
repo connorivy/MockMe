@@ -1,14 +1,23 @@
-﻿namespace MockMe.Mocks;
+namespace MockMe.Mocks;
 
 public class MemberMock<TReturn>
     : VoidMemberNoArgsBaseMock<MemberMock<TReturn>>,
         IMemberMock<TReturn, MemberMock<TReturn>>
 {
-    private readonly ReturnManager<TReturn> returnManager = new();
+    public MemberMock()
+        : this(new()) { }
 
-    public MemberMock<TReturn> Return(TReturn returnThis, params TReturn[] thenReturnThese)
+    internal MemberMock(ActionCallbackManager<Action> callbackManager)
+        : base(callbackManager)
     {
-        returnManager.Returns(returnThis, thenReturnThese);
+        this.returnManager = new(callbackManager);
+    }
+
+    private readonly ReturnManager<TReturn> returnManager;
+
+    public MemberMock<TReturn> Returns(TReturn returnThis, params TReturn[] thenReturnThese)
+    {
+        this.returnManager.Returns(returnThis, thenReturnThese);
         return this;
     }
 }

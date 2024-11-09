@@ -1,34 +1,38 @@
-﻿using MockMe.Extensions;
+using MockMe.Extensions;
 
 namespace MockMe.Mocks;
 
 public abstract class MemberMockWithArgsThatReturns<TReturn, TSelf, TCallback, TReturnFunc>
     : VoidMemberMockWithArgsBase<TSelf, TCallback>,
-        IMemberMockWithArgs<TReturn, TSelf, TCallback, TReturnFunc>
+        IMemberMockWithArgs<TReturn, TSelf, TCallback, TReturnFunc>,
+        IMockCallbackAndReturnCallRetriever<TCallback, TReturnFunc>
     where TSelf : MemberMockWithArgsThatReturns<TReturn, TSelf, TCallback, TReturnFunc>
 {
     private readonly ReturnManager<TReturn, TReturnFunc> returnManager;
 
-    protected MemberMockWithArgsThatReturns(
-        Func<TReturn, TReturnFunc> toReturnCall,
-        Func<Action, TCallback> toCallback
+    internal MemberMockWithArgsThatReturns(
+        CallbackManager<TCallback> callbackManager,
+        Func<TReturn, TReturnFunc> toReturnCall
     )
-        : base(toCallback)
+        : base(callbackManager)
     {
-        returnManager = new(toReturnCall);
+        this.returnManager = new(callbackManager, toReturnCall);
     }
 
-    public TSelf Return(TReturnFunc returnThis, params TReturnFunc[] thenReturnThese)
+    public TSelf Returns(TReturnFunc returnThis, params TReturnFunc[] thenReturnThese)
     {
-        returnManager.Returns(returnThis, thenReturnThese);
+        this.returnManager.Returns(returnThis, thenReturnThese);
         return (TSelf)this;
     }
 
-    public TSelf Return(TReturn returnThis, params TReturn[] thenReturnThese)
+    public TSelf Returns(TReturn returnThis, params TReturn[] thenReturnThese)
     {
-        returnManager.Returns(returnThis, thenReturnThese);
+        this.returnManager.Returns(returnThis, thenReturnThese);
         return (TSelf)this;
     }
+
+    TReturnFunc? IMockReturnCallRetriever<TReturnFunc>.GetReturnValue() =>
+        this.returnManager.GetReturnCall();
 }
 
 public class MemberMock<TArg1, TReturn>
@@ -40,7 +44,10 @@ public class MemberMock<TArg1, TReturn>
     >
 {
     public MemberMock()
-        : base(val => _ => val, ActionExtensions.CallbackFunc<TArg1>()) { }
+        : base(
+            new(ActionExtensions.CallbackFunc<TArg1>()),
+            FunctionUtils.ToReturnFunc<TArg1, TReturn>()
+        ) { }
 }
 
 public class MemberMock<TArg1, TArg2, TReturn>
@@ -52,7 +59,10 @@ public class MemberMock<TArg1, TArg2, TReturn>
     >
 {
     public MemberMock()
-        : base(val => (_, _) => val, ActionExtensions.CallbackFunc<TArg1, TArg2>()) { }
+        : base(
+            new(ActionExtensions.CallbackFunc<TArg1, TArg2>()),
+            FunctionUtils.ToReturnFunc<TArg1, TArg2, TReturn>()
+        ) { }
 }
 
 public class MemberMock<TArg1, TArg2, TArg3, TReturn>
@@ -64,7 +74,10 @@ public class MemberMock<TArg1, TArg2, TArg3, TReturn>
     >
 {
     public MemberMock()
-        : base(val => (_, _, _) => val, ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3>()) { }
+        : base(
+            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3>()),
+            FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TReturn>()
+        ) { }
 }
 
 public class MemberMock<TArg1, TArg2, TArg3, TArg4, TReturn>
@@ -77,8 +90,8 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TReturn>
 {
     public MemberMock()
         : base(
-            val => (_, _, _, _) => val,
-            ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4>()
+            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4>()),
+            FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TReturn>()
         ) { }
 }
 
@@ -92,7 +105,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TReturn>
 {
     public MemberMock()
         : base(
-            val => (_, _, _, _, _) => val,
-            ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>()
+            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>()),
+            FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TReturn>()
         ) { }
 }

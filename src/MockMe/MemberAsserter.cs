@@ -1,4 +1,4 @@
-﻿using MockMe.Exceptions;
+using MockMe.Exceptions;
 
 namespace MockMe;
 
@@ -22,19 +22,19 @@ public class MemberAsserter
         switch (intComparison)
         {
             case NumTimes.Exactly:
-                if (numTimesCalled != this.numTimesCalled)
+                if (this.numTimesCalled != numTimesCalled)
                 {
                     throw new AssertionFailureException();
                 }
                 break;
             case NumTimes.AtLeast:
-                if (numTimesCalled < this.numTimesCalled)
+                if (this.numTimesCalled < numTimesCalled)
                 {
                     throw new AssertionFailureException();
                 }
                 break;
             case NumTimes.AtMost:
-                if (numTimesCalled > this.numTimesCalled)
+                if (this.numTimesCalled > numTimesCalled)
                 {
                     throw new AssertionFailureException();
                 }
