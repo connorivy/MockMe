@@ -1,4 +1,4 @@
-name: Build / Test / Lint
+name: Build and Test
 
 on:
   pull_request:
@@ -40,9 +40,9 @@ jobs:
       # fail-fast: false
       matrix:
         dotnet:
-          # - '9.0'
-          # - '8.0'
-          # - '7.0'
+          - '9.0'
+          - '8.0'
+          - '7.0'
           - '6.0'
     env:
       ContinuousIntegrationBuild: true
@@ -91,36 +91,46 @@ jobs:
     #     github-token: ${{ secrets.GITHUB_TOKEN }}
     #     path-to-lcov: ./tests/TestResults/lcov.info
 
-  # test-windows:
-  #   runs-on: windows-latest
-  #   strategy:
-  #     matrix:
-  #       dotnet-version: ['6.0.x', '7.0.x', '8.0.x']
+  test-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet:
+          - '9.0'
+          - '8.0'
+          - '7.0'
+          - '6.0'
 
-  #   needs: build_and_pack
+    needs: build_and_pack
 
-  #   steps:
-  #   - name: Checkout Code
-  #     uses: actions/checkout@v4
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-  #   - name: Setup .NET ${{ matrix.dotnet-version }}
-  #     uses: actions/setup-dotnet@v3
-  #     with:
-  #       dotnet-version: ${{ matrix.dotnet-version }}
+    - name: Setup .NET ${{ matrix.dotnet }}
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
 
-  #   - name: Download NuGet Packages
-  #     uses: actions/download-artifact@v2
-  #     with:
-  #       name: nuget-packages
-  #       path: ./packages
+    - name: Download NuGet Packages
+      uses: actions/download-artifact@v2
+      with:
+        name: nuget-packages
+        path: ./packages
+    
+    - name: Create local package feed
+      run: dotnet nuget add source $GITHUB_WORKSPACE/packages --name localNuGet
 
-  #   - name: Add Local NuGet Source
-  #     run: dotnet nuget add source ./packages --name localNuGet
+    - name: Print NuGet Sources
+      run: dotnet nuget list source
 
-  #   - name: Restore Dependencies with Local Source
-  #     run: dotnet restore --source ./packages
+    - name: Restore dependencies
+      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
-  #   - name: Run Tests
-  #     run: dotnet test --no-build --verbosity normal
+    - name: Build
+      run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+
+    - name: Test
+      run: dotnet test --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
 
     
