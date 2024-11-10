@@ -27,7 +27,7 @@ namespace MockMe.Tests
             this.CallTracker = new TempCalcMockCallTracker(this.Setup);
             this.Assert = new TempCalcMockAsserter(this.CallTracker);
 
-            MockStore<ComplexCalculator>.Store.TryAdd(this.Value, this);
+            MockStore<ComplexCalculator>.Store.TryAdd(this.MockedObject, this);
             //mockStore.TryAdd(this.Value, this);
         }
 

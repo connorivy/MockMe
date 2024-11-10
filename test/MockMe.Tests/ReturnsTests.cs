@@ -12,7 +12,7 @@ namespace MockMe.Tests
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
-            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace MockMe.Tests
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
-            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
 
             Assert.Equal(3, new SimpleCalculator().Add(1, 2));
             Assert.Equal(10, new SimpleCalculator().Add(6, 4));
@@ -36,11 +36,11 @@ namespace MockMe.Tests
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
-            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
         }
 
         [Fact]
@@ -50,11 +50,11 @@ namespace MockMe.Tests
 
             calculatorMock.Setup.Add(1, 2).Returns(9, 99, 999, 9999, 99999);
 
-            Assert.Equal(9, calculatorMock.Value.Add(1, 2));
-            Assert.Equal(99, calculatorMock.Value.Add(1, 2));
-            Assert.Equal(999, calculatorMock.Value.Add(1, 2));
-            Assert.Equal(9999, calculatorMock.Value.Add(1, 2));
-            Assert.Equal(99999, calculatorMock.Value.Add(1, 2));
+            Assert.Equal(9, calculatorMock.MockedObject.Add(1, 2));
+            Assert.Equal(99, calculatorMock.MockedObject.Add(1, 2));
+            Assert.Equal(999, calculatorMock.MockedObject.Add(1, 2));
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
+            Assert.Equal(99999, calculatorMock.MockedObject.Add(1, 2));
         }
     }
 }

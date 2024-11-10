@@ -18,6 +18,30 @@ internal class SetupGenerator
     {{"
         );
 
+        StringBuilder callTrackerBuilder = new();
+        StringBuilder asserterBuilder = new();
+        callTrackerBuilder.AppendLine(
+            $@"
+        public class {typeSymbol.Name}MockCallTracker : MockCallTracker
+        {{
+            private readonly {typeSymbol.Name}MockSetup setup;
+            public {typeSymbol.Name}MockCallTracker({typeSymbol.Name}MockSetup setup)
+            {{
+                this.setup = setup;
+            }}"
+        );
+
+        asserterBuilder.AppendLine(
+            $@"
+            public class {typeSymbol.Name}MockAsserter : MockAsserter
+            {{
+                private readonly {typeSymbol.Name}MockCallTracker tracker;
+                public {typeSymbol.Name}MockAsserter({typeSymbol.Name}MockCallTracker tracker)
+                {{
+                    this.tracker = tracker;
+                }}"
+        );
+
         foreach (var method in typeSymbol.GetMembers())
         {
             if (method is not IMethodSymbol methodSymbol)
@@ -40,10 +64,29 @@ internal class SetupGenerator
                 continue;
             }
 
-            new ConcreteTypeMethodSetupGenerator(methodSymbol).AddMethodSetupToStringBuilder(sb);
+            ConcreteTypeMethodSetupGenerator methodGenerator = new(methodSymbol);
+
+            methodGenerator.AddMethodSetupToStringBuilder(sb);
+            methodGenerator.AddMethodCallTrackerToStringBuilder(callTrackerBuilder);
+            methodGenerator.AddMethodToAsserterClass(asserterBuilder);
+            //new ConcreteTypeMethodSetupGenerator(methodSymbol).AddMethodSetupToStringBuilder(sb);
         }
 
-        CallTrackerGenerator.CreateCallTrackerForConcreteType(typeSymbol, sb);
+        asserterBuilder.AppendLine(
+            $@"
+            }}"
+        );
+
+        callTrackerBuilder.Append(asserterBuilder);
+
+        callTrackerBuilder.AppendLine(
+            @$"
+        }}"
+        );
+
+        //CallTrackerGenerator.CreateCallTrackerForConcreteType(typeSymbol, sb);
+
+        sb.Append(callTrackerBuilder);
 
         sb.AppendLine(
             @$"

@@ -17,7 +17,7 @@ public static class MethodSymbolExtensions
     /// </returns>
     public static string GetMethodArgumentsAsCollection(this IMethodSymbol method)
     {
-        var types = method.Parameters.Select(p => p.Type.ToDisplayString()).ToArray();
+        var types = method.Parameters.Select(p => p.Type.ToFullTypeString()).ToArray();
         if (types.Length == 0)
         {
             throw new InvalidOperationException(
@@ -61,8 +61,9 @@ public static class MethodSymbolExtensions
                     //RefKind.RefReadOnlyParameter => "ref readonly ",
                     RefKind.None or _ => p.IsParams ? "params " : "",
                 };
+
                 var paramString =
-                    $"{modifiers}{typePrefix}{p.Type.ToDisplayString()}{typePostfix} {p.Name}";
+                    $"{modifiers}{typePrefix}{p.Type.ToFullTypeString()}{typePostfix} {p.Name}";
                 if (p.HasExplicitDefaultValue)
                 {
                     var defaultValue =
@@ -78,7 +79,7 @@ public static class MethodSymbolExtensions
         string.Join(", ", method.Parameters.Select(p => p.Name));
 
     public static string GetParameterTypesWithoutModifiers(this IMethodSymbol method) =>
-        string.Join(", ", method.Parameters.Select(p => p.Type.ToDisplayString()));
+        string.Join(", ", method.Parameters.Select(p => p.Type.ToFullTypeString()));
 
     public static string GetGenericParameterString(this IMethodSymbol method) =>
         string.Join(", ", method.TypeParameters.Select(p => p.Name));
@@ -91,5 +92,27 @@ public static class MethodSymbolExtensions
         }
 
         return $"<{method.GetGenericParameterString()}>";
+    }
+
+    public static string GetHarmonyPatchAnnotation(
+        this IMethodSymbol methodSymbol,
+        string typeFullName
+    )
+    {
+        // [HarmonyPatch(typeof(global::{ typeSymbol}), nameof(global::{ typeSymbol}.{ this.methodSymbol.Name}))]
+        string methodTypeArg = string.Empty;
+        string methodName = methodSymbol.Name;
+        if (methodSymbol.MethodKind == MethodKind.PropertyGet)
+        {
+            methodTypeArg = "global::HarmonyLib.MethodType.Getter";
+            methodName = methodName.Substring(4);
+        }
+        else if (methodSymbol.MethodKind == MethodKind.PropertySet)
+        {
+            methodTypeArg = "global::HarmonyLib.MethodType.Setter";
+            methodName = methodName.Substring(4);
+        }
+
+        return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){methodTypeArg.AddPrefixIfNotEmpty(", ")})]";
     }
 }

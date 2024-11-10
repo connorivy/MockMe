@@ -41,13 +41,45 @@ namespace {thisNamespace}
             this.Setup = new {typeSymbol.Name}MockSetup();
             this.CallTracker = new {typeSymbol.Name}MockCallTracker(this.Setup);
             this.Assert = new {typeSymbol.Name}MockAsserter(this.CallTracker);
-            global::MockMe.MockStore<global::{typeSymbol}>.Store.TryAdd(this.Value, this);
+            global::MockMe.MockStore<global::{typeSymbol}>.Store.TryAdd(this.MockedObject, this);
         }}
 
         public {typeSymbol.Name}MockSetup Setup {{ get; }}
         public {typeSymbol.Name}MockAsserter Assert {{ get; }}
         private {typeSymbol.Name}MockCallTracker CallTracker {{ get; set; }}
 "
+        );
+
+        StringBuilder setupBuilder = new();
+
+        setupBuilder.AppendLine(
+            $@"
+    public class {typeSymbol.Name}MockSetup : MockSetup
+    {{"
+        );
+
+        StringBuilder callTrackerBuilder = new();
+        StringBuilder asserterBuilder = new();
+        callTrackerBuilder.AppendLine(
+            $@"
+        public class {typeSymbol.Name}MockCallTracker : MockCallTracker
+        {{
+            private readonly {typeSymbol.Name}MockSetup setup;
+            public {typeSymbol.Name}MockCallTracker({typeSymbol.Name}MockSetup setup)
+            {{
+                this.setup = setup;
+            }}"
+        );
+
+        asserterBuilder.AppendLine(
+            $@"
+            public class {typeSymbol.Name}MockAsserter : MockAsserter
+            {{
+                private readonly {typeSymbol.Name}MockCallTracker tracker;
+                public {typeSymbol.Name}MockAsserter({typeSymbol.Name}MockCallTracker tracker)
+                {{
+                    this.tracker = tracker;
+                }}"
         );
 
         foreach (var method in typeSymbol.GetMembers())
@@ -64,104 +96,138 @@ namespace {thisNamespace}
                 continue;
             }
 
-            if (methodSymbol.MethodKind == MethodKind.PropertyGet)
-            {
-                continue;
-            }
+            //if (methodSymbol.MethodKind == MethodKind.PropertyGet)
+            //{
+            //    continue;
+            //    methodName = methodName.Substring(4) + "_get";
+            //}
 
-            if (methodSymbol.MethodKind == MethodKind.PropertySet)
-            {
-                continue;
-            }
+            //if (methodSymbol.MethodKind == MethodKind.PropertySet)
+            //{
+            //    continue;
+            //    methodName = methodName.Substring(4) + "_set";
+            //}
 
-            string returnType = methodSymbol.ReturnType.ToDisplayString();
-            string paramsWithTypesAndMods =
-                methodSymbol.GetParametersWithOriginalTypesAndModifiers();
-            string paramTypeString = methodSymbol.GetParameterTypesWithoutModifiers();
-            string paramString = methodSymbol.GetParametersWithoutTypesAndModifiers();
+            ConcreteTypeMethodSetupGenerator methodGenerator = new(methodSymbol);
 
-            if (methodSymbol.TypeParameters.Length == 0)
-            {
-                sb.AppendLine(
-                    $@"
-        [HarmonyPatch(typeof(global::{typeSymbol}), nameof(global::{typeSymbol}.{method.Name}))]
-        internal sealed class Patch{Guid.NewGuid():N}
-        {{
-            private static bool Prefix(global::{typeSymbol} __instance{(returnType == "void" ? string.Empty : $", ref {returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
-            {{
-                if (global::MockMe.MockStore<global::{typeSymbol}>.TryGetValue<{typeSymbol.Name}Mock>(__instance, out var mock))
-                {{
-                    {(returnType == "void" ? string.Empty : "__result = ")}mock.CallTracker.{method.Name}({paramString});
-                    return false;
-                }}
-                return true;
-            }}
-        }}"
-                );
-            }
-            else
-            {
-                sb.AppendLine(
-                    $@"
-        private {returnType} {method.Name}{methodSymbol.GetGenericParameterStringInBrackets()}({paramsWithTypesAndMods})
-        {{
-            if (global::MockMe.MockStore<global::{typeSymbol}>.GetStore().TryGetValue(default, out var mock))
-            {{
-                var callTracker = mock.GetType()
-                    .GetProperty(
-                        ""CallTracker"",
-                        System.Reflection.BindingFlags.NonPublic
-                            | System.Reflection.BindingFlags.Instance
-                    )
-                    .GetValue(mock);
+            methodGenerator.AddPatchMethod(sb, assemblyAttributesSource, typeSymbol);
+            methodGenerator.AddMethodSetupToStringBuilder(setupBuilder);
+            methodGenerator.AddMethodCallTrackerToStringBuilder(callTrackerBuilder);
+            methodGenerator.AddMethodToAsserterClass(asserterBuilder);
 
-                return ({returnType})
-                    callTracker
-                        .GetType()
-                        .GetMethod(
-                            ""{method.Name}"",
-                            System.Reflection.BindingFlags.Public
-                                | System.Reflection.BindingFlags.Instance
-                        )
-                        .MakeGenericMethod({string.Join(", ", methodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")")))})
-                        .Invoke(callTracker, new object[] {{ {paramString} }});
-            }}
-            return default;
-        }}
-"
-                );
+            //string returnType = methodSymbol.ReturnType.ToDisplayString();
+            //string paramsWithTypesAndMods =
+            //    methodSymbol.GetParametersWithOriginalTypesAndModifiers();
+            //string paramTypeString = methodSymbol.GetParameterTypesWithoutModifiers();
+            //string paramString = methodSymbol.GetParametersWithoutTypesAndModifiers();
 
-                assemblyAttributesSource.AppendLine(
-                    $@"
-[assembly: global::MockMe.Abstractions.GenericMethodDefinition(
-    ""{typeSymbol.ContainingNamespace}"",
-    ""{typeSymbol}"",
-    ""{methodSymbol.Name}"",
-    ""{thisNamespace}"",
-    ""{thisNamespace}.{typeSymbol.Name}Mock"",
-    ""{methodName}""
-)]
-"
-                );
+            //            if (methodSymbol.TypeParameters.Length == 0)
+            //            {
+            //                sb.AppendLine(
+            //                    $@"
+            //        [HarmonyPatch(typeof(global::{typeSymbol}), nameof(global::{typeSymbol}.{methodName}))]
+            //        internal sealed class Patch{Guid.NewGuid():N}
+            //        {{
+            //            private static bool Prefix(global::{typeSymbol} __instance{(returnType == "void" ? string.Empty : $", ref {returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
+            //            {{
+            //                if (global::MockMe.MockStore<global::{typeSymbol}>.TryGetValue<{typeSymbol.Name}Mock>(__instance, out var mock))
+            //                {{
+            //                    {(returnType == "void" ? string.Empty : "__result = ")}mock.CallTracker.{methodName}({paramString});
+            //                    return false;
+            //                }}
+            //                return true;
+            //            }}
+            //        }}"
+            //                );
+            //            }
+            //            else
+            //            {
+            //                sb.AppendLine(
+            //                    $@"
+            //        private {returnType} {methodName}{methodSymbol.GetGenericParameterStringInBrackets()}({paramsWithTypesAndMods})
+            //        {{
+            //            if (global::MockMe.MockStore<global::{typeSymbol}>.GetStore().TryGetValue(default, out var mock))
+            //            {{
+            //                var callTracker = mock.GetType()
+            //                    .GetProperty(
+            //                        ""CallTracker"",
+            //                        System.Reflection.BindingFlags.NonPublic
+            //                            | System.Reflection.BindingFlags.Instance
+            //                    )
+            //                    .GetValue(mock);
 
-                //public GenericMethodDefinitionAttribute(
-                //    string typeToReplaceAssemblyName,
-                //    string typeToReplaceTypeFullName,
-                //    string typeToReplaceMethodName,
-                //    string sourceTypeAssemblyName,
-                //    string sourceTypeFullName,
-                //    string sourceTypeMethodName
-                //)
-            }
+            //                return ({returnType})
+            //                    callTracker
+            //                        .GetType()
+            //                        .GetMethod(
+            //                            ""{methodName}"",
+            //                            System.Reflection.BindingFlags.Public
+            //                                | System.Reflection.BindingFlags.Instance
+            //                        )
+            //                        .MakeGenericMethod({string.Join(", ", methodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")")))})
+            //                        .Invoke(callTracker, new object[] {{ {paramString} }});
+            //            }}
+            //            return default;
+            //        }}
+            //"
+            //                );
+
+            //                assemblyAttributesSource.AppendLine(
+            //                    $@"
+            //[assembly: global::MockMe.Abstractions.GenericMethodDefinition(
+            //    ""{typeSymbol.ContainingNamespace}"",
+            //    ""{typeSymbol}"",
+            //    ""{methodSymbol.Name}"",
+            //    ""{thisNamespace}"",
+            //    ""{thisNamespace}.{typeSymbol.Name}Mock"",
+            //    ""{methodName}""
+            //)]
+            //"
+            //                );
+
+            //public GenericMethodDefinitionAttribute(
+            //    string typeToReplaceAssemblyName,
+            //    string typeToReplaceTypeFullName,
+            //    string typeToReplaceMethodName,
+            //    string sourceTypeAssemblyName,
+            //    string sourceTypeFullName,
+            //    string sourceTypeMethodName
+            //)
+            //}
         }
 
+        // close mock class
         sb.AppendLine(
             @$"
     }}"
         );
 
-        SetupGenerator.CreateSetupForConcreteType(typeSymbol, sb);
+        asserterBuilder.AppendLine(
+            $@"
+            }}"
+        );
 
+        callTrackerBuilder.Append(asserterBuilder);
+
+        callTrackerBuilder.AppendLine(
+            @$"
+        }}"
+        );
+
+        //CallTrackerGenerator.CreateCallTrackerForConcreteType(typeSymbol, sb);
+
+        setupBuilder.Append(callTrackerBuilder);
+
+        setupBuilder.AppendLine(
+            @$"
+    }}"
+        );
+
+        sb.Append(setupBuilder);
+
+        //SetupGenerator.CreateSetupForConcreteType(typeSymbol, sb);
+
+        // close namespace
         sb.AppendLine(
             @$"
 }}"
