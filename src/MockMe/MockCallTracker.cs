@@ -1,4 +1,4 @@
-using MockMe.Mocks;
+using MockMe.Mocks.ClassMemberMocks;
 
 namespace MockMe;
 

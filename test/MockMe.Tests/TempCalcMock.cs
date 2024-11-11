@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using HarmonyLib;
-using MockMe.Mocks;
+using MockMe.Mocks.ClassMemberMocks;
+using MockMe.Mocks.ClassMemberMocks.Setup;
 using MockMe.Tests.ExampleClasses;
 using static MockMe.Tests.TempCalcMockSetup;
 using static MockMe.Tests.TempCalcMockSetup.TempCalcMockCallTracker;
@@ -171,7 +172,7 @@ namespace MockMe.Tests
         }
     }
 
-    public class TempCalcMockSetup : MockSetup
+    public class TempCalcMockSetup : MemberMockSetup
     {
         private List<ArgBagWithMemberMock<int, int, int>>? AddBagStore;
 
