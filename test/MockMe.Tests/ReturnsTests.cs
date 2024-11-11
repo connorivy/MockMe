@@ -1,3 +1,5 @@
+using System.Formats.Asn1;
+using HarmonyLib;
 using MockMe.Tests.SampleClasses;
 using Xunit;
 
@@ -55,6 +57,21 @@ namespace MockMe.Tests
             Assert.Equal(999, calculatorMock.MockedObject.Add(1, 2));
             Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
             Assert.Equal(99999, calculatorMock.MockedObject.Add(1, 2));
+        }
+
+        [Fact]
+        public void CalculatorType_ShouldReturnConfiguredPropertyValue()
+        {
+            var calculatorMock = Mock.Me<SimpleCalculator>();
+
+            calculatorMock
+                .Setup.get_CalculatorType()
+                .Returns(SampleClasses.CalculatorType.Graphing);
+
+            Assert.Equal(
+                SampleClasses.CalculatorType.Graphing,
+                calculatorMock.MockedObject.CalculatorType
+            );
         }
     }
 }

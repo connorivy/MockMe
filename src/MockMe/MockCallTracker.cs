@@ -75,11 +75,11 @@ public class MockCallTracker
             return default;
         }
 
-        return CallMemberMock<TReturn, bool, Action, Func<TReturn>>(
+        return CallMemberMock<TReturn, bool, Action, TReturn>(
             mockStore,
             false,
             static (_, action) => action(),
-            static (_, func) => func()
+            static (_, ret) => ret
         );
     }
 

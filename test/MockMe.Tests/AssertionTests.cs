@@ -11,6 +11,8 @@ namespace MockMe.Tests
         {
             var calculatorMock = Mock.Me<SimpleCalculator>();
 
+            Assert.ThrowsAny<MockMeException>(() => calculatorMock.Assert.TurnOff().WasCalled());
+
             SimpleCalculator calculator = (SimpleCalculator)calculatorMock;
             calculator.TurnOff();
             calculator.TurnOff();
@@ -30,6 +32,34 @@ namespace MockMe.Tests
             );
             Assert.ThrowsAny<MockMeException>(
                 () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtMost, 4)
+            );
+        }
+
+        [Fact]
+        public void SetCalculatorType_PropertySetterWasCalled()
+        {
+            var calculatorMock = Mock.Me<SimpleCalculator>();
+
+            Assert.ThrowsAny<MockMeException>(
+                () =>
+                    calculatorMock
+                        .Assert.set_CalculatorType(SampleClasses.CalculatorType.Scientific)
+                        .WasCalled()
+            );
+
+            SimpleCalculator calculator = (SimpleCalculator)calculatorMock;
+
+            calculator.CalculatorType = SampleClasses.CalculatorType.Scientific;
+
+            calculatorMock
+                .Assert.set_CalculatorType(SampleClasses.CalculatorType.Scientific)
+                .WasCalled();
+
+            Assert.ThrowsAny<MockMeException>(
+                () =>
+                    calculatorMock
+                        .Assert.set_CalculatorType(SampleClasses.CalculatorType.Graphing)
+                        .WasCalled()
             );
         }
     }

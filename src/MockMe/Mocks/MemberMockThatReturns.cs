@@ -2,7 +2,8 @@ namespace MockMe.Mocks;
 
 public class MemberMock<TReturn>
     : VoidMemberNoArgsBaseMock<MemberMock<TReturn>>,
-        IMemberMock<TReturn, MemberMock<TReturn>>
+        IMemberMock<TReturn, MemberMock<TReturn>>,
+        IMockCallbackAndReturnCallRetriever<Action, TReturn>
 {
     public MemberMock()
         : this(new()) { }
@@ -20,4 +21,7 @@ public class MemberMock<TReturn>
         this.returnManager.Returns(returnThis, thenReturnThese);
         return this;
     }
+
+    TReturn? IMockReturnCallRetriever<TReturn>.GetReturnValue() =>
+        this.returnManager.GetReturnCall();
 }
