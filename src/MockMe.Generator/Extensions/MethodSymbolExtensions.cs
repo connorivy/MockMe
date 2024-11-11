@@ -113,6 +113,11 @@ public static class MethodSymbolExtensions
             methodName = methodName.Substring(4);
         }
 
+        //if (methodSymbol.ReturnType.IsTask() || methodSymbol.ReturnType.IsValueTask())
+        //{
+        //    methodTypeArg = "global::HarmonyLib.MethodType.Async";
+        //}
+
         return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){methodTypeArg.AddPrefixIfNotEmpty(", ")})]";
     }
 }

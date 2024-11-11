@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MockMe.Tests.ExampleClasses
 {
-    public class ComplexCalculator : Calculator
+    public class ComplexCalculator
     {
         public int ComputeHashForObjects<T>(T[] values)
         {
