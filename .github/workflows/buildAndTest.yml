@@ -37,15 +37,15 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     strategy:
-      # fail-fast: false
       matrix:
         dotnet:
-          - '9.0'
-          - '8.0'
-          - '7.0'
           - '6.0'
+          - '7.0'
+          - '8.0'
+          - '9.0'
     env:
       ContinuousIntegrationBuild: true
+      LATEST_DOTNET_VERSION: '9.0'
 
     needs: build_and_pack
 
@@ -75,21 +75,28 @@ jobs:
       run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
-      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
+      if: ${{ matrix.dotnet != env.LATEST_DOTNET_VERSION }}
+      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal
 
-    # - name: ReportGenerator
-    #   uses: danielpalme/ReportGenerator-GitHub-Action@5.2.0
-    #   with:
-    #     reports: './tests/**/*.info'
-    #     targetdir: './tests/TestResults'
-    #     reporttypes: 'lcov'
-    #     filefilters: '-*\*.g.cs'
+    - name: Test And Collect CodeCov
+      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
+      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
 
-    # - name: Coveralls
-    #   uses: coverallsapp/github-action@master
-    #   with:
-    #     github-token: ${{ secrets.GITHUB_TOKEN }}
-    #     path-to-lcov: ./tests/TestResults/lcov.info
+    - name: Generate report
+      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
+      with:
+        reports: './tests/**/*.info'
+        targetdir: './tests/TestResults'
+        reporttypes: 'lcov'
+        filefilters: '-*\*.g.cs'
+
+    - name: Coveralls
+      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        path-to-lcov: ./tests/TestResults/lcov.info
 
   test-windows:
     runs-on: windows-latest

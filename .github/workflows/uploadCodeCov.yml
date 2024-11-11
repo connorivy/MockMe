@@ -1,0 +1,58 @@
+name: Publish wiki
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_and_pack:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Pack NuGet Packages
+      run: dotnet pack --configuration Release --no-build --output ./packages /p:Version=0.0.1-dev
+
+    - name: Upload NuGet Packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./packages
+    
+    - name: Create local package feed
+      run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
+
+    - name: Restore dependencies
+      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
+
+    - name: Build
+      run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+
+    - name: Test And Collect CodeCov
+      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+
+    - name: Generate report
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
+      with:
+        reports: './tests/**/*.info'
+        targetdir: './tests/TestResults'
+        reporttypes: 'lcov'
+        filefilters: '-*\*.g.cs'
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        path-to-lcov: ./tests/TestResults/lcov.info
