@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 //using MockMe.SampleMocks.CalculatorSample;
-using MockMe.Tests.SampleClasses;
 //using MockMe.SampleMocks.CalculatorSample;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -453,12 +452,5 @@ namespace MockMe.Tests
         //    }
         //    return null;
         //}
-    }
-
-    public enum CalculatorType
-    {
-        Standard,
-        Scientific,
-        Graphing,
     }
 }

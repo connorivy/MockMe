@@ -1,5 +1,5 @@
 using MockMe.Exceptions;
-using MockMe.Tests.SampleClasses;
+using MockMe.Tests.ExampleClasses;
 using Xunit;
 
 namespace MockMe.Tests
@@ -9,11 +9,11 @@ namespace MockMe.Tests
         [Fact]
         public void TestWasCalled_ForMethodWithNoArgsAndNoReturnVal()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
 
             Assert.ThrowsAny<MockMeException>(() => calculatorMock.Assert.TurnOff().WasCalled());
 
-            SimpleCalculator calculator = (SimpleCalculator)calculatorMock;
+            Calculator calculator = (Calculator)calculatorMock;
             calculator.TurnOff();
             calculator.TurnOff();
             calculator.TurnOff();
@@ -38,27 +38,27 @@ namespace MockMe.Tests
         [Fact]
         public void SetCalculatorType_PropertySetterWasCalled()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
                     calculatorMock
-                        .Assert.set_CalculatorType(SampleClasses.CalculatorType.Scientific)
+                        .Assert.set_CalculatorType(ExampleClasses.CalculatorType.Scientific)
                         .WasCalled()
             );
 
-            SimpleCalculator calculator = (SimpleCalculator)calculatorMock;
+            Calculator calculator = (Calculator)calculatorMock;
 
-            calculator.CalculatorType = SampleClasses.CalculatorType.Scientific;
+            calculator.CalculatorType = ExampleClasses.CalculatorType.Scientific;
 
             calculatorMock
-                .Assert.set_CalculatorType(SampleClasses.CalculatorType.Scientific)
+                .Assert.set_CalculatorType(ExampleClasses.CalculatorType.Scientific)
                 .WasCalled();
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
                     calculatorMock
-                        .Assert.set_CalculatorType(SampleClasses.CalculatorType.Graphing)
+                        .Assert.set_CalculatorType(ExampleClasses.CalculatorType.Graphing)
                         .WasCalled()
             );
         }

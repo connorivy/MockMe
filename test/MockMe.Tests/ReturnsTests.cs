@@ -1,6 +1,4 @@
-using System.Formats.Asn1;
-using HarmonyLib;
-using MockMe.Tests.SampleClasses;
+using MockMe.Tests.ExampleClasses;
 using Xunit;
 
 namespace MockMe.Tests
@@ -10,7 +8,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
@@ -20,21 +18,21 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_WhenCalledByANonMock_ShouldCallOriginalCode()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
             Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
 
-            Assert.Equal(3, new SimpleCalculator().Add(1, 2));
-            Assert.Equal(10, new SimpleCalculator().Add(6, 4));
-            Assert.Equal(2, new SimpleCalculator().Add(6, -4));
+            Assert.Equal(3, new Calculator().Add(1, 2));
+            Assert.Equal(10, new Calculator().Add(6, 4));
+            Assert.Equal(2, new Calculator().Add(6, -4));
         }
 
         [Fact]
         public void CalculatorAdd_WhenReturnIsCalledManyTimes_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
@@ -48,7 +46,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_WhenReturnIsCalledManyTimesWithDifferentValues_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
 
             calculatorMock.Setup.Add(1, 2).Returns(9, 99, 999, 9999, 99999);
 
@@ -62,16 +60,11 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorType_ShouldReturnConfiguredPropertyValue()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
 
-            calculatorMock
-                .Setup.get_CalculatorType()
-                .Returns(SampleClasses.CalculatorType.Graphing);
+            calculatorMock.Setup.get_CalculatorType().Returns(CalculatorType.Graphing);
 
-            Assert.Equal(
-                SampleClasses.CalculatorType.Graphing,
-                calculatorMock.MockedObject.CalculatorType
-            );
+            Assert.Equal(CalculatorType.Graphing, calculatorMock.MockedObject.CalculatorType);
         }
     }
 }

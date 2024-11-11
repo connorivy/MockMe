@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using MockMe.Tests.SampleClasses;
+using MockMe.Tests.ExampleClasses;
 using Xunit;
 
 namespace MockMe.Tests
@@ -8,9 +8,9 @@ namespace MockMe.Tests
     {
         public class CalculatorManager
         {
-            private readonly SimpleCalculator calculator;
+            private readonly Calculator calculator;
 
-            public CalculatorManager(SimpleCalculator calculator)
+            public CalculatorManager(Calculator calculator)
             {
                 this.calculator = calculator;
             }
@@ -27,7 +27,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
             calculatorMock.Setup.Add(3, 5).Returns(99, 999, 9999);
             CalculatorManager calculatorManager = new(calculatorMock);
 

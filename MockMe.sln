@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.targets = Directory.Build.targets
 		global.json = global.json
 		README.md = README.md
+		.github\workflows\publishWiki.yml = .github\workflows\publishWiki.yml
 		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
@@ -38,6 +39,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Tests.NuGet", "test\MockMe.Tests.NuGet\MockMe.Tests.NuGet.csproj", "{2E91C884-361C-48B5-847A-D1E57D301036}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Tests.ExampleClasses", "test\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj", "{63E88E6D-9C69-4E6A-BDD4-45F84884220D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wiki", "wiki", "{4723EF4B-98A5-4F3D-BEB9-0632A3939D4D}"
+	ProjectSection(SolutionItems) = preProject
+		QuickStart.md = QuickStart.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
