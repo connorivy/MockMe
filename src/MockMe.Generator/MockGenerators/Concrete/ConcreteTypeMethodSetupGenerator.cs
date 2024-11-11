@@ -174,7 +174,7 @@ internal class ConcreteTypeMethodSetupGenerator
                     this.setup.{this.MethodName()}BagStore?.GetValueOrDefault(genericTypeHashCode)
                     as List<ArgBagWith{this.voidPrefix}MemberMock{(this.paramTypes + this.returnType.AddPrefixIfNotEmpty(", ")).AddOnIfNotEmpty("<", ">")}>;
 
-                {(this.isVoidReturnType ? string.Empty : "return ")} Call{this.voidPrefix}MemberMock(
+                {(this.isVoidReturnType ? string.Empty : "return ")} MockCallTracker.Call{this.voidPrefix}MemberMock(
                     mockStore,
                     GetGenericCallStore{this.paramTypes.AddOnIfNotEmpty("<", ">")}({this.MethodName()}CallStore ??= new(), genericTypeHashCode){paramString.AddPrefixIfNotEmpty(", ")}
                 );
@@ -190,7 +190,7 @@ internal class ConcreteTypeMethodSetupGenerator
             public {this.returnType} {this.MethodName()}()
             {{
                 this.{this.MethodName()}CallStore++;
-                {(this.isVoidReturnType ? string.Empty : "return ")}Call{this.voidPrefix}MemberMock(this.setup.{this.MethodName()}BagStore);
+                {(this.isVoidReturnType ? string.Empty : "return ")}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.MethodName()}BagStore);
             }}"
             );
         }
@@ -200,7 +200,7 @@ internal class ConcreteTypeMethodSetupGenerator
                 $@"
             private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.MethodName()}CallStore;
 
-            public {this.returnType} {this.MethodName()}({paramsWithTypesAndMods}) => Call{this.voidPrefix}MemberMock(this.setup.{this.MethodName()}BagStore, this.{this.MethodName()}CallStore ??= new(), {paramString});"
+            public {this.returnType} {this.MethodName()}({paramsWithTypesAndMods}) => MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.MethodName()}BagStore, this.{this.MethodName()}CallStore ??= new(), {paramString});"
             );
         }
         return sb;
