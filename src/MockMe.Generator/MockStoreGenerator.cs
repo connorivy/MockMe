@@ -83,19 +83,10 @@ namespace {NamespaceName}
                         typeNameUsageCounts.Add(typeToMock.Name, 1);
                     }
 
-                    string newMockCode;
-                    if (typeToMock.TypeKind == TypeKind.Interface)
-                    {
-                        newMockCode = InterfaceMockGenerator
-                            .CreateMockForConcreteType(typeToMock, assemblyAttributesSource)
-                            .ToString();
-                    }
-                    else
-                    {
-                        newMockCode = MockGenerator
-                            .CreateMockForConcreteType(typeToMock, assemblyAttributesSource)
-                            .ToString();
-                    }
+                    string newMockCode = MockGeneratorFactory
+                        .Create(typeToMock)
+                        .CreateMockType(typeToMock, assemblyAttributesSource)
+                        .ToString();
 
                     ctx.AddSource(
                         $"{typeToMock.Name}Mock{classNameSuffix}.g.cs",
