@@ -20,9 +20,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\test\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
-    <ProjectReference Include="..\..\test\MockMe.Tests.NuGet\MockMe.Tests.NuGet.csproj" />
-    <ProjectReference Include="..\..\test\MockMe.Tests\MockMe.Tests.csproj" />
+    <ProjectReference Include="..\..\tests\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
+    <ProjectReference Include="..\..\tests\MockMe.Tests\MockMe.Tests.csproj" />
     <ProjectReference Include="..\MockMe\MockMe.csproj" PrivateAssets="all" />
   </ItemGroup>
 
