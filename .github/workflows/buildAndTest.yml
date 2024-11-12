@@ -72,15 +72,15 @@ jobs:
       run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Build
-      run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
       if: ${{ matrix.dotnet != env.LATEST_DOTNET_VERSION }}
-      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal
 
     - name: Test And Collect CodeCov
       if: ${{ matrix.dotnet == env.LATEST_DOTNET_VERSION }}
-      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
 
     - name: Generate report
       if: ${{ matrix.dotnet == env.LATEST_DOTNET_VERSION }}
@@ -135,9 +135,9 @@ jobs:
       run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Build
-      run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
-      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
 
     
