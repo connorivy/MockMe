@@ -32,5 +32,5 @@ internal class InterfaceMockGenerator : MockGeneratorBase
         public {typeSymbol.Name}MockAsserter Assert {{ get; }}";
 
     public override string GetMockBaseClass(ITypeSymbol typeSymbol) =>
-        $"global::MockMe.Abstractions.InterfaceMock<global::{typeSymbol}, {typeSymbol.Name}MockCallTracker>";
+        $"global::MockMe.Abstractions.InterfaceMock<{typeSymbol.ToFullTypeString()}, {typeSymbol.Name}MockCallTracker>";
 }
