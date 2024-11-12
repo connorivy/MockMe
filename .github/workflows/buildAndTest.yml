@@ -79,11 +79,11 @@ jobs:
       run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal
 
     - name: Test And Collect CodeCov
-      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
+      if: ${{ matrix.dotnet == env.LATEST_DOTNET_VERSION }}
       run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
 
     - name: Generate report
-      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
+      if: ${{ matrix.dotnet == env.LATEST_DOTNET_VERSION }}
       uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
       with:
         reports: './tests/**/*.info'
@@ -92,7 +92,7 @@ jobs:
         filefilters: '-*\*.g.cs'
 
     - name: Coveralls
-      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
+      if: ${{ matrix.dotnet == env.LATEST_DOTNET_VERSION }}
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
