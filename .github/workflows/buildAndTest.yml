@@ -33,8 +33,24 @@ jobs:
         name: nuget-packages
         path: ./packages
 
+    - name: Test And Collect CodeCov
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+
+    - name: Generate report
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
+      with:
+        reports: './tests/**/*.info'
+        targetdir: './tests/TestResults'
+        reporttypes: 'lcov'
+        filefilters: '-*\*.g.cs'
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        path-to-lcov: ./tests/TestResults/lcov.info
+
   test_linux:
-    name: Build and Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -72,41 +88,20 @@ jobs:
       run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Build
-      run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
-      if: ${{ matrix.dotnet != env.LATEST_DOTNET_VERSION }}
-      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal
-
-    - name: Test And Collect CodeCov
-      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
-      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
-
-    - name: Generate report
-      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
-      with:
-        reports: './tests/**/*.info'
-        targetdir: './tests/TestResults'
-        reporttypes: 'lcov'
-        filefilters: '-*\*.g.cs'
-
-    - name: Coveralls
-      if: ${{ matrix.dotnet == LATEST_DOTNET_VERSION }}
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        path-to-lcov: ./tests/TestResults/lcov.info
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal
 
   test-windows:
     runs-on: windows-latest
     strategy:
       matrix:
         dotnet:
-          - '9.0'
-          - '8.0'
-          - '7.0'
           - '6.0'
+          - '7.0'
+          - '8.0'
+          - '9.0'
 
     needs: build_and_pack
 
@@ -135,9 +130,7 @@ jobs:
       run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Build
-      run: dotnet build ./test/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
-      run: dotnet test ./test/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
-
-    
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
