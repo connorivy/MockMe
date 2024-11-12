@@ -17,7 +17,7 @@ public class CalculatorMock : Mock<Calculator>
         this.Setup = new CalculatorMockSetup();
         this.CallTracker = new CalculatorMockCallTracker(this.Setup);
         this.Assert = new CalculatorMockAsserter(this.CallTracker);
-        mockStore.TryAdd(this.Value, this);
+        mockStore.TryAdd(this.MockedObject, this);
     }
 
     public CalculatorMockSetup Setup { get; }

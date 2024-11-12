@@ -36,7 +36,7 @@ public class Arg<T>
         //throw new System.Diagnostics.UnreachableException("The value and predicate should never both be null");
     }
 
-    public static implicit operator Arg<T>(T? value) => new(value);
+    public static implicit operator Arg<T>(T value) => new(value);
 
     public static implicit operator Arg<T>(Func<T?, bool> value) => new(value);
 
@@ -48,6 +48,8 @@ public static class Arg
     //private Arg() { }
 
     public static AnyArg Any { get; } = new AnyArg();
+
+    public static Arg<T> AnyOfType<T>() => Arg<T>.Any;
 
     public static Arg<T> Where<T>(Func<T?, bool> predicate) => new(predicate);
 }

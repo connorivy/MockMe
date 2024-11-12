@@ -1,6 +1,5 @@
 //using MockMe.Tests.SampleClasses;
 using MockMe.Tests.ExampleClasses;
-using MockMe.Tests.SampleClasses;
 using Xunit;
 
 namespace MockMe.Tests

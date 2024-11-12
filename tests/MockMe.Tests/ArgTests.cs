@@ -1,5 +1,5 @@
 using MockMe.Exceptions;
-using MockMe.Tests.SampleClasses;
+using MockMe.Tests.ExampleClasses;
 using Xunit;
 
 namespace MockMe.Tests
@@ -9,9 +9,9 @@ namespace MockMe.Tests
         [Fact]
         public void ArgAny_ShouldCoverAnyArgument()
         {
-            var calculatorMock = Mock.Me<SimpleCalculator>();
+            var calculatorMock = Mock.Me<Calculator>();
 
-            var calculator = (SimpleCalculator)calculatorMock;
+            var calculator = (Calculator)calculatorMock;
 
             calculator.Add(0, 0);
             calculator.Add(1, -1);

@@ -4,6 +4,7 @@
 
   <PropertyGroup>
     <LangVersion>9</LangVersion>
+    <RollForward>major</RollForward>
     <WarningsNotAsErrors>
       CA1822; <!-- Mark members as static -->
       $(WarningsNotAsErrors)

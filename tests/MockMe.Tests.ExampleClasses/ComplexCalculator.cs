@@ -68,11 +68,4 @@ namespace MockMe.Tests.ExampleClasses
         //    return values.First();
         //}
     }
-
-    public enum CalculatorType
-    {
-        Standard,
-        Scientific,
-        Graphing,
-    }
 }
