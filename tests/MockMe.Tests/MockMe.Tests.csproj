@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
-    <ProjectReference Include="..\MockMe.Tests.NuGet\MockMe.Tests.NuGet.csproj" />
   </ItemGroup>
 
   <!-- Use project references locally -->

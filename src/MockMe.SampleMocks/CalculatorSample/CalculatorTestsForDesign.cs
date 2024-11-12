@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Reflection;
-using MockMe.Tests;
-using MockMe.Tests.ExampleClasses;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -177,20 +175,20 @@ public class CalculatorTestsForDesign
 
         mockedObjAssembly.Write(mockedObjPath, writeParams);
 
-        Test();
+        //Test();
     }
 
-    private void Test()
-    {
-        var x = new TempCalcMock();
+    //private void Test()
+    //{
+    //    var x = new TempCalcMock();
 
-        var calc = (ComplexCalculator)x;
+    //    var calc = (ComplexCalculator)x;
 
-        var y = new ComplexCalculator().AddUpAllOfThese2(0, [5, 4, 3, 2], 2.2);
+    //    var y = new ComplexCalculator().AddUpAllOfThese2(0, [5, 4, 3, 2], 2.2);
 
-        var result = calc.AddUpAllOfThese2(0, [5, 4, 3, 2], 2.2);
-        ;
-    }
+    //    var result = calc.AddUpAllOfThese2(0, [5, 4, 3, 2], 2.2);
+    //    ;
+    //}
 
     //[Fact]
     //private void Test2()
