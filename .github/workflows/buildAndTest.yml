@@ -33,15 +33,31 @@ jobs:
         name: nuget-packages
         path: ./packages
 
+    - name: Test And Collect CodeCov
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+
+    - name: Generate report
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
+      with:
+        reports: './tests/**/*.info'
+        targetdir: './tests/TestResults'
+        reporttypes: 'lcov'
+        filefilters: '-*\*.g.cs'
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        path-to-lcov: ./tests/TestResults/lcov.info
+
   test_linux:
-    name: Build and Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
         dotnet:
-          # - '6.0'
-          # - '7.0'
-          # - '8.0'
+          - '6.0'
+          - '7.0'
+          - '8.0'
           - '9.0'
     env:
       ContinuousIntegrationBuild: true
@@ -75,69 +91,46 @@ jobs:
       run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
     - name: Test
-      if: ${{ matrix.dotnet != env.LATEST_DOTNET_VERSION }}
       run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal
 
-    - name: Test And Collect CodeCov
-      if: ${{ matrix.dotnet == env.LATEST_DOTNET_VERSION }}
-      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+  test-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet:
+          - '6.0'
+          - '7.0'
+          - '8.0'
+          - '9.0'
 
-    - name: Generate report
-      if: ${{ matrix.dotnet == env.LATEST_DOTNET_VERSION }}
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
+    needs: build_and_pack
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET ${{ matrix.dotnet }}
+      uses: actions/setup-dotnet@v3
       with:
-        reports: './tests/**/*.info'
-        targetdir: './tests/TestResults'
-        reporttypes: 'lcov'
-        filefilters: '-*\*.g.cs'
+        dotnet-version: ${{ matrix.dotnet }}
 
-    - name: Coveralls
-      if: ${{ matrix.dotnet == env.LATEST_DOTNET_VERSION }}
-      uses: coverallsapp/github-action@master
+    - name: Download NuGet Packages
+      uses: actions/download-artifact@v4
       with:
-        github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        path-to-lcov: ./tests/TestResults/lcov.info
-
-  # test-windows:
-  #   runs-on: windows-latest
-  #   strategy:
-  #     matrix:
-  #       dotnet:
-  #         - '9.0'
-  #         - '8.0'
-  #         - '7.0'
-  #         - '6.0'
-
-  #   needs: build_and_pack
-
-  #   steps:
-  #   - name: Checkout Code
-  #     uses: actions/checkout@v4
-
-  #   - name: Setup .NET ${{ matrix.dotnet }}
-  #     uses: actions/setup-dotnet@v3
-  #     with:
-  #       dotnet-version: ${{ matrix.dotnet }}
-
-  #   - name: Download NuGet Packages
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: nuget-packages
-  #       path: ./packages
+        name: nuget-packages
+        path: ./packages
     
-  #   - name: Create local package feed
-  #     run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
+    - name: Create local package feed
+      run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
 
-  #   - name: Print NuGet Sources
-  #     run: dotnet nuget list source
+    - name: Print NuGet Sources
+      run: dotnet nuget list source
 
-  #   - name: Restore dependencies
-  #     run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
+    - name: Restore dependencies
+      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
-  #   - name: Build
-  #     run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+    - name: Build
+      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
-  #   - name: Test
-  #     run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
-
-    
+    - name: Test
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
