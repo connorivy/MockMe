@@ -23,6 +23,7 @@ public class CalculatorMock : Mock<Calculator>
 
     public CalculatorMockSetup Setup { get; }
     public CalculatorMockAsserter Assert { get; }
+    public override Calculator MockedObject { get; }
     private CalculatorMockCallTracker CallTracker { get; set; }
 
     public static IReadOnlyDictionary<Calculator, CalculatorMock> GetMockStore() => mockStore;
