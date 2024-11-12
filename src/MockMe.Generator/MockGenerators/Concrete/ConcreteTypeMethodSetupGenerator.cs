@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
@@ -79,6 +82,13 @@ internal class ConcreteTypeMethodSetupGenerator
         string paramTypeString = this.methodSymbol.GetParameterTypesWithoutModifiers();
         string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
 
+        string callEnd = this.methodSymbol.MethodKind switch
+        {
+            MethodKind.PropertyGet => "",
+            MethodKind.PropertySet => $" = {paramString}",
+            _ => $"({paramString})",
+        };
+
         if (this.methodSymbol.TypeParameters.Length == 0)
         {
             sb.AppendLine(
@@ -90,12 +100,17 @@ internal class ConcreteTypeMethodSetupGenerator
             {{
                 if (global::MockMe.MockStore<{typeSymbol.ToFullTypeString()}>.TryGetValue<{typeSymbol.Name}Mock>(__instance, out var mock))
                 {{
-                    {(this.isVoidReturnType ? string.Empty : "__result = ")}mock.CallTracker.{this.MethodName()}({paramString});
+                    {(this.isVoidReturnType ? string.Empty : "__result = ")}mock.CallTracker.{this.methodSymbol.GetPropertyName()}{callEnd};
                     return false;
                 }}
                 return true;
             }}
         }}"
+            );
+            sb.AppendLine(
+                $@"
+                    
+"
             );
         }
         else
@@ -156,12 +171,50 @@ internal class ConcreteTypeMethodSetupGenerator
         );
     }
 
-    public StringBuilder AddMethodCallTrackerToStringBuilder(StringBuilder sb)
+    public StringBuilder AddMethodCallTrackerToStringBuilder(
+        StringBuilder sb,
+        Dictionary<string, PropertyMetadata> callTrackerMeta
+    )
     {
         string paramsWithTypesAndMods =
             this.methodSymbol.GetParametersWithOriginalTypesAndModifiers();
         string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
-        if (this.methodSymbol.TypeParameters.Length > 0)
+
+        if (this.methodSymbol.MethodKind == MethodKind.PropertyGet)
+        {
+            var methodName = this.methodSymbol.GetPropertyName();
+
+            if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
+            {
+                propMeta = new() { Name = methodName, ReturnType = this.returnType };
+                callTrackerMeta.Add(methodName, propMeta);
+            }
+
+            propMeta.GetterLogic =
+                @$"
+        this.{this.MethodName()}CallStore++;
+        return MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.MethodName()}BagStore);";
+
+            propMeta.GetterField = $"private int {this.MethodName()}CallStore;";
+        }
+        else if (this.methodSymbol.MethodKind == MethodKind.PropertySet)
+        {
+            var methodName = this.methodSymbol.GetPropertyName();
+
+            if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
+            {
+                propMeta = new() { Name = methodName, ReturnType = this.returnType };
+                callTrackerMeta.Add(methodName, propMeta);
+            }
+
+            propMeta.SetterLogic =
+                @$"
+        MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.MethodName()}BagStore, this.{this.MethodName()}CallStore ??= new(), value);";
+
+            propMeta.SetterField =
+                $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.MethodName()}CallStore;";
+        }
+        else if (this.methodSymbol.TypeParameters.Length > 0)
         {
             sb.AppendLine(
                 $@"

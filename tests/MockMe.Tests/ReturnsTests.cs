@@ -80,6 +80,16 @@ namespace MockMe.Tests
         }
 
         [Fact]
+        public void ICalculatorType_ShouldReturnConfiguredPropertyValue()
+        {
+            var calculatorMock = Mock.Me<ICalculator>();
+
+            calculatorMock.Setup.get_CalculatorType().Returns(CalculatorType.Graphing);
+
+            Assert.Equal(CalculatorType.Graphing, calculatorMock.MockedObject.CalculatorType);
+        }
+
+        [Fact]
         public async Task CalculatorAddAsync_ShouldReturnConfiguredPropertyValue()
         {
             var calculatorMock = Mock.Me<ComplexCalculator>(default);

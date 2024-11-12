@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using MockMe.Generator.Extensions;
 
 namespace MockMe.Generator.MockGenerators.Concrete;
 
@@ -79,6 +82,7 @@ namespace {thisNamespace}
                 }}"
         );
 
+        Dictionary<string, PropertyMetadata> callTrackerMeta = [];
         foreach (var method in typeSymbol.GetMembers())
         {
             if (method is not IMethodSymbol methodSymbol)
@@ -97,7 +101,10 @@ namespace {thisNamespace}
 
             methodGenerator.AddPatchMethod(sb, assemblyAttributesSource, typeSymbol);
             methodGenerator.AddMethodSetupToStringBuilder(setupBuilder);
-            methodGenerator.AddMethodCallTrackerToStringBuilder(callTrackerBuilder);
+            methodGenerator.AddMethodCallTrackerToStringBuilder(
+                callTrackerBuilder,
+                callTrackerMeta
+            );
             methodGenerator.AddMethodToAsserterClass(asserterBuilder);
         }
 
@@ -112,6 +119,10 @@ namespace {thisNamespace}
             }}"
         );
 
+        foreach (var meta in callTrackerMeta.Values)
+        {
+            meta.AddPropToSb(callTrackerBuilder);
+        }
         callTrackerBuilder.Append(asserterBuilder);
 
         callTrackerBuilder.AppendLine(
