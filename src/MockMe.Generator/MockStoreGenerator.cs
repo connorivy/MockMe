@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using MockMe.Generator.MockGenerators.Concrete;
+using MockMe.Generator.MockGenerators;
 
 namespace MockMe.Generator;
 
@@ -55,12 +55,18 @@ namespace {NamespaceName}
                 Dictionary<string, int> typeNameUsageCounts = new();
                 foreach (var typeToMock in GetTypesToBeMocked(source.Left, source.Right))
                 {
+                    string patchCall = "";
+                    if (typeToMock.TypeKind != TypeKind.Interface)
+                    {
+                        patchCall = "EnsurePatch();";
+                    }
+
                     sourceBuilder.AppendLine(
                         @$"
         public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMock.Name}Mock {StoreMethodName}<T>(global::{typeToMock}? unusedInstance = null) 
             where T : global::{typeToMock} 
         {{
-            EnsurePatch();
+            {patchCall}
             return new();
         }}"
                     );
@@ -76,14 +82,14 @@ namespace {NamespaceName}
                         typeNameUsageCounts.Add(typeToMock.Name, 1);
                     }
 
+                    string newMockCode = MockGeneratorFactory
+                        .Create(typeToMock)
+                        .CreateMockType(typeToMock, assemblyAttributesSource)
+                        .ToString();
+
                     ctx.AddSource(
                         $"{typeToMock.Name}Mock{classNameSuffix}.g.cs",
-                        SourceText.From(
-                            MockGenerator
-                                .CreateMockForConcreteType(typeToMock, assemblyAttributesSource)
-                                .ToString(),
-                            Encoding.UTF8
-                        )
+                        SourceText.From(newMockCode, Encoding.UTF8)
                     );
                 }
 

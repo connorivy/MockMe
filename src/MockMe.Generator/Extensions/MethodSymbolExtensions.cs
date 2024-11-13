@@ -120,4 +120,13 @@ public static class MethodSymbolExtensions
 
         return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){methodTypeArg.AddPrefixIfNotEmpty(", ")})]";
     }
+
+    public static string GetPropertyName(this IMethodSymbol methodSymbol)
+    {
+        if (methodSymbol.MethodKind is MethodKind.PropertyGet or MethodKind.PropertySet)
+        {
+            return methodSymbol.Name[4..];
+        }
+        return methodSymbol.Name;
+    }
 }

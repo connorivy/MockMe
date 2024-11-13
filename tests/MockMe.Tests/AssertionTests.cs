@@ -1,5 +1,6 @@
 using MockMe.Exceptions;
 using MockMe.Tests.ExampleClasses;
+using MockMe.Tests.ExampleClasses.Interfaces;
 using Xunit;
 
 namespace MockMe.Tests
@@ -42,24 +43,38 @@ namespace MockMe.Tests
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
-                    calculatorMock
-                        .Assert.set_CalculatorType(ExampleClasses.CalculatorType.Scientific)
-                        .WasCalled()
+                    calculatorMock.Assert.set_CalculatorType(CalculatorType.Scientific).WasCalled()
             );
 
-            Calculator calculator = (Calculator)calculatorMock;
+            Calculator calculator = calculatorMock;
 
-            calculator.CalculatorType = ExampleClasses.CalculatorType.Scientific;
+            calculator.CalculatorType = CalculatorType.Scientific;
 
-            calculatorMock
-                .Assert.set_CalculatorType(ExampleClasses.CalculatorType.Scientific)
-                .WasCalled();
+            calculatorMock.Assert.set_CalculatorType(CalculatorType.Scientific).WasCalled();
+
+            Assert.ThrowsAny<MockMeException>(
+                () => calculatorMock.Assert.set_CalculatorType(CalculatorType.Graphing).WasCalled()
+            );
+        }
+
+        [Fact]
+        public void SetICalculatorType_PropertySetterWasCalled()
+        {
+            var calculatorMock = Mock.Me<ICalculator>();
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
-                    calculatorMock
-                        .Assert.set_CalculatorType(ExampleClasses.CalculatorType.Graphing)
-                        .WasCalled()
+                    calculatorMock.Assert.set_CalculatorType(CalculatorType.Scientific).WasCalled()
+            );
+
+            ICalculator calculator = calculatorMock.MockedObject;
+
+            calculator.CalculatorType = CalculatorType.Scientific;
+
+            calculatorMock.Assert.set_CalculatorType(CalculatorType.Scientific).WasCalled();
+
+            Assert.ThrowsAny<MockMeException>(
+                () => calculatorMock.Assert.set_CalculatorType(CalculatorType.Graphing).WasCalled()
             );
         }
     }

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using MockMe.Tests.ExampleClasses;
+using MockMe.Tests.ExampleClasses.Interfaces;
 using Xunit;
 
 namespace MockMe.Tests
@@ -10,6 +11,16 @@ namespace MockMe.Tests
         public void CalculatorAdd_ShouldReturnConfiguredValue()
         {
             var calculatorMock = Mock.Me<Calculator>();
+
+            calculatorMock.Setup.Add(1, 2).Returns(9999);
+
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
+        }
+
+        [Fact]
+        public void ICalculatorAdd_ShouldReturnConfiguredValue()
+        {
+            var calculatorMock = Mock.Me<ICalculator>();
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
@@ -62,6 +73,16 @@ namespace MockMe.Tests
         public void CalculatorType_ShouldReturnConfiguredPropertyValue()
         {
             var calculatorMock = Mock.Me<Calculator>();
+
+            calculatorMock.Setup.get_CalculatorType().Returns(CalculatorType.Graphing);
+
+            Assert.Equal(CalculatorType.Graphing, calculatorMock.MockedObject.CalculatorType);
+        }
+
+        [Fact]
+        public void ICalculatorType_ShouldReturnConfiguredPropertyValue()
+        {
+            var calculatorMock = Mock.Me<ICalculator>();
 
             calculatorMock.Setup.get_CalculatorType().Returns(CalculatorType.Graphing);
 

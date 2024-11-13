@@ -32,4 +32,16 @@ internal static class ITypeSymbolExtensions
         }
         return null;
     }
+
+    //public static string GetMockBaseTypeName(this ITypeSymbol typeSymbol)
+    //{
+    //    if (typeSymbol.TypeKind == TypeKind.Interface)
+    //    {
+    //        return nameof(Abstractions.InterfaceMock<bool, bool, bool>);
+    //    }
+    //    else
+    //    {
+    //        return nameof(Abstractions.SealedTypeMock<bool, bool, bool>);
+    //    }
+    //}
 }
