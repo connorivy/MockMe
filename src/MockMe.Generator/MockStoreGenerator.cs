@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using MockMe.Generator.MockGenerators;
-using MockMe.Generator.MockGenerators.Concrete;
 
 namespace MockMe.Generator;
 

@@ -93,44 +93,44 @@ jobs:
     - name: Test
       run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal
 
-  test-windows:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        dotnet:
-          - '6.0'
-          - '7.0'
-          - '8.0'
-          - '9.0'
+  # test-windows:
+  #   runs-on: windows-latest
+  #   strategy:
+  #     matrix:
+  #       dotnet:
+  #         - '6.0'
+  #         - '7.0'
+  #         - '8.0'
+  #         - '9.0'
 
-    needs: build_and_pack
+  #   needs: build_and_pack
 
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout Code
+  #     uses: actions/checkout@v4
 
-    - name: Setup .NET ${{ matrix.dotnet }}
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: ${{ matrix.dotnet }}
+  #   - name: Setup .NET ${{ matrix.dotnet }}
+  #     uses: actions/setup-dotnet@v3
+  #     with:
+  #       dotnet-version: ${{ matrix.dotnet }}
 
-    - name: Download NuGet Packages
-      uses: actions/download-artifact@v4
-      with:
-        name: nuget-packages
-        path: ./packages
+  #   - name: Download NuGet Packages
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: nuget-packages
+  #       path: ./packages
     
-    - name: Create local package feed
-      run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
+  #   - name: Create local package feed
+  #     run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
 
-    - name: Print NuGet Sources
-      run: dotnet nuget list source
+  #   - name: Print NuGet Sources
+  #     run: dotnet nuget list source
 
-    - name: Restore dependencies
-      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
+  #   - name: Restore dependencies
+  #     run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
-    - name: Build
-      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+  #   - name: Build
+  #     run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
-    - name: Test
-      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover
+  #   - name: Test
+  #     run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=openCover

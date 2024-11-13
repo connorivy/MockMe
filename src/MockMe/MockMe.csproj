@@ -57,10 +57,6 @@
     <GeneratorFolder>$(MSBuildProjectDirectory)\..\MockMe.Generator\$(OutputPath)</GeneratorFolder>
   </PropertyGroup>
 
-  <Target Name="ClearExisting" BeforeTargets="Pack">
-    <Exec Command="echo targetName : $(TargetName)" />
-  </Target>
-
   <ItemGroup Condition="'$(Version)' != ''">
     <None Update="Build\MockMe.targets" Pack="true" PackagePath="build\MockMe.targets" />
     <None Include="$(MSBuildProjectDirectory)\..\MockMe.Generator\bin\$(Configuration)\netstandard2.0\MockMe.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
