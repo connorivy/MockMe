@@ -33,7 +33,7 @@ using static {thisNamespace}.{typeSymbol.Name}MockSetup.{typeSymbol.Name}MockCal
 
 namespace {thisNamespace}
 {{
-    public class {typeSymbol.Name}Mock
+    internal class {typeSymbol.Name}Mock
         : {this.GetMockBaseClass(typeSymbol)}
     {{
         {this.GetConstructorAndProps(typeSymbol)}"

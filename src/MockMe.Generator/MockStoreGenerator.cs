@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using MockMe.Generator.Extensions;
 using MockMe.Generator.MockGenerators;
 
 namespace MockMe.Generator;
@@ -47,7 +48,7 @@ public class MockStoreGenerator : IIncrementalGenerator
                     @$"
 namespace {NamespaceName}
 {{
-    public static partial class {StoreClassName}
+    internal static partial class {StoreClassName}
     {{
 "
                 );
@@ -61,10 +62,20 @@ namespace {NamespaceName}
                         patchCall = "EnsurePatch();";
                     }
 
+                    string genericConstraint;
+                    if (typeToMock.IsSealed)
+                    {
+                        genericConstraint = "";
+                    }
+                    else
+                    {
+                        genericConstraint = $"where T : {typeToMock.ToFullTypeString()}";
+                    }
+
                     sourceBuilder.AppendLine(
                         @$"
-        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMock.Name}Mock {StoreMethodName}<T>(global::{typeToMock}? unusedInstance = null) 
-            where T : global::{typeToMock} 
+        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMock.Name}Mock {StoreMethodName}<T>(global::{typeToMock}? unusedInstance{(typeToMock.IsSealed ? "" : " = null")})
+            {genericConstraint}
         {{
             {patchCall}
             return new();
@@ -158,7 +169,7 @@ using System;
 
 namespace {NamespaceName}
 {{
-    public static partial class {StoreClassName}
+    internal static partial class {StoreClassName}
     {{
         public static Mock<T> {StoreMethodName}<T>(global::{NamespaceName}.DummyClass unusedInstance = null)
             where T : global::{NamespaceName}.DummyClass

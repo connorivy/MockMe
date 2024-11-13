@@ -24,3 +24,12 @@ public abstract class VoidMemberNoArgsBaseMock<TSelf>
     IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredBeforeReturnCall() =>
         this.callbackManager.GetCallbacksRegisteredBeforeReturnCall();
 }
+
+public class VoidMemberMock : VoidMemberNoArgsBaseMock<VoidMemberMock>
+{
+    public VoidMemberMock()
+        : this(new()) { }
+
+    internal VoidMemberMock(ActionCallbackManager<Action> callbackManager)
+        : base(callbackManager) { }
+}

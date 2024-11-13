@@ -29,7 +29,7 @@ public static class MethodSymbolExtensions
             return types[0];
         }
 
-        return $"ValueTuple<{string.Join(", ", types)}>";
+        return $"({string.Join(", ", types)})";
     }
 
     public static string GetParametersWithOriginalTypesAndModifiers(this IMethodSymbol method) =>
@@ -128,5 +128,13 @@ public static class MethodSymbolExtensions
             return methodSymbol.Name[4..];
         }
         return methodSymbol.Name;
+    }
+
+    public static string GetUniqueMethodName(this IMethodSymbol methodSymbol)
+    {
+        var methodName = methodSymbol.Name;
+        var parameterTypes = methodSymbol.Parameters.Select(p => p.Type.Name);
+        var uniqueMethodName = $"{methodName}_{string.Join("_", parameterTypes)}";
+        return uniqueMethodName;
     }
 }

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using MockMe.Tests.ExampleClasses;
 using MockMe.Tests.ExampleClasses.Interfaces;
@@ -104,5 +105,17 @@ namespace MockMe.Tests
             Assert.Equal(9, await calc.MultiplyAsync(1, 1));
             Assert.Equal(taskOf99, calc.MultiplyAsync(5, 5));
         }
+
+        public void hello()
+        {
+            var x = Worker.DoWork();
+        }
+    }
+
+    public static class Worker
+    {
+        public static int DoWork() => 0;
+
+        public static string DoWork(int? x = null) => "";
     }
 }
