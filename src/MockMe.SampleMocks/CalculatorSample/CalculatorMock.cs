@@ -2,7 +2,8 @@ using System.Collections.Concurrent;
 using System.Numerics;
 using System.Reflection.Emit;
 using HarmonyLib;
-using MockMe.Mocks;
+using MockMe.Mocks.ClassMemberMocks;
+using MockMe.Mocks.ClassMemberMocks.Setup;
 using static MockMe.SampleMocks.CalculatorSample.CalculatorMockSetup;
 using static MockMe.SampleMocks.CalculatorSample.CalculatorMockSetup.CalculatorMockCallTracker;
 
@@ -59,7 +60,7 @@ public class CalculatorMock : Mock<Calculator>
     }
 }
 
-public class CalculatorMockSetup : MockSetup
+public class CalculatorMockSetup : MemberMockSetup
 {
     private List<ArgBagWithMemberMock<int, int, int>>? addBagStore;
 

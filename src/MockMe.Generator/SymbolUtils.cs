@@ -7,6 +7,7 @@ internal static class SymbolUtils
     public static SymbolDisplayFormat DisplayFormat { get; } =
         new SymbolDisplayFormat(
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included
+            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters
         );
 }

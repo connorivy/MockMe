@@ -29,7 +29,7 @@ namespace MockMe.Tests
         [Fact]
         public void Test()
         {
-            var mock = Mock.Me<ComplexCalculator>();
+            var mock = Mock.Me<ComplexCalculator>(default);
 
             mock.Setup.ComputeHashForObjects<int>(Arg.Any).Returns(99);
 

@@ -1,4 +1,4 @@
-using MockMe.Mocks;
+using MockMe.Mocks.ClassMemberMocks;
 
 namespace MockMe;
 
@@ -31,6 +31,7 @@ public class ArgBagWithMemberMock<T1, TReturn>(
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public IMockCallbackAndReturnCallRetriever<Action<T1>, Func<T1, TReturn>> Mock { get; } = mock;
+
     IMockCallbackRetriever<Action<T1>> IArgBagWithMock<
         T1,
         IMockCallbackRetriever<Action<T1>>

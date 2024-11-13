@@ -51,7 +51,7 @@ namespace {thisNamespace}
 
         setupBuilder.AppendLine(
             $@"
-    public class {typeSymbol.Name}MockSetup : MockSetup
+    public class {typeSymbol.Name}MockSetup : global::MockMe.Mocks.ClassMemberMocks.Setup.MemberMockSetup
     {{"
         );
 

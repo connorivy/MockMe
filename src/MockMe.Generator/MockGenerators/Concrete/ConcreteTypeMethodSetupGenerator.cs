@@ -18,6 +18,8 @@ internal class ConcreteTypeMethodSetupGenerator
     private readonly string memberMockType;
     private readonly string returnTypeGenericParamSuffix;
     private readonly bool isVoidReturnType;
+    private readonly string? taskPrefix;
+    private readonly string returnTypeIgnoringTask;
 
     public ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
     {
@@ -26,19 +28,43 @@ internal class ConcreteTypeMethodSetupGenerator
             methodSymbol.GetParametersWithoutTypesAndModifiers();
 
         this.returnType = methodSymbol.ReturnType.ToFullReturnTypeString();
+        this.returnTypeIgnoringTask = (
+            methodSymbol.ReturnType.GetInnerTypeIfTask() ?? methodSymbol.ReturnType
+        ).ToFullReturnTypeString();
         this.isVoidReturnType = methodSymbol.ReturnType.SpecialType == SpecialType.System_Void;
+
+        if (methodSymbol.ReturnType.IsTask())
+        {
+            this.taskPrefix = "Task";
+        }
+        else if (methodSymbol.ReturnType.IsValueTask())
+        {
+            this.taskPrefix = "ValueTask";
+        }
+
+        this.voidPrefix = this.isVoidReturnType ? Void : string.Empty;
         this.paramTypes = methodSymbol.GetParameterTypesWithoutModifiers();
+
         this.returnTypeGenericParamSuffix =
             this.isVoidReturnType ? string.Empty
             : this.paramTypes.Length == 0 ? this.returnType
             : $", {this.returnType}";
-        this.voidPrefix = this.isVoidReturnType ? Void : string.Empty;
         this.paramTypesFollowedByReturnType = GetParamTypesFollowedByReturnType(
             this.returnTypeGenericParamSuffix,
             this.paramTypes
         );
 
-        this.memberMockType = $"{this.voidPrefix}MemberMock{this.paramTypesFollowedByReturnType}";
+        var returnTypeIgnoringTaskGenericParamSuffix =
+            this.isVoidReturnType ? string.Empty
+            : this.paramTypes.Length == 0 ? this.returnType
+            : $", {this.returnTypeIgnoringTask}";
+        var paramTypesFollowedByReturnTypeIgnoringTask = GetParamTypesFollowedByReturnType(
+            returnTypeIgnoringTaskGenericParamSuffix,
+            this.paramTypes
+        );
+
+        this.memberMockType =
+            $"global::MockMe.Mocks.ClassMemberMocks.{this.voidPrefix}{this.taskPrefix}MemberMock{paramTypesFollowedByReturnTypeIgnoringTask}";
     }
 
     public StringBuilder AddPatchMethod(
@@ -241,7 +267,7 @@ internal class ConcreteTypeMethodSetupGenerator
         }
         else
         {
-            return $"List<ArgBagWith{this.memberMockType}>";
+            return $"List<ArgBagWith{this.voidPrefix}MemberMock{this.paramTypesFollowedByReturnType}>";
         }
     }
 
@@ -249,7 +275,7 @@ internal class ConcreteTypeMethodSetupGenerator
     {
         if (this.NumGenericParameters() > 0)
         {
-            return $"Setup{this.voidPrefix}Method(SetupGenericStore{this.paramTypesFollowedByReturnType}(this.{this.MethodName()}BagStore ??= new()){this.parametersWithoutTypesAndModifiers.AddPrefixIfNotEmpty(", ")});";
+            return $"Setup{this.voidPrefix}{this.taskPrefix}Method(SetupGenericStore{this.paramTypesFollowedByReturnType}(this.{this.MethodName()}BagStore ??= new()){this.parametersWithoutTypesAndModifiers.AddPrefixIfNotEmpty(", ")});";
         }
         if (this.NumParameters() == 0)
         {
@@ -257,7 +283,7 @@ internal class ConcreteTypeMethodSetupGenerator
         }
         else
         {
-            return $"Setup{this.voidPrefix}Method(this.{this.MethodName()}BagStore ??= new(), {this.parametersWithoutTypesAndModifiers});";
+            return $"Setup{this.voidPrefix}{this.taskPrefix}Method(this.{this.MethodName()}BagStore ??= new(), {this.parametersWithoutTypesAndModifiers});";
         }
     }
 

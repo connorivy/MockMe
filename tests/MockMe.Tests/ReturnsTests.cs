@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MockMe.Tests.ExampleClasses;
 using Xunit;
 
@@ -65,6 +66,22 @@ namespace MockMe.Tests
             calculatorMock.Setup.get_CalculatorType().Returns(CalculatorType.Graphing);
 
             Assert.Equal(CalculatorType.Graphing, calculatorMock.MockedObject.CalculatorType);
+        }
+
+        [Fact]
+        public async Task CalculatorAddAsync_ShouldReturnConfiguredPropertyValue()
+        {
+            var calculatorMock = Mock.Me<ComplexCalculator>(default);
+
+            calculatorMock.Setup.MultiplyAsync(1, 1).ReturnsAsync(9);
+
+            var taskOf99 = Task.FromResult(99.0);
+            calculatorMock.Setup.MultiplyAsync(5, 5).Returns(taskOf99);
+
+            ComplexCalculator calc = (ComplexCalculator)calculatorMock;
+
+            Assert.Equal(9, await calc.MultiplyAsync(1, 1));
+            Assert.Equal(taskOf99, calc.MultiplyAsync(5, 5));
         }
     }
 }
