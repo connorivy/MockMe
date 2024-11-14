@@ -36,7 +36,7 @@ internal class ConcreteTypeMethodSetupGenerator
 
         this.isVoidReturnType = methodSymbol.ReturnType.SpecialType == SpecialType.System_Void;
 
-        if (methodSymbol.ReturnType.IsTask())
+        if (methodSymbol.ReturnType.IsGenericTask())
         {
             this.taskPrefix = "Task";
         }
@@ -58,10 +58,9 @@ internal class ConcreteTypeMethodSetupGenerator
         );
 
         var returnTypeIgnoringTaskGenericParamSuffix =
-            (this.isVoidReturnType || this.methodSymbol.ReturnType.IsNonGenericTask())
-                ? string.Empty
+            this.isVoidReturnType ? string.Empty
             : this.paramTypes.Length == 0 ? this.returnType
-            : $", {this.returnTypeIgnoringTask}";
+            : $", {this.returnType}";
         var paramTypesFollowedByReturnTypeIgnoringTask = GetParamTypesFollowedByReturnType(
             returnTypeIgnoringTaskGenericParamSuffix,
             this.paramTypes
