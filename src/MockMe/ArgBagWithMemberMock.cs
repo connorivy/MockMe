@@ -59,7 +59,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, TReturn>(
     IMockCallbackRetriever<Action<T1, T2, T3>> IArgBagWithMock<
         (T1, T2, T3),
         IMockCallbackRetriever<Action<T1, T2, T3>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, TReturn>(
@@ -80,7 +80,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, TReturn>(
     IMockCallbackRetriever<Action<T1, T2, T3, T4>> IArgBagWithMock<
         (T1, T2, T3, T4),
         IMockCallbackRetriever<Action<T1, T2, T3, T4>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, TReturn>(
@@ -105,7 +105,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, TReturn>(
     IMockCallbackRetriever<Action<T1, T2, T3, T4, T5>> IArgBagWithMock<
         (T1, T2, T3, T4, T5),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, TReturn>(
@@ -135,7 +135,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, TReturn>(
     IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6>> IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, TReturn>(
@@ -166,7 +166,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, TReturn>(
     IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7>> IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6, T7),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, TReturn>(
@@ -198,7 +198,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, TReturn>(
     IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8>> IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6, T7, T8),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, TReturn>(
@@ -241,7 +241,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, TReturn>(
     IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9>> IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6, T7, T8, T9),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TReturn>(
@@ -286,7 +286,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TRetu
     IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TReturn>(
@@ -333,7 +333,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, 
     IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>> IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TReturn>(
@@ -384,7 +384,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, 
     > IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TReturn>(
@@ -437,7 +437,7 @@ public class ArgBagWithMemberMock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, 
     > IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<
@@ -508,7 +508,7 @@ public class ArgBagWithMemberMock<
     > IArgBagWithMock<
         (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14),
         IMockCallbackRetriever<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>>
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
 
 public class ArgBagWithMemberMock<
@@ -584,5 +584,5 @@ public class ArgBagWithMemberMock<
         IMockCallbackRetriever<
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>
         >
-    >.Mock { get; }
+    >.Mock => this.Mock;
 }
