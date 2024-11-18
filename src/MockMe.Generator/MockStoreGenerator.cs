@@ -57,10 +57,10 @@ namespace {NamespaceName}
                 foreach (var typeToMock in GetTypesToBeMocked(source.Left, source.Right))
                 {
                     string patchCall = "";
-                    if (typeToMock.TypeKind != TypeKind.Interface)
-                    {
-                        patchCall = "EnsurePatch();";
-                    }
+                    //if (typeToMock.TypeKind != TypeKind.Interface)
+                    //{
+                    //    patchCall = "EnsurePatch();";
+                    //}
 
                     string genericConstraint;
                     if (typeToMock.IsSealed)

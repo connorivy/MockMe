@@ -77,6 +77,7 @@ internal class ConcreteTypeMethodSetupGenerator
     public StringBuilder AddPatchMethod(
         StringBuilder sb,
         StringBuilder assemblyAttributesSource,
+        StringBuilder staticConstructor,
         ITypeSymbol typeSymbol
     )
     {
@@ -95,10 +96,11 @@ internal class ConcreteTypeMethodSetupGenerator
 
         if (this.methodSymbol.TypeParameters.Length == 0)
         {
+            string patchName = $"Patch{Guid.NewGuid():N}";
             sb.AppendLine(
                 $@"
         {this.methodSymbol.GetHarmonyPatchAnnotation(typeSymbol.ToFullTypeString())}
-        internal sealed class Patch{Guid.NewGuid():N}
+        internal sealed class {patchName}
         {{
             private static bool Prefix({typeSymbol.ToFullTypeString()} __instance{(this.isVoidReturnType ? string.Empty : $", ref {this.returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
             {{
@@ -111,10 +113,13 @@ internal class ConcreteTypeMethodSetupGenerator
             }}
         }}"
             );
-            sb.AppendLine(
+
+            staticConstructor.AppendLine(
                 $@"
-                    
-"
+            var original{patchName} = typeof({typeSymbol.ToFullTypeString()}).GetMethod(""{this.methodSymbol.Name}"", new Type[] {{ {string.Join(", ", this.methodSymbol.Parameters.Select(p => "typeof(" + p.Type.ToFullTypeString() + ")"))} }} );
+            var {patchName} = typeof({patchName}).GetMethod(""Prefix"", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+
+            harmony.Patch(original{patchName}, prefix: new HarmonyMethod({patchName}));"
             );
         }
         else

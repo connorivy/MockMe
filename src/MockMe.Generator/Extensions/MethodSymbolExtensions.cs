@@ -118,7 +118,14 @@ public static class MethodSymbolExtensions
         //    methodTypeArg = "global::HarmonyLib.MethodType.Async";
         //}
 
-        return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){methodTypeArg.AddPrefixIfNotEmpty(", ")})]";
+        if (!string.IsNullOrEmpty(methodTypeArg))
+        {
+            return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){methodTypeArg.AddPrefixIfNotEmpty(", ")})]";
+        }
+        else
+        {
+            return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){string.Join(", ", methodSymbol.Parameters.Select(p => p.Type.ToFullTypeString().AddOnIfNotEmpty("typeof(", ")"))).AddPrefixIfNotEmpty(", ")})]";
+        }
     }
 
     public static string GetPropertyName(this IMethodSymbol methodSymbol)
