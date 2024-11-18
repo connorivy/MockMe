@@ -106,16 +106,28 @@ namespace MockMe.Tests
             Assert.Equal(taskOf99, calc.MultiplyAsync(5, 5));
         }
 
-        public void hello()
+        [Fact]
+        public async Task CalculatorAddAsync_WhenReturnIsNotConfigured_ShouldReturnCompletedTask()
         {
-            var x = Worker.DoWork();
+            var calculatorMock = Mock.Me<ComplexCalculator>((ComplexCalculator)default);
+
+            ComplexCalculator calc = calculatorMock;
+
+            double result = await calc.MultiplyAsync(1, 1);
+
+            Assert.Equal(0, result);
         }
-    }
 
-    public static class Worker
-    {
-        public static int DoWork() => 0;
+        [Fact]
+        public async Task CalculatorWaitAsync_WhenReturnIsNotConfigured_ShouldReturnCompletedTask()
+        {
+            var calculatorMock = Mock.Me<ComplexCalculator>((ComplexCalculator)default);
 
-        public static string DoWork(int? x = null) => "";
+            ComplexCalculator calc = calculatorMock;
+
+            await calc.WaitForOperationsToFinish();
+
+            calculatorMock.Assert.WaitForOperationsToFinish().WasCalled();
+        }
     }
 }

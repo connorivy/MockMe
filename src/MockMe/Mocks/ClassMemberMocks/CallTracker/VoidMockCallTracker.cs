@@ -12,7 +12,9 @@ public static class VoidMockCallTracker
         _ = MockCallTracker.CallMemberMockBase<bool, bool, Action, bool>(
             mockStore,
             false,
-            static (_, action) => action()
+            static (_, action) => action(),
+            null,
+            out _
         );
     }
 

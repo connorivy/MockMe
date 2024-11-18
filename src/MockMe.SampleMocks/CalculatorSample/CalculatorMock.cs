@@ -34,7 +34,7 @@ public class CalculatorMock : Mock<Calculator>
     {
         private static bool Prefix(Calculator __instance, ref int __result, int x, int y)
         {
-            var x = typeof(Calculator).GetMethod("asdf", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+            //var x = typeof(Calculator).GetMethod("asdf", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
             if (mockStore.TryGetValue(__instance, out var mock))
             {
                 __result = mock.CallTracker.Add(x, y);

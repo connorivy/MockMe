@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using MockMe.Extensions;
 using MockMe.Mocks.ClassMemberMocks;
 
@@ -60,12 +61,11 @@ public class MockCallTracker
     )
     {
         argStore.Add(argCollection);
-        if (mockStore is null)
-        {
-            return default;
-        }
 
-        for (int i = mockStore.Count - 1; i >= 0; i--)
+        TReturn? returnVal = default;
+        bool returnValAssigned = false;
+
+        for (int i = (mockStore?.Count ?? 0) - 1; i >= 0; i--)
         {
             var argBag = mockStore[i];
             if (!argBag.AllArgsSatisfy(argCollection))
@@ -73,24 +73,47 @@ public class MockCallTracker
                 continue;
             }
 
-            return CallMemberMockBase(argBag.Mock, argCollection, callbackAction, returnCallFunc);
+            var localReturn = CallMemberMockBase(
+                argBag.Mock,
+                argCollection,
+                callbackAction,
+                returnCallFunc,
+                out bool retValIsUserConfigured
+            );
+
+            if (!returnValAssigned)
+            {
+                returnVal = localReturn;
+            }
+
+            if (retValIsUserConfigured)
+            {
+                returnValAssigned = true;
+            }
         }
 
-        return default;
+        if (returnValAssigned)
+        {
+            return returnVal;
+        }
+
+        return GetDefaultOrCompletedTask<TReturn>();
     }
 
     internal static TReturn? CallMemberMockBase<TReturn, TArgCollection, TCallback, TReturnCall>(
         IMockCallbackRetriever<TCallback>? mock,
         TArgCollection argCollection,
         Action<TArgCollection, TCallback> callbackAction,
-        Func<TArgCollection, TReturnCall, TReturn>? returnCallFunc = null
+        Func<TArgCollection, TReturnCall, TReturn>? returnCallFunc,
+        out bool retValIsUserConfigured
     )
     {
+        retValIsUserConfigured = false;
         TReturn? returnVal = default;
 
         if (mock is null)
         {
-            return returnVal;
+            return GetDefaultOrCompletedTask<TReturn>();
         }
 
         foreach (TCallback callback in mock.GetCallbacksRegisteredBeforeReturnCall())
@@ -101,19 +124,64 @@ public class MockCallTracker
         if (
             returnCallFunc is not null
             && mock is IMockReturnCallRetriever<TReturnCall> mockWithReturn
+            && mockWithReturn.GetReturnValue() is TReturnCall returnFunc
         )
         {
-            TReturnCall? returnFunc = mockWithReturn.GetReturnValue();
-            returnVal = returnFunc is not null
-                ? returnCallFunc(argCollection, returnFunc)
-                : default;
+            //TReturnCall? returnFunc = mockWithReturn.GetReturnValue();
+            //returnVal = returnFunc is not null
+            //    ? returnCallFunc(argCollection, returnFunc)
+            //    : default;
+            returnVal = returnCallFunc(argCollection, returnFunc);
+            retValIsUserConfigured = true;
         }
 
         foreach (TCallback callback in mock.GetCallbacksRegisteredAfterReturnCall())
         {
             callbackAction(argCollection, callback);
         }
-        return returnVal;
+
+        if (retValIsUserConfigured)
+        {
+            return returnVal;
+        }
+
+        return GetDefaultOrCompletedTask<TReturn>();
+    }
+
+    private static TReturn? GetDefaultOrCompletedTask<TReturn>()
+    {
+        if (typeof(TReturn) == typeof(Task))
+        {
+            return (TReturn)(object)Task.CompletedTask;
+        }
+        else if (
+            typeof(TReturn).IsGenericType
+            && typeof(TReturn).GetGenericTypeDefinition() == typeof(Task<>)
+        )
+        {
+            var resultType = typeof(TReturn).GetGenericArguments()[0];
+            var taskFromResultMethod = typeof(Task)
+                .GetMethod(nameof(Task.FromResult))
+                .MakeGenericMethod(resultType);
+            return (TReturn)
+                taskFromResultMethod.Invoke(null, new[] { Activator.CreateInstance(resultType) });
+        }
+        else if (
+            typeof(TReturn).IsGenericType
+            && typeof(TReturn).GetGenericTypeDefinition() == typeof(ValueTask<>)
+        )
+        {
+            var resultType = typeof(TReturn).GetGenericArguments()[0];
+            var valueTaskConstructor = typeof(ValueTask<>)
+                .MakeGenericType(resultType)
+                .GetConstructor(new[] { resultType });
+            return (TReturn)
+                valueTaskConstructor.Invoke(new[] { Activator.CreateInstance(resultType) });
+        }
+        else
+        {
+            return default;
+        }
     }
 
     public static TReturn? CallMemberMock<TReturn>(
@@ -123,7 +191,8 @@ public class MockCallTracker
             mockStore,
             false,
             static (_, action) => action(),
-            static (_, ret) => ret
+            static (_, ret) => ret,
+            out _
         );
 
     public static TReturn? CallMemberMock<T1, TReturn>(
