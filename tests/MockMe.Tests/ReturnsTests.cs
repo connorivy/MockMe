@@ -93,7 +93,7 @@ namespace MockMe.Tests
         [Fact]
         public async Task CalculatorAddAsync_ShouldReturnConfiguredPropertyValue()
         {
-            var calculatorMock = Mock.Me<ComplexCalculator>(default);
+            var calculatorMock = Mock.Me<ComplexCalculator>((ComplexCalculator)default);
 
             calculatorMock.Setup.MultiplyAsync(1, 1).ReturnsAsync(9);
 

@@ -3,6 +3,7 @@ using System.Numerics;
 using System.Reflection.Emit;
 using HarmonyLib;
 using MockMe.Mocks.ClassMemberMocks;
+using MockMe.Mocks.ClassMemberMocks.CallTracker;
 using MockMe.Mocks.ClassMemberMocks.Setup;
 using static MockMe.SampleMocks.CalculatorSample.CalculatorMockSetup;
 using static MockMe.SampleMocks.CalculatorSample.CalculatorMockSetup.CalculatorMockCallTracker;
@@ -103,7 +104,7 @@ public class CalculatorMockSetup : MemberMockSetup
         private List<double>? numToDivideCallStore;
 
         public void DivideByZero(double numToDivide) =>
-            CallVoidMemberMock(
+            VoidMockCallTracker.CallVoidMemberMock(
                 this.setup.divideByZeroBagStore,
                 this.numToDivideCallStore ??= new(),
                 numToDivide
@@ -122,7 +123,7 @@ public class CalculatorMockSetup : MemberMockSetup
         public void TurnOff()
         {
             this.turnOffCallStore++;
-            CallVoidMemberMock(this.setup.turnOffMockStore);
+            VoidMockCallTracker.CallVoidMemberMock(this.setup.turnOffMockStore);
         }
 
         private Dictionary<int, object>? AddUpAllOfTheseCallStore;
@@ -153,7 +154,10 @@ public class CalculatorMockSetup : MemberMockSetup
 
             return CallMemberMock(
                 mockStore,
-                GetGenericCallStore<T[]>(AddUpAllOfTheseCallStore ??= new(), genericTypeHashCode),
+                GenericCallStoreRetriever.GetGenericCallStore<T[]>(
+                    AddUpAllOfTheseCallStore ??= new(),
+                    genericTypeHashCode
+                ),
                 values
             );
         }

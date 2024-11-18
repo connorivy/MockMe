@@ -110,82 +110,200 @@ internal static class FunctionUtils
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TReturn>
     > ToReturnFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TReturn>() =>
         val => (_, _, _, _, _, _, _, _, _, _, _, _, _, _, _) => val;
-}
 
-internal static class ActionExtensions
-{
-    public static Func<Action, Action> CallbackFunc() => action => action;
+    public static Func<T1, Func<T1, TReturn>, TReturn> ToReturnCallFunc<T1, TReturn>() =>
+        static (col, returnCall) => returnCall(col);
 
-    public static Func<Action, Action<T1>> CallbackFunc<T1>() => action => _ => action();
+    public static Func<(T1, T2), Func<T1, T2, TReturn>, TReturn> ToReturnCallFunc<
+        T1,
+        T2,
+        TReturn
+    >() => static (col, returnCall) => returnCall(col.Item1, col.Item2);
 
-    public static Func<Action, Action<T1, T2>> CallbackFunc<T1, T2>() =>
-        action => (_, _) => action();
+    public static Func<(T1, T2, T3), Func<T1, T2, T3, TReturn>, TReturn> ToReturnCallFunc<
+        T1,
+        T2,
+        T3,
+        TReturn
+    >() => static (col, returnCall) => returnCall(col.Item1, col.Item2, col.Item3);
 
-    public static Func<Action, Action<T1, T2, T3>> CallbackFunc<T1, T2, T3>() =>
-        action => (_, _, _) => action();
-
-    public static Func<Action, Action<T1, T2, T3, T4>> CallbackFunc<T1, T2, T3, T4>() =>
-        action => (_, _, _, _) => action();
-
-    public static Func<Action, Action<T1, T2, T3, T4, T5>> CallbackFunc<T1, T2, T3, T4, T5>() =>
-        action => (_, _, _, _, _) => action();
-
-    public static Func<Action, Action<T1, T2, T3, T4, T5, T6>> CallbackFunc<
+    public static Func<(T1, T2, T3, T4), Func<T1, T2, T3, T4, TReturn>, TReturn> ToReturnCallFunc<
         T1,
         T2,
         T3,
         T4,
-        T5,
-        T6
-    >() => action => (_, _, _, _, _, _) => action();
+        TReturn
+    >() => static (col, returnCall) => returnCall(col.Item1, col.Item2, col.Item3, col.Item4);
 
-    public static Func<Action, Action<T1, T2, T3, T4, T5, T6, T7>> CallbackFunc<
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7
-    >() => action => (_, _, _, _, _, _, _) => action();
+    public static Func<
+        (T1, T2, T3, T4, T5),
+        Func<T1, T2, T3, T4, T5, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(col.Item1, col.Item2, col.Item3, col.Item4, col.Item5);
 
-    public static Func<Action, Action<T1, T2, T3, T4, T5, T6, T7, T8>> CallbackFunc<
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7,
-        T8
-    >() => action => (_, _, _, _, _, _, _, _) => action();
+    public static Func<
+        (T1, T2, T3, T4, T5, T6),
+        Func<T1, T2, T3, T4, T5, T6, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(col.Item1, col.Item2, col.Item3, col.Item4, col.Item5, col.Item6);
 
-    public static Func<Action, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9>> CallbackFunc<
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7,
-        T8,
-        T9
-    >() => action => (_, _, _, _, _, _, _, _, _) => action();
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7),
+        Func<T1, T2, T3, T4, T5, T6, T7, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, T7, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(col.Item1, col.Item2, col.Item3, col.Item4, col.Item5, col.Item6, col.Item7);
 
-    public static Func<Action, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> CallbackFunc<
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7,
-        T8,
-        T9,
-        T10
-    >() => action => (_, _, _, _, _, _, _, _, _, _) => action();
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7, T8),
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, T7, T8, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(
+                col.Item1,
+                col.Item2,
+                col.Item3,
+                col.Item4,
+                col.Item5,
+                col.Item6,
+                col.Item7,
+                col.Item8
+            );
 
-    public static Func<Action, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>> CallbackFunc<
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7, T8, T9),
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(
+                col.Item1,
+                col.Item2,
+                col.Item3,
+                col.Item4,
+                col.Item5,
+                col.Item6,
+                col.Item7,
+                col.Item8,
+                col.Item9
+            );
+
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10),
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(
+                col.Item1,
+                col.Item2,
+                col.Item3,
+                col.Item4,
+                col.Item5,
+                col.Item6,
+                col.Item7,
+                col.Item8,
+                col.Item9,
+                col.Item10
+            );
+
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11),
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(
+                col.Item1,
+                col.Item2,
+                col.Item3,
+                col.Item4,
+                col.Item5,
+                col.Item6,
+                col.Item7,
+                col.Item8,
+                col.Item9,
+                col.Item10,
+                col.Item11
+            );
+
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12),
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(
+                col.Item1,
+                col.Item2,
+                col.Item3,
+                col.Item4,
+                col.Item5,
+                col.Item6,
+                col.Item7,
+                col.Item8,
+                col.Item9,
+                col.Item10,
+                col.Item11,
+                col.Item12
+            );
+
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13),
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(
+                col.Item1,
+                col.Item2,
+                col.Item3,
+                col.Item4,
+                col.Item5,
+                col.Item6,
+                col.Item7,
+                col.Item8,
+                col.Item9,
+                col.Item10,
+                col.Item11,
+                col.Item12,
+                col.Item13
+            );
+
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14),
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TReturn>,
+        TReturn
+    > ToReturnCallFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TReturn>() =>
+        static (col, returnCall) =>
+            returnCall(
+                col.Item1,
+                col.Item2,
+                col.Item3,
+                col.Item4,
+                col.Item5,
+                col.Item6,
+                col.Item7,
+                col.Item8,
+                col.Item9,
+                col.Item10,
+                col.Item11,
+                col.Item12,
+                col.Item13,
+                col.Item14
+            );
+
+    public static Func<
+        (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15),
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TReturn>,
+        TReturn
+    > ToReturnCallFunc<
         T1,
         T2,
         T3,
@@ -196,30 +314,29 @@ internal static class ActionExtensions
         T8,
         T9,
         T10,
-        T11
-    >() => action => (_, _, _, _, _, _, _, _, _, _, _) => action();
-
-    public static Func<
-        Action,
-        Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
-    > CallbackFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>() =>
-        action => (_, _, _, _, _, _, _, _, _, _, _, _) => action();
-
-    public static Func<
-        Action,
-        Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>
-    > CallbackFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>() =>
-        action => (_, _, _, _, _, _, _, _, _, _, _, _, _) => action();
-
-    public static Func<
-        Action,
-        Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
-    > CallbackFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>() =>
-        action => (_, _, _, _, _, _, _, _, _, _, _, _, _, _) => action();
-
-    public static Func<
-        Action,
-        Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>
-    > CallbackFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>() =>
-        action => (_, _, _, _, _, _, _, _, _, _, _, _, _, _, _) => action();
+        T11,
+        T12,
+        T13,
+        T14,
+        T15,
+        TReturn
+    >() =>
+        static (col, returnCall) =>
+            returnCall(
+                col.Item1,
+                col.Item2,
+                col.Item3,
+                col.Item4,
+                col.Item5,
+                col.Item6,
+                col.Item7,
+                col.Item8,
+                col.Item9,
+                col.Item10,
+                col.Item11,
+                col.Item12,
+                col.Item13,
+                col.Item14,
+                col.Item15
+            );
 }

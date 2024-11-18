@@ -28,6 +28,7 @@ using System.Reflection;
 using HarmonyLib;
 using MockMe;
 using MockMe.Mocks;
+using MockMe.Mocks.ClassMemberMocks.CallTracker;
 using static {thisNamespace}.{typeSymbol.Name}MockSetup;
 using static {thisNamespace}.{typeSymbol.Name}MockSetup.{typeSymbol.Name}MockCallTracker;
 

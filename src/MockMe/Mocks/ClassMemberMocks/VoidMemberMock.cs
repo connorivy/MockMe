@@ -37,21 +37,21 @@ public class VoidMemberMock<TArg1>
     : VoidMemberMockWithArgsBase<VoidMemberMock<TArg1>, Action<TArg1>>
 {
     public VoidMemberMock()
-        : base(new(ActionExtensions.CallbackFunc<TArg1>())) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1>())) { }
 }
 
 public class VoidMemberMock<TArg1, TArg2>
     : VoidMemberMockWithArgsBase<VoidMemberMock<TArg1, TArg2>, Action<TArg1, TArg2>>
 {
     public VoidMemberMock()
-        : base(new(ActionExtensions.CallbackFunc<TArg1, TArg2>())) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2>())) { }
 }
 
 public class VoidMemberMock<TArg1, TArg2, TArg3>
     : VoidMemberMockWithArgsBase<VoidMemberMock<TArg1, TArg2, TArg3>, Action<TArg1, TArg2, TArg3>>
 {
     public VoidMemberMock()
-        : base(new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3>())) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3>())) { }
 }
 
 public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4>
@@ -61,7 +61,7 @@ public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4>
     >
 {
     public VoidMemberMock()
-        : base(new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4>())) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4>())) { }
 }
 
 public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5>
@@ -71,7 +71,7 @@ public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5>
     >
 {
     public VoidMemberMock()
-        : base(new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>())) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>())) { }
 }
 
 public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>
@@ -81,7 +81,7 @@ public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>
     >
 {
     public VoidMemberMock()
-        : base(new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>())) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>())) { }
 }
 
 public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>
@@ -91,9 +91,7 @@ public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>
     >
 {
     public VoidMemberMock()
-        : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>())
-        ) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>())) { }
 }
 
 public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>
@@ -104,18 +102,7 @@ public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TAr
 {
     public VoidMemberMock()
         : base(
-            new(
-                ActionExtensions.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8
-                >()
-            )
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>())
         ) { }
 }
 
@@ -128,7 +115,7 @@ public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TAr
     public VoidMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -152,7 +139,7 @@ public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TAr
     public VoidMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -201,7 +188,7 @@ public class VoidMemberMock<
     public VoidMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -266,7 +253,7 @@ public class VoidMemberMock<
     public VoidMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -335,7 +322,7 @@ public class VoidMemberMock<
     public VoidMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -408,7 +395,7 @@ public class VoidMemberMock<
     public VoidMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -485,7 +472,7 @@ public class VoidMemberMock<
     public VoidMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,

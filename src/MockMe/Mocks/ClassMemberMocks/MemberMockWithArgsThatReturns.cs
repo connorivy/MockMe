@@ -44,10 +44,8 @@ public class MemberMock<TArg1, TReturn>
     >
 {
     public MemberMock()
-        : base(
-            new(ActionExtensions.CallbackFunc<TArg1>()),
-            FunctionUtils.ToReturnFunc<TArg1, TReturn>()
-        ) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1>()), FunctionUtils.ToReturnFunc<TArg1, TReturn>())
+    { }
 }
 
 public class MemberMock<TArg1, TArg2, TReturn>
@@ -60,7 +58,7 @@ public class MemberMock<TArg1, TArg2, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TReturn>()
         ) { }
 }
@@ -75,7 +73,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TReturn>()
         ) { }
 }
@@ -90,7 +88,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TReturn>()
         ) { }
 }
@@ -105,7 +103,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TReturn>()
         ) { }
 }
@@ -120,7 +118,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TReturn>()
         ) { }
 }
@@ -135,7 +133,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TReturn
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TReturn>()
         ) { }
 }
@@ -150,18 +148,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, 
 {
     public MemberMock()
         : base(
-            new(
-                ActionExtensions.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8
-                >()
-            ),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>()),
             FunctionUtils.ToReturnFunc<
                 TArg1,
                 TArg2,
@@ -187,7 +174,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, 
     public MemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -237,7 +224,7 @@ public class MemberMock<
     public MemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -303,7 +290,7 @@ public class MemberMock<
     public MemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -400,7 +387,7 @@ public class MemberMock<
     public MemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -503,7 +490,7 @@ public class MemberMock<
     public MemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -612,7 +599,7 @@ public class MemberMock<
     public MemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -727,7 +714,7 @@ public class MemberMock<
     public MemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,

@@ -26,12 +26,16 @@ internal static class ITypeSymbolExtensions
 
     public static bool IsGenericTask(this ITypeSymbol typeSymbol)
     {
-        if (typeSymbol.ToDisplayString() != "System.Threading.Tasks.Task`1")
+        if (
+            typeSymbol.Name != "Task"
+            || typeSymbol.ContainingNamespace.ToDisplayString() != "System.Threading.Tasks"
+        )
         {
             return false;
         }
 
-        return true;
+        return typeSymbol is INamedTypeSymbol namedTypeSymbol
+            && namedTypeSymbol.TypeArguments.Length == 1;
     }
 
     public static bool IsValueTask(this ITypeSymbol typeSymbol)

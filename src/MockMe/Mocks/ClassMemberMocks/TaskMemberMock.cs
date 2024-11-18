@@ -43,11 +43,10 @@ public class TaskMemberMockBase<TReturn, TSelf, TCallback, TReturnFunc>
 }
 
 public class TaskMemberMock<TReturn>
-    : TaskMemberMockBase<TReturn, TaskMemberMock<TReturn>, Action, Func<Task<TReturn>>>
+    : TaskMemberMockBase<TReturn, TaskMemberMock<TReturn>, Action, Task<TReturn>>
 {
     public TaskMemberMock()
-        : base(new(ActionExtensions.CallbackFunc()), FunctionUtils.ToReturnFunc<Task<TReturn>>())
-    { }
+        : base(new(ActionUtils.CallbackFunc()), static task => task) { }
 }
 
 public class TaskMemberMock<TArg1, TReturn>
@@ -60,7 +59,7 @@ public class TaskMemberMock<TArg1, TReturn>
 {
     public TaskMemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1>()),
+            new(ActionUtils.CallbackFunc<TArg1>()),
             FunctionUtils.ToReturnFunc<TArg1, Task<TReturn>>()
         ) { }
 }
@@ -75,7 +74,7 @@ public class TaskMemberMock<TArg1, TArg2, TReturn>
 {
     public TaskMemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, Task<TReturn>>()
         ) { }
 }
@@ -90,7 +89,7 @@ public class TaskMemberMock<TArg1, TArg2, TArg3, TReturn>
 {
     public TaskMemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, Task<TReturn>>()
         ) { }
 }
@@ -105,7 +104,7 @@ public class TaskMemberMock<TArg1, TArg2, TArg3, TArg4, TReturn>
 {
     public TaskMemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, Task<TReturn>>()
         ) { }
 }
@@ -120,7 +119,7 @@ public class TaskMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TReturn>
 {
     public TaskMemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, Task<TReturn>>()
         ) { }
 }
@@ -135,7 +134,7 @@ public class TaskMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TReturn>
 {
     public TaskMemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, Task<TReturn>>()
         ) { }
 }
@@ -150,7 +149,7 @@ public class TaskMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TRe
 {
     public TaskMemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>()),
             FunctionUtils.ToReturnFunc<
                 TArg1,
                 TArg2,
@@ -174,18 +173,7 @@ public class TaskMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TAr
 {
     public TaskMemberMock()
         : base(
-            new(
-                ActionExtensions.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8
-                >()
-            ),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>()),
             FunctionUtils.ToReturnFunc<
                 TArg1,
                 TArg2,
@@ -211,7 +199,7 @@ public class TaskMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TAr
     public TaskMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -273,7 +261,7 @@ public class TaskMemberMock<
     public TaskMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -352,7 +340,7 @@ public class TaskMemberMock<
     public TaskMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -449,7 +437,7 @@ public class TaskMemberMock<
     public TaskMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -552,7 +540,7 @@ public class TaskMemberMock<
     public TaskMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -661,7 +649,7 @@ public class TaskMemberMock<
     public TaskMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,
@@ -776,7 +764,7 @@ public class TaskMemberMock<
     public TaskMemberMock()
         : base(
             new(
-                ActionExtensions.CallbackFunc<
+                ActionUtils.CallbackFunc<
                     TArg1,
                     TArg2,
                     TArg3,

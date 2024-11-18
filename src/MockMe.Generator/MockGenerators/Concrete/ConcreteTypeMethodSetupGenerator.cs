@@ -34,6 +34,10 @@ internal class ConcreteTypeMethodSetupGenerator
             ?? methodSymbol.ReturnType.GetVoidIfTask()
             ?? methodSymbol.ReturnType.ToFullReturnTypeString();
 
+        string? asyncReturnType = methodSymbol
+            .ReturnType.GetInnerTypeIfTask()
+            ?.ToFullReturnTypeString();
+
         this.isVoidReturnType = methodSymbol.ReturnType.SpecialType == SpecialType.System_Void;
 
         if (methodSymbol.ReturnType.IsGenericTask())
@@ -59,8 +63,8 @@ internal class ConcreteTypeMethodSetupGenerator
 
         var returnTypeIgnoringTaskGenericParamSuffix =
             this.isVoidReturnType ? string.Empty
-            : this.paramTypes.Length == 0 ? this.returnType
-            : $", {this.returnType}";
+            : this.paramTypes.Length == 0 ? (asyncReturnType ?? this.returnType)
+            : $", {asyncReturnType ?? this.returnType}";
         var paramTypesFollowedByReturnTypeIgnoringTask = GetParamTypesFollowedByReturnType(
             returnTypeIgnoringTaskGenericParamSuffix,
             this.paramTypes
@@ -193,7 +197,7 @@ internal class ConcreteTypeMethodSetupGenerator
             propMeta.GetterLogic =
                 @$"
         this.{this.GetCallStoreName()}++;
-        return MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});";
+        return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});";
 
             propMeta.GetterField = $"private int {this.GetCallStoreName()};";
         }
@@ -209,7 +213,7 @@ internal class ConcreteTypeMethodSetupGenerator
 
             propMeta.SetterLogic =
                 @$"
-        MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), value);";
+        {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), value);";
 
             propMeta.SetterField =
                 $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";
@@ -227,9 +231,9 @@ internal class ConcreteTypeMethodSetupGenerator
                     this.setup.{this.GetBagStoreName()}?.GetValueOrDefault(genericTypeHashCode)
                     as List<ArgBagWith{this.voidPrefix}MemberMock{(this.paramTypes + this.returnType.AddPrefixIfNotEmpty(", ")).AddOnIfNotEmpty("<", ">")}>;
 
-                {(this.isVoidReturnType ? string.Empty : "return ")} MockCallTracker.Call{this.voidPrefix}MemberMock(
+                {(this.isVoidReturnType ? string.Empty : "return ")}{this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(
                     mockStore,
-                    GetGenericCallStore{this.paramTypes.AddOnIfNotEmpty("<", ">")}({this.GetCallStoreName()} ??= new(), genericTypeHashCode){paramString.AddPrefixIfNotEmpty(", ")}
+                    GenericCallStoreRetriever.GetGenericCallStore{this.paramTypes.AddOnIfNotEmpty("<", ">")}({this.GetCallStoreName()} ??= new(), genericTypeHashCode){paramString.AddPrefixIfNotEmpty(", ")}
                 );
             }}"
             );
@@ -243,7 +247,7 @@ internal class ConcreteTypeMethodSetupGenerator
             public {this.returnType} {this.MethodName()}()
             {{
                 this.{this.GetCallStoreName()}++;
-                {(this.isVoidReturnType ? string.Empty : "return ")}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});
+                {(this.isVoidReturnType ? string.Empty : "return ")}{this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});
             }}"
             );
         }
@@ -253,7 +257,7 @@ internal class ConcreteTypeMethodSetupGenerator
                 $@"
             private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};
 
-            public {this.returnType} {this.MethodName()}({paramsWithTypesAndMods}) => MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), {paramString});"
+            public {this.returnType} {this.MethodName()}({paramsWithTypesAndMods}) => {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), {paramString});"
             );
         }
         return sb;
