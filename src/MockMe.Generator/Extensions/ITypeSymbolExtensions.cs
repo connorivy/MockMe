@@ -14,6 +14,30 @@ internal static class ITypeSymbolExtensions
         return typeSymbol.Name is "Task" or "Task`1";
     }
 
+    public static bool IsNonGenericTask(this ITypeSymbol typeSymbol)
+    {
+        if (typeSymbol.ToDisplayString() != "System.Threading.Tasks.Task")
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static bool IsGenericTask(this ITypeSymbol typeSymbol)
+    {
+        if (
+            typeSymbol.Name != "Task"
+            || typeSymbol.ContainingNamespace.ToDisplayString() != "System.Threading.Tasks"
+        )
+        {
+            return false;
+        }
+
+        return typeSymbol is INamedTypeSymbol namedTypeSymbol
+            && namedTypeSymbol.TypeArguments.Length == 1;
+    }
+
     public static bool IsValueTask(this ITypeSymbol typeSymbol)
     {
         if (typeSymbol.ContainingNamespace.ToDisplayString() != "System.Threading.Tasks")
@@ -26,9 +50,26 @@ internal static class ITypeSymbolExtensions
 
     public static ITypeSymbol? GetInnerTypeIfTask(this ITypeSymbol typeSymbol)
     {
-        if (typeSymbol is INamedTypeSymbol namedTypeSymbol && typeSymbol.IsTask())
+        if (
+            typeSymbol is INamedTypeSymbol namedTypeSymbol
+            && typeSymbol.IsTask()
+            && namedTypeSymbol.TypeArguments.Length > 0
+        )
         {
             return namedTypeSymbol.TypeArguments[0];
+        }
+        return null;
+    }
+
+    public static string? GetVoidIfTask(this ITypeSymbol typeSymbol)
+    {
+        if (
+            typeSymbol is INamedTypeSymbol namedTypeSymbol
+            && typeSymbol.IsTask()
+            && namedTypeSymbol.TypeArguments.Length == 0
+        )
+        {
+            return "void";
         }
         return null;
     }

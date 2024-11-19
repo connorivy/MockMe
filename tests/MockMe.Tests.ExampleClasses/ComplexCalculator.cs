@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +31,11 @@ namespace MockMe.Tests.ExampleClasses
         public Task<double> MultiplyAsync(double num1, double num2)
         {
             return Task.FromResult(num1 * num2);
+        }
+
+        public Task WaitForOperationsToFinish()
+        {
+            throw new NotImplementedException();
         }
     }
 }

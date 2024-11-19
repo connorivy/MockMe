@@ -44,10 +44,8 @@ public class MemberMock<TArg1, TReturn>
     >
 {
     public MemberMock()
-        : base(
-            new(ActionExtensions.CallbackFunc<TArg1>()),
-            FunctionUtils.ToReturnFunc<TArg1, TReturn>()
-        ) { }
+        : base(new(ActionUtils.CallbackFunc<TArg1>()), FunctionUtils.ToReturnFunc<TArg1, TReturn>())
+    { }
 }
 
 public class MemberMock<TArg1, TArg2, TReturn>
@@ -60,7 +58,7 @@ public class MemberMock<TArg1, TArg2, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TReturn>()
         ) { }
 }
@@ -75,7 +73,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TReturn>()
         ) { }
 }
@@ -90,7 +88,7 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TReturn>()
         ) { }
 }
@@ -105,7 +103,652 @@ public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TReturn>
 {
     public MemberMock()
         : base(
-            new(ActionExtensions.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>()),
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>()),
             FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TReturn>()
+        ) { }
+}
+
+public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TReturn>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TReturn>,
+        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>,
+        Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TReturn>
+    >
+{
+    public MemberMock()
+        : base(
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>()),
+            FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TReturn>()
+        ) { }
+}
+
+public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TReturn>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TReturn>,
+        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>,
+        Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TReturn>
+    >
+{
+    public MemberMock()
+        : base(
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>()),
+            FunctionUtils.ToReturnFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TReturn>()
+        ) { }
+}
+
+public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TReturn>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TReturn>,
+        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>,
+        Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TReturn>
+    >
+{
+    public MemberMock()
+        : base(
+            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>()),
+            FunctionUtils.ToReturnFunc<
+                TArg1,
+                TArg2,
+                TArg3,
+                TArg4,
+                TArg5,
+                TArg6,
+                TArg7,
+                TArg8,
+                TReturn
+            >()
+        ) { }
+}
+
+public class MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TReturn>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TReturn>,
+        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>,
+        Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TReturn>
+    >
+{
+    public MemberMock()
+        : base(
+            new(
+                ActionUtils.CallbackFunc<
+                    TArg1,
+                    TArg2,
+                    TArg3,
+                    TArg4,
+                    TArg5,
+                    TArg6,
+                    TArg7,
+                    TArg8,
+                    TArg9
+                >()
+            ),
+            FunctionUtils.ToReturnFunc<
+                TArg1,
+                TArg2,
+                TArg3,
+                TArg4,
+                TArg5,
+                TArg6,
+                TArg7,
+                TArg8,
+                TArg9,
+                TReturn
+            >()
+        ) { }
+}
+
+public class MemberMock<
+    TArg1,
+    TArg2,
+    TArg3,
+    TArg4,
+    TArg5,
+    TArg6,
+    TArg7,
+    TArg8,
+    TArg9,
+    TArg10,
+    TReturn
+>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TReturn>,
+        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>,
+        Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TReturn>
+    >
+{
+    public MemberMock()
+        : base(
+            new(
+                ActionUtils.CallbackFunc<
+                    TArg1,
+                    TArg2,
+                    TArg3,
+                    TArg4,
+                    TArg5,
+                    TArg6,
+                    TArg7,
+                    TArg8,
+                    TArg9,
+                    TArg10
+                >()
+            ),
+            FunctionUtils.ToReturnFunc<
+                TArg1,
+                TArg2,
+                TArg3,
+                TArg4,
+                TArg5,
+                TArg6,
+                TArg7,
+                TArg8,
+                TArg9,
+                TArg10,
+                TReturn
+            >()
+        ) { }
+}
+
+public class MemberMock<
+    TArg1,
+    TArg2,
+    TArg3,
+    TArg4,
+    TArg5,
+    TArg6,
+    TArg7,
+    TArg8,
+    TArg9,
+    TArg10,
+    TArg11,
+    TReturn
+>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TReturn
+        >,
+        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>,
+        Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TReturn>
+    >
+{
+    public MemberMock()
+        : base(
+            new(
+                ActionUtils.CallbackFunc<
+                    TArg1,
+                    TArg2,
+                    TArg3,
+                    TArg4,
+                    TArg5,
+                    TArg6,
+                    TArg7,
+                    TArg8,
+                    TArg9,
+                    TArg10,
+                    TArg11
+                >()
+            ),
+            FunctionUtils.ToReturnFunc<
+                TArg1,
+                TArg2,
+                TArg3,
+                TArg4,
+                TArg5,
+                TArg6,
+                TArg7,
+                TArg8,
+                TArg9,
+                TArg10,
+                TArg11,
+                TReturn
+            >()
+        ) { }
+}
+
+public class MemberMock<
+    TArg1,
+    TArg2,
+    TArg3,
+    TArg4,
+    TArg5,
+    TArg6,
+    TArg7,
+    TArg8,
+    TArg9,
+    TArg10,
+    TArg11,
+    TArg12,
+    TReturn
+>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TReturn
+        >,
+        Action<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12
+        >,
+        Func<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TReturn
+        >
+    >
+{
+    public MemberMock()
+        : base(
+            new(
+                ActionUtils.CallbackFunc<
+                    TArg1,
+                    TArg2,
+                    TArg3,
+                    TArg4,
+                    TArg5,
+                    TArg6,
+                    TArg7,
+                    TArg8,
+                    TArg9,
+                    TArg10,
+                    TArg11,
+                    TArg12
+                >()
+            ),
+            FunctionUtils.ToReturnFunc<
+                TArg1,
+                TArg2,
+                TArg3,
+                TArg4,
+                TArg5,
+                TArg6,
+                TArg7,
+                TArg8,
+                TArg9,
+                TArg10,
+                TArg11,
+                TArg12,
+                TReturn
+            >()
+        ) { }
+}
+
+public class MemberMock<
+    TArg1,
+    TArg2,
+    TArg3,
+    TArg4,
+    TArg5,
+    TArg6,
+    TArg7,
+    TArg8,
+    TArg9,
+    TArg10,
+    TArg11,
+    TArg12,
+    TArg13,
+    TReturn
+>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13,
+            TReturn
+        >,
+        Action<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13
+        >,
+        Func<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13,
+            TReturn
+        >
+    >
+{
+    public MemberMock()
+        : base(
+            new(
+                ActionUtils.CallbackFunc<
+                    TArg1,
+                    TArg2,
+                    TArg3,
+                    TArg4,
+                    TArg5,
+                    TArg6,
+                    TArg7,
+                    TArg8,
+                    TArg9,
+                    TArg10,
+                    TArg11,
+                    TArg12,
+                    TArg13
+                >()
+            ),
+            FunctionUtils.ToReturnFunc<
+                TArg1,
+                TArg2,
+                TArg3,
+                TArg4,
+                TArg5,
+                TArg6,
+                TArg7,
+                TArg8,
+                TArg9,
+                TArg10,
+                TArg11,
+                TArg12,
+                TArg13,
+                TReturn
+            >()
+        ) { }
+}
+
+public class MemberMock<
+    TArg1,
+    TArg2,
+    TArg3,
+    TArg4,
+    TArg5,
+    TArg6,
+    TArg7,
+    TArg8,
+    TArg9,
+    TArg10,
+    TArg11,
+    TArg12,
+    TArg13,
+    TArg14,
+    TReturn
+>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13,
+            TArg14,
+            TReturn
+        >,
+        Action<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13,
+            TArg14
+        >,
+        Func<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13,
+            TArg14,
+            TReturn
+        >
+    >
+{
+    public MemberMock()
+        : base(
+            new(
+                ActionUtils.CallbackFunc<
+                    TArg1,
+                    TArg2,
+                    TArg3,
+                    TArg4,
+                    TArg5,
+                    TArg6,
+                    TArg7,
+                    TArg8,
+                    TArg9,
+                    TArg10,
+                    TArg11,
+                    TArg12,
+                    TArg13,
+                    TArg14
+                >()
+            ),
+            FunctionUtils.ToReturnFunc<
+                TArg1,
+                TArg2,
+                TArg3,
+                TArg4,
+                TArg5,
+                TArg6,
+                TArg7,
+                TArg8,
+                TArg9,
+                TArg10,
+                TArg11,
+                TArg12,
+                TArg13,
+                TArg14,
+                TReturn
+            >()
+        ) { }
+}
+
+public class MemberMock<
+    TArg1,
+    TArg2,
+    TArg3,
+    TArg4,
+    TArg5,
+    TArg6,
+    TArg7,
+    TArg8,
+    TArg9,
+    TArg10,
+    TArg11,
+    TArg12,
+    TArg13,
+    TArg14,
+    TArg15,
+    TReturn
+>
+    : MemberMockWithArgsThatReturns<
+        TReturn,
+        MemberMock<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13,
+            TArg14,
+            TArg15,
+            TReturn
+        >,
+        Action<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13,
+            TArg14,
+            TArg15
+        >,
+        Func<
+            TArg1,
+            TArg2,
+            TArg3,
+            TArg4,
+            TArg5,
+            TArg6,
+            TArg7,
+            TArg8,
+            TArg9,
+            TArg10,
+            TArg11,
+            TArg12,
+            TArg13,
+            TArg14,
+            TArg15,
+            TReturn
+        >
+    >
+{
+    public MemberMock()
+        : base(
+            new(
+                ActionUtils.CallbackFunc<
+                    TArg1,
+                    TArg2,
+                    TArg3,
+                    TArg4,
+                    TArg5,
+                    TArg6,
+                    TArg7,
+                    TArg8,
+                    TArg9,
+                    TArg10,
+                    TArg11,
+                    TArg12,
+                    TArg13,
+                    TArg14,
+                    TArg15
+                >()
+            ),
+            FunctionUtils.ToReturnFunc<
+                TArg1,
+                TArg2,
+                TArg3,
+                TArg4,
+                TArg5,
+                TArg6,
+                TArg7,
+                TArg8,
+                TArg9,
+                TArg10,
+                TArg11,
+                TArg12,
+                TArg13,
+                TArg14,
+                TArg15,
+                TReturn
+            >()
         ) { }
 }

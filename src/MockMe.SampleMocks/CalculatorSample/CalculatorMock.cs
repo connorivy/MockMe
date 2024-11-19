@@ -3,6 +3,7 @@ using System.Numerics;
 using System.Reflection.Emit;
 using HarmonyLib;
 using MockMe.Mocks.ClassMemberMocks;
+using MockMe.Mocks.ClassMemberMocks.CallTracker;
 using MockMe.Mocks.ClassMemberMocks.Setup;
 using static MockMe.SampleMocks.CalculatorSample.CalculatorMockSetup;
 using static MockMe.SampleMocks.CalculatorSample.CalculatorMockSetup.CalculatorMockCallTracker;
@@ -33,6 +34,7 @@ public class CalculatorMock : Mock<Calculator>
     {
         private static bool Prefix(Calculator __instance, ref int __result, int x, int y)
         {
+            //var x = typeof(Calculator).GetMethod("asdf", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
             if (mockStore.TryGetValue(__instance, out var mock))
             {
                 __result = mock.CallTracker.Add(x, y);
@@ -103,7 +105,7 @@ public class CalculatorMockSetup : MemberMockSetup
         private List<double>? numToDivideCallStore;
 
         public void DivideByZero(double numToDivide) =>
-            CallVoidMemberMock(
+            VoidMockCallTracker.CallVoidMemberMock(
                 this.setup.divideByZeroBagStore,
                 this.numToDivideCallStore ??= new(),
                 numToDivide
@@ -122,7 +124,7 @@ public class CalculatorMockSetup : MemberMockSetup
         public void TurnOff()
         {
             this.turnOffCallStore++;
-            CallVoidMemberMock(this.setup.turnOffMockStore);
+            VoidMockCallTracker.CallVoidMemberMock(this.setup.turnOffMockStore);
         }
 
         private Dictionary<int, object>? AddUpAllOfTheseCallStore;
@@ -153,7 +155,10 @@ public class CalculatorMockSetup : MemberMockSetup
 
             return CallMemberMock(
                 mockStore,
-                GetGenericCallStore<T[]>(AddUpAllOfTheseCallStore ??= new(), genericTypeHashCode),
+                GenericCallStoreRetriever.GetGenericCallStore<T[]>(
+                    AddUpAllOfTheseCallStore ??= new(),
+                    genericTypeHashCode
+                ),
                 values
             );
         }

@@ -29,7 +29,7 @@ public static class MethodSymbolExtensions
             return types[0];
         }
 
-        return $"ValueTuple<{string.Join(", ", types)}>";
+        return $"({string.Join(", ", types)})";
     }
 
     public static string GetParametersWithOriginalTypesAndModifiers(this IMethodSymbol method) =>
@@ -118,7 +118,14 @@ public static class MethodSymbolExtensions
         //    methodTypeArg = "global::HarmonyLib.MethodType.Async";
         //}
 
-        return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){methodTypeArg.AddPrefixIfNotEmpty(", ")})]";
+        if (!string.IsNullOrEmpty(methodTypeArg))
+        {
+            return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){methodTypeArg.AddPrefixIfNotEmpty(", ")})]";
+        }
+        else
+        {
+            return $"[global::HarmonyLib.HarmonyPatch(typeof({typeFullName}), nameof({typeFullName}.{methodName}){string.Join(", ", methodSymbol.Parameters.Select(p => p.Type.ToFullTypeString().AddOnIfNotEmpty("typeof(", ")"))).AddPrefixIfNotEmpty(", ")})]";
+        }
     }
 
     public static string GetPropertyName(this IMethodSymbol methodSymbol)
@@ -128,5 +135,13 @@ public static class MethodSymbolExtensions
             return methodSymbol.Name[4..];
         }
         return methodSymbol.Name;
+    }
+
+    public static string GetUniqueMethodName(this IMethodSymbol methodSymbol)
+    {
+        var methodName = methodSymbol.Name;
+        var parameterTypes = methodSymbol.Parameters.Select(p => p.Type.Name);
+        var uniqueMethodName = $"{methodName}_{string.Join("_", parameterTypes)}";
+        return uniqueMethodName;
     }
 }

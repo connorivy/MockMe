@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using MockMe.Tests.ExampleClasses;
 using MockMe.Tests.ExampleClasses.Interfaces;
@@ -92,7 +93,7 @@ namespace MockMe.Tests
         [Fact]
         public async Task CalculatorAddAsync_ShouldReturnConfiguredPropertyValue()
         {
-            var calculatorMock = Mock.Me<ComplexCalculator>(default);
+            var calculatorMock = Mock.Me<ComplexCalculator>((ComplexCalculator)default);
 
             calculatorMock.Setup.MultiplyAsync(1, 1).ReturnsAsync(9);
 
@@ -103,6 +104,30 @@ namespace MockMe.Tests
 
             Assert.Equal(9, await calc.MultiplyAsync(1, 1));
             Assert.Equal(taskOf99, calc.MultiplyAsync(5, 5));
+        }
+
+        [Fact]
+        public async Task CalculatorAddAsync_WhenReturnIsNotConfigured_ShouldReturnCompletedTask()
+        {
+            var calculatorMock = Mock.Me<ComplexCalculator>((ComplexCalculator)default);
+
+            ComplexCalculator calc = calculatorMock;
+
+            double result = await calc.MultiplyAsync(1, 1);
+
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public async Task CalculatorWaitAsync_WhenReturnIsNotConfigured_ShouldReturnCompletedTask()
+        {
+            var calculatorMock = Mock.Me<ComplexCalculator>((ComplexCalculator)default);
+
+            ComplexCalculator calc = calculatorMock;
+
+            await calc.WaitForOperationsToFinish();
+
+            calculatorMock.Assert.WaitForOperationsToFinish().WasCalled();
         }
     }
 }

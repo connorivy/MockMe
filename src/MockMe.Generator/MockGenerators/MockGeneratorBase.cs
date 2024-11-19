@@ -28,12 +28,13 @@ using System.Reflection;
 using HarmonyLib;
 using MockMe;
 using MockMe.Mocks;
+using MockMe.Mocks.ClassMemberMocks.CallTracker;
 using static {thisNamespace}.{typeSymbol.Name}MockSetup;
 using static {thisNamespace}.{typeSymbol.Name}MockSetup.{typeSymbol.Name}MockCallTracker;
 
 namespace {thisNamespace}
 {{
-    public class {typeSymbol.Name}Mock
+    internal class {typeSymbol.Name}Mock
         : {this.GetMockBaseClass(typeSymbol)}
     {{
         {this.GetConstructorAndProps(typeSymbol)}"
@@ -71,6 +72,14 @@ namespace {thisNamespace}
                 }}"
         );
 
+        StringBuilder staticConstructor = new();
+        staticConstructor.AppendLine(
+            $@"
+        static {typeSymbol.Name}Mock()
+        {{
+            var harmony = new global::HarmonyLib.Harmony(""com.mockme.patch"");"
+        );
+
         Dictionary<string, PropertyMetadata> callTrackerMeta = [];
         foreach (var method in typeSymbol.GetMembers())
         {
@@ -90,7 +99,12 @@ namespace {thisNamespace}
 
             if (typeSymbol.TypeKind != TypeKind.Interface)
             {
-                methodGenerator.AddPatchMethod(sb, assemblyAttributesSource, typeSymbol);
+                methodGenerator.AddPatchMethod(
+                    sb,
+                    assemblyAttributesSource,
+                    staticConstructor,
+                    typeSymbol
+                );
             }
             methodGenerator.AddMethodSetupToStringBuilder(setupBuilder);
             methodGenerator.AddMethodCallTrackerToStringBuilder(
@@ -99,6 +113,13 @@ namespace {thisNamespace}
             );
             methodGenerator.AddMethodToAsserterClass(asserterBuilder);
         }
+
+        staticConstructor.AppendLine(
+            $@"
+        }}"
+        );
+
+        sb.Append(staticConstructor);
 
         // close mock class
         sb.AppendLine(
