@@ -20,28 +20,21 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGenerato
 
         var methodName = this.methodSymbol.GetPropertyName();
 
-        string? indexerType = null;
-        if (
-            this.methodSymbol.AssociatedSymbol is IPropertySymbol propertySymbol
-            && propertySymbol.IsIndexer
-        )
+        string? indexerType = this.methodSymbol.Parameters.First().Type.ToFullTypeString();
+
+        if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
         {
-            indexerType = propertySymbol.Type.ToFullTypeString();
+            propMeta = new()
+            {
+                Name = methodName,
+                ReturnType = this.returnType,
+                IndexerType = indexerType,
+            };
+            callTrackerMeta.Add(methodName, propMeta);
         }
 
         if (this.methodSymbol.MethodKind == MethodKind.PropertyGet)
         {
-            if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
-            {
-                propMeta = new()
-                {
-                    Name = methodName,
-                    ReturnType = this.returnType,
-                    IndexerType = indexerType,
-                };
-                callTrackerMeta.Add(methodName, propMeta);
-            }
-
             propMeta.GetterLogic =
                 @$"
             return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
@@ -49,17 +42,6 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGenerato
         }
         else if (this.methodSymbol.MethodKind == MethodKind.PropertySet)
         {
-            if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
-            {
-                propMeta = new()
-                {
-                    Name = methodName,
-                    ReturnType = this.returnType,
-                    IndexerType = indexerType,
-                };
-                callTrackerMeta.Add(methodName, propMeta);
-            }
-
             propMeta.SetterLogic =
                 @$"
         {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index, value);";
