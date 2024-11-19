@@ -72,9 +72,21 @@ namespace {NamespaceName}
                         genericConstraint = $"where T : {typeToMock.ToFullTypeString()}";
                     }
 
+                    string typeToMockName;
+                    if (typeNameUsageCounts.TryGetValue(typeToMock.Name, out int numUsages))
+                    {
+                        typeToMockName = typeToMock.Name + $"_{numUsages}";
+                        typeNameUsageCounts[typeToMock.Name] = numUsages + 1;
+                    }
+                    else
+                    {
+                        typeToMockName = typeToMock.Name;
+                        typeNameUsageCounts.Add(typeToMock.Name, 1);
+                    }
+
                     sourceBuilder.AppendLine(
                         @$"
-        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMock.Name}Mock {StoreMethodName}<T>(global::{typeToMock}? unusedInstance{(typeToMock.IsSealed ? "" : " = null")})
+        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMockName}Mock {StoreMethodName}<T>(global::{typeToMock}? unusedInstance{(typeToMock.IsSealed ? "" : " = null")})
             {genericConstraint}
         {{
             {patchCall}
@@ -82,24 +94,13 @@ namespace {NamespaceName}
         }}"
                     );
 
-                    string classNameSuffix = string.Empty;
-                    if (typeNameUsageCounts.TryGetValue(typeToMock.Name, out int numUsages))
-                    {
-                        classNameSuffix = $"-{numUsages}";
-                        typeNameUsageCounts[typeToMock.Name] = numUsages + 1;
-                    }
-                    else
-                    {
-                        typeNameUsageCounts.Add(typeToMock.Name, 1);
-                    }
-
                     string newMockCode = MockGeneratorFactory
-                        .Create(typeToMock)
+                        .Create(typeToMock, typeToMockName)
                         .CreateMockType(typeToMock, assemblyAttributesSource)
                         .ToString();
 
                     ctx.AddSource(
-                        $"{typeToMock.Name}Mock{classNameSuffix}.g.cs",
+                        $"{typeToMockName}Mock.g.cs",
                         SourceText.From(newMockCode, Encoding.UTF8)
                     );
                 }
@@ -171,7 +172,7 @@ namespace {NamespaceName}
 {{
     internal static partial class {StoreClassName}
     {{
-        public static Mock<T> {StoreMethodName}<T>(global::{NamespaceName}.DummyClass unusedInstance = null)
+        public static Mock<T> {StoreMethodName}<T>(global::{NamespaceName}.DummyClass unusedInstance)
             where T : global::{NamespaceName}.DummyClass
         {{
             throw new NotImplementedException();

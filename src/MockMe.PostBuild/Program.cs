@@ -29,17 +29,25 @@ List<MockReplacementInfo> genericTypes = definitionAssembly.GetMockReplacementIn
 foreach (var group in genericTypes.GroupBy(info => info.TypeToReplace.AssemblyName))
 {
     string currentAssemblyPath = Path.Combine(binLocation, group.Key + ".dll");
-    using var assembly = AssemblyDefinition.ReadAssembly(
-        currentAssemblyPath,
-        new ReaderParameters
-        {
-            ReadWrite = true,
-            ReadingMode = ReadingMode.Immediate,
-            InMemory = true,
-            AssemblyResolver = new CustomResolver(binLocation),
-            MetadataResolver = new CustomMetaResolver(new CustomResolver(binLocation)),
-        }
-    );
+    AssemblyDefinition assembly;
+    try
+    {
+        assembly = AssemblyDefinition.ReadAssembly(
+            currentAssemblyPath,
+            new ReaderParameters
+            {
+                ReadWrite = true,
+                ReadingMode = ReadingMode.Immediate,
+                InMemory = true,
+                AssemblyResolver = new CustomResolver(binLocation),
+                MetadataResolver = new CustomMetaResolver(new CustomResolver(binLocation)),
+            }
+        );
+    }
+    catch (System.IO.FileNotFoundException)
+    {
+        continue;
+    }
 
     foreach (MockReplacementInfo mockReplacementInfo in group)
     {
@@ -62,6 +70,7 @@ foreach (var group in genericTypes.GroupBy(info => info.TypeToReplace.AssemblyNa
     }
 
     assembly.Write(currentAssemblyPath);
+    assembly.Dispose();
 }
 
 internal class CustomResolver(string binLocation) : BaseAssemblyResolver

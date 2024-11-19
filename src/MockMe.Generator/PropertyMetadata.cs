@@ -6,6 +6,7 @@ public class PropertyMetadata
 {
     public required string Name { get; init; }
     public required string ReturnType { get; init; }
+    public string? IndexerType { get; init; }
     public string? GetterField { get; set; }
     public string? SetterField { get; set; }
     public string? GetterLogic { get; set; }
@@ -19,11 +20,22 @@ public class PropertyMetadata
             {this.SetterField}"
         );
 
-        sb.Append(
-            $@"
+        if (this.IndexerType is null)
+        {
+            sb.Append(
+                $@"
             public {this.ReturnType} {this.Name}
             {{"
-        );
+            );
+        }
+        else
+        {
+            sb.Append(
+                $@"
+            public {this.ReturnType} this[{this.IndexerType} index]
+            {{"
+            );
+        }
 
         if (this.GetterLogic is not null)
         {

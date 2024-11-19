@@ -4,81 +4,19 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
+using MockMe.Generator.MockGenerators.MethodGenerators;
 
 namespace MockMe.Generator.MockGenerators.Concrete;
 
-internal class ConcreteTypeMethodSetupGenerator
+internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
+    : MethodMockGeneratorBase(methodSymbol)
 {
-    private const string Void = "Void";
-    private readonly IMethodSymbol methodSymbol;
-    private readonly string parametersWithoutTypesAndModifiers;
-    private readonly string returnType;
-    private readonly string voidPrefix;
-    private readonly string paramTypes;
-    private readonly string paramTypesFollowedByReturnType;
-    private readonly string memberMockType;
-    private readonly string returnTypeGenericParamSuffix;
-    private readonly bool isVoidReturnType;
-    private readonly string? taskPrefix;
-    private readonly string returnTypeIgnoringTask;
-
-    public ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
-    {
-        this.methodSymbol = methodSymbol;
-        this.parametersWithoutTypesAndModifiers =
-            methodSymbol.GetParametersWithoutTypesAndModifiers();
-
-        this.returnType = methodSymbol.ReturnType.ToFullReturnTypeString();
-        this.returnTypeIgnoringTask =
-            methodSymbol.ReturnType.GetInnerTypeIfTask()?.ToFullReturnTypeString()
-            ?? methodSymbol.ReturnType.GetVoidIfTask()
-            ?? methodSymbol.ReturnType.ToFullReturnTypeString();
-
-        string? asyncReturnType = methodSymbol
-            .ReturnType.GetInnerTypeIfTask()
-            ?.ToFullReturnTypeString();
-
-        this.isVoidReturnType = methodSymbol.ReturnType.SpecialType == SpecialType.System_Void;
-
-        if (methodSymbol.ReturnType.IsGenericTask())
-        {
-            this.taskPrefix = "Task";
-        }
-        else if (methodSymbol.ReturnType.IsValueTask())
-        {
-            this.taskPrefix = "ValueTask";
-        }
-
-        this.voidPrefix = this.isVoidReturnType ? Void : string.Empty;
-        this.paramTypes = methodSymbol.GetParameterTypesWithoutModifiers();
-
-        this.returnTypeGenericParamSuffix =
-            this.isVoidReturnType ? string.Empty
-            : this.paramTypes.Length == 0 ? this.returnType
-            : $", {this.returnType}";
-        this.paramTypesFollowedByReturnType = GetParamTypesFollowedByReturnType(
-            this.returnTypeGenericParamSuffix,
-            this.paramTypes
-        );
-
-        var returnTypeIgnoringTaskGenericParamSuffix =
-            this.isVoidReturnType ? string.Empty
-            : this.paramTypes.Length == 0 ? (asyncReturnType ?? this.returnType)
-            : $", {asyncReturnType ?? this.returnType}";
-        var paramTypesFollowedByReturnTypeIgnoringTask = GetParamTypesFollowedByReturnType(
-            returnTypeIgnoringTaskGenericParamSuffix,
-            this.paramTypes
-        );
-
-        this.memberMockType =
-            $"global::MockMe.Mocks.ClassMemberMocks.{this.voidPrefix}{this.taskPrefix}MemberMock{paramTypesFollowedByReturnTypeIgnoringTask}";
-    }
-
-    public StringBuilder AddPatchMethod(
+    public override StringBuilder AddPatchMethod(
         StringBuilder sb,
         StringBuilder assemblyAttributesSource,
         StringBuilder staticConstructor,
-        ITypeSymbol typeSymbol
+        ITypeSymbol typeSymbol,
+        string typeSymbolName
     )
     {
         var thisNamespace = $"MockMe.Generated.{typeSymbol.ContainingNamespace}";
@@ -99,12 +37,11 @@ internal class ConcreteTypeMethodSetupGenerator
             string patchName = $"Patch{Guid.NewGuid():N}";
             sb.AppendLine(
                 $@"
-        {this.methodSymbol.GetHarmonyPatchAnnotation(typeSymbol.ToFullTypeString())}
         internal sealed class {patchName}
         {{
             private static bool Prefix({typeSymbol.ToFullTypeString()} __instance{(this.isVoidReturnType ? string.Empty : $", ref {this.returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
             {{
-                if (global::MockMe.MockStore<{typeSymbol.ToFullTypeString()}>.TryGetValue<{typeSymbol.Name}Mock>(__instance, out var mock))
+                if (global::MockMe.MockStore<{typeSymbol.ToFullTypeString()}>.TryGetValue<{typeSymbolName}Mock>(__instance, out var mock))
                 {{
                     {(this.isVoidReturnType ? string.Empty : "__result = ")}mock.CallTracker.{this.methodSymbol.GetPropertyName()}{callEnd};
                     return false;
@@ -117,7 +54,7 @@ internal class ConcreteTypeMethodSetupGenerator
             staticConstructor.AppendLine(
                 $@"
             var original{patchName} = typeof({typeSymbol.ToFullTypeString()}).GetMethod(""{this.methodSymbol.Name}"", new Type[] {{ {string.Join(", ", this.methodSymbol.Parameters.Select(p => "typeof(" + p.Type.ToFullTypeString() + ")"))} }} );
-            var {patchName} = typeof({patchName}).GetMethod(""Prefix"", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            var {patchName} = typeof({patchName}).GetMethod(""Prefix"", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
             harmony.Patch(original{patchName}, prefix: new HarmonyMethod({patchName}));"
             );
@@ -133,8 +70,8 @@ internal class ConcreteTypeMethodSetupGenerator
                 var callTracker = mock.GetType()
                     .GetProperty(
                         ""CallTracker"",
-                        System.Reflection.BindingFlags.NonPublic
-                            | System.Reflection.BindingFlags.Instance
+                        global::System.Reflection.BindingFlags.NonPublic
+                            | global::System.Reflection.BindingFlags.Instance
                     )
                     .GetValue(mock);
 
@@ -143,8 +80,8 @@ internal class ConcreteTypeMethodSetupGenerator
                         .GetType()
                         .GetMethod(
                             ""{this.MethodName()}"",
-                            System.Reflection.BindingFlags.Public
-                                | System.Reflection.BindingFlags.Instance
+                            global::System.Reflection.BindingFlags.Public
+                                | global::System.Reflection.BindingFlags.Instance
                         )
                         .MakeGenericMethod({string.Join(", ", this.methodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")")))})
                         .Invoke(callTracker, new object[] {{ {paramString} }});
@@ -170,7 +107,7 @@ internal class ConcreteTypeMethodSetupGenerator
         return sb;
     }
 
-    public StringBuilder AddMethodSetupToStringBuilder(StringBuilder sb)
+    public override StringBuilder AddMethodSetupToStringBuilder(StringBuilder sb)
     {
         return sb.AppendLine(
             $@"
@@ -180,7 +117,7 @@ internal class ConcreteTypeMethodSetupGenerator
         );
     }
 
-    public StringBuilder AddMethodCallTrackerToStringBuilder(
+    public override StringBuilder AddMethodCallTrackerToStringBuilder(
         StringBuilder sb,
         Dictionary<string, PropertyMetadata> callTrackerMeta
     )
@@ -193,32 +130,69 @@ internal class ConcreteTypeMethodSetupGenerator
         {
             var methodName = this.methodSymbol.GetPropertyName();
 
+            string? indexerType = null;
+            if (
+                this.methodSymbol.AssociatedSymbol is IPropertySymbol propertySymbol
+                && propertySymbol.IsIndexer
+            )
+            {
+                indexerType = propertySymbol.Type.ToFullTypeString();
+            }
+
             if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
             {
-                propMeta = new() { Name = methodName, ReturnType = this.returnType };
+                propMeta = new()
+                {
+                    Name = methodName,
+                    ReturnType = this.returnType,
+                    IndexerType = indexerType,
+                };
                 callTrackerMeta.Add(methodName, propMeta);
             }
 
-            propMeta.GetterLogic =
-                @$"
-        this.{this.GetCallStoreName()}++;
-        return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});";
-
-            propMeta.GetterField = $"private int {this.GetCallStoreName()};";
+            if (string.IsNullOrEmpty(indexerType))
+            {
+                propMeta.GetterLogic =
+                    @$"
+            this.{this.GetCallStoreName()}++;
+            return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});";
+                propMeta.GetterField = $"private int {this.GetCallStoreName()};";
+            }
+            else
+            {
+                propMeta.GetterLogic =
+                    @$"
+            return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
+                propMeta.GetterField = $"private List<{indexerType}>? {this.GetCallStoreName()};";
+            }
         }
         else if (this.methodSymbol.MethodKind == MethodKind.PropertySet)
         {
             var methodName = this.methodSymbol.GetPropertyName();
 
+            string? indexerType = null;
+            if (
+                this.methodSymbol.AssociatedSymbol is IPropertySymbol propertySymbol
+                && propertySymbol.IsIndexer
+            )
+            {
+                indexerType = propertySymbol.Type.ToFullTypeString();
+            }
+
             if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
             {
-                propMeta = new() { Name = methodName, ReturnType = this.returnType };
+                propMeta = new()
+                {
+                    Name = methodName,
+                    ReturnType = this.returnType,
+                    IndexerType = indexerType,
+                };
                 callTrackerMeta.Add(methodName, propMeta);
             }
 
             propMeta.SetterLogic =
                 @$"
-        {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), value);";
+        {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(){(string.IsNullOrEmpty(indexerType) ? "" : ", index")}, value);";
 
             propMeta.SetterField =
                 $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";
@@ -268,7 +242,7 @@ internal class ConcreteTypeMethodSetupGenerator
         return sb;
     }
 
-    public StringBuilder AddMethodToAsserterClass(StringBuilder sb)
+    public override StringBuilder AddMethodToAsserterClass(StringBuilder sb)
     {
         var parametersDefinition = this.methodSymbol.GetParametersWithArgTypesAndModifiers();
         var parameters = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
@@ -306,69 +280,4 @@ internal class ConcreteTypeMethodSetupGenerator
 
         return sb;
     }
-
-    private static string GetParamTypesFollowedByReturnType(string returnSuffix, string paramTypes)
-    {
-        if (paramTypes.Length + returnSuffix.Length == 0)
-        {
-            return string.Empty;
-        }
-
-        return $"<{paramTypes}{returnSuffix}>";
-    }
-
-    private string GetBagStoreType()
-    {
-        if (this.methodSymbol.TypeParameters.Length > 0)
-        {
-            return "Dictionary<int, object>";
-        }
-        else if (this.methodSymbol.Parameters.Length == 0)
-        {
-            return this.memberMockType;
-        }
-        else
-        {
-            return $"List<ArgBagWith{this.voidPrefix}MemberMock{this.paramTypesFollowedByReturnType}>";
-        }
-    }
-
-    private string GetBagStoreName() => this.methodSymbol.GetUniqueMethodName() + "BagStore";
-
-    private string GetCallStoreName() => this.methodSymbol.GetUniqueMethodName() + "CallStore";
-
-    private string GetSetupMethod()
-    {
-        if (this.NumGenericParameters() > 0)
-        {
-            return $"Setup{this.voidPrefix}{this.taskPrefix}Method(SetupGenericStore{this.paramTypesFollowedByReturnType}(this.{this.GetBagStoreName()} ??= new()){this.parametersWithoutTypesAndModifiers.AddPrefixIfNotEmpty(", ")});";
-        }
-        if (this.NumParameters() == 0)
-        {
-            return $"this.{this.GetBagStoreName()} ??= new();";
-        }
-        else
-        {
-            return $"Setup{this.voidPrefix}{this.taskPrefix}Method(this.{this.GetBagStoreName()} ??= new(), {this.parametersWithoutTypesAndModifiers});";
-        }
-    }
-
-    private string MethodName()
-    {
-        //if (this.methodSymbol.MethodKind == MethodKind.PropertyGet)
-        //{
-        //    return this.methodSymbol.Name.Substring(4) + "_get";
-        //}
-
-        //if (this.methodSymbol.MethodKind == MethodKind.PropertySet)
-        //{
-        //    return this.methodSymbol.Name.Substring(4) + "_set";
-        //}
-
-        return this.methodSymbol.Name;
-    }
-
-    private int NumGenericParameters() => this.methodSymbol.TypeParameters.Length;
-
-    private int NumParameters() => this.methodSymbol.Parameters.Length;
 }
