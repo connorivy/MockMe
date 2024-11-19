@@ -9,7 +9,7 @@ namespace MockMe.Tests.MethodOverloads
     {
         private void XParams_CallbackReturnsAndAssertShouldWork(params int[] ints)
         {
-            var mock = Mock.Me<SealedOverloadsClass>(null);
+            var mock = Mock.Me<SealedOverloadsClass>(default(SealedOverloadsClass));
 
             int numCalls = 0;
 

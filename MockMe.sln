@@ -10,9 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{134D18E2
 		tests\Directory.Build.targets = tests\Directory.Build.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe", "src\MockMe\MockMe.csproj", "{19024BA2-842E-4E64-968B-AE05A495BB2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe", "src\MockMe\MockMe.csproj", "{19024BA2-842E-4E64-968B-AE05A495BB2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Generator", "src\MockMe.Generator\MockMe.Generator.csproj", "{FFC11A22-7908-4ADA-997E-99201DF96F75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe.Generator", "src\MockMe.Generator\MockMe.Generator.csproj", "{FFC11A22-7908-4ADA-997E-99201DF96F75}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{08F6FA48-4110-473E-A2E2-E5BA46FFE5DC}"
 	ProjectSection(SolutionItems) = preProject
@@ -27,20 +27,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Abstractions", "src\MockMe.Abstractions\MockMe.Abstractions.csproj", "{B134418F-FADA-49D5-AC6F-6297F2C22598}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe.Abstractions", "src\MockMe.Abstractions\MockMe.Abstractions.csproj", "{B134418F-FADA-49D5-AC6F-6297F2C22598}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.SampleMocks", "src\MockMe.SampleMocks\MockMe.SampleMocks.csproj", "{1C8CEE11-5494-4762-A4E7-62042CE51E56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe.SampleMocks", "src\MockMe.SampleMocks\MockMe.SampleMocks.csproj", "{1C8CEE11-5494-4762-A4E7-62042CE51E56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.PostBuild", "src\MockMe.PostBuild\MockMe.PostBuild.csproj", "{511CE2FA-4247-4553-BFE6-AB049DC5EB5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe.PostBuild", "src\MockMe.PostBuild\MockMe.PostBuild.csproj", "{511CE2FA-4247-4553-BFE6-AB049DC5EB5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Tests.ExampleClasses", "tests\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj", "{63E88E6D-9C69-4E6A-BDD4-45F84884220D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe.Tests.ExampleClasses", "tests\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj", "{63E88E6D-9C69-4E6A-BDD4-45F84884220D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wiki", "wiki", "{4723EF4B-98A5-4F3D-BEB9-0632A3939D4D}"
 	ProjectSection(SolutionItems) = preProject
-		QuickStart.md = QuickStart.md
+		wiki\QuickStart.md = wiki\QuickStart.md
+		wiki\AvoidingCommonPitfalls.md = wiki\AvoidingCommonPitfalls.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Tests", "tests\MockMe.Tests\MockMe.Tests.csproj", "{25527E94-77F8-4FBC-B8B4-BB29C4BEBD75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe.Tests", "tests\MockMe.Tests\MockMe.Tests.csproj", "{25527E94-77F8-4FBC-B8B4-BB29C4BEBD75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
