@@ -83,7 +83,10 @@ internal abstract class MethodMockGeneratorBase
         return sb;
     }
 
-    public virtual StringBuilder AddMethodSetupToStringBuilder(StringBuilder sb)
+    public virtual StringBuilder AddMethodSetupToStringBuilder(
+        StringBuilder sb,
+        Dictionary<string, SetupPropertyMetadata> setupMeta
+    )
     {
         return sb.AppendLine(
             $@"
@@ -101,7 +104,10 @@ internal abstract class MethodMockGeneratorBase
         return sb;
     }
 
-    public virtual StringBuilder AddMethodToAsserterClass(StringBuilder sb)
+    public virtual StringBuilder AddMethodToAsserterClass(
+        StringBuilder sb,
+        Dictionary<string, AssertPropertyMetadata> assertMeta
+    )
     {
         return sb;
     }

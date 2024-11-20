@@ -7,13 +7,17 @@ internal class MethodGeneratorFactory
 {
     public static MethodMockGeneratorBase Create(IMethodSymbol method)
     {
-        if (
-            method.MethodKind is MethodKind.PropertyGet or MethodKind.PropertySet
-            && method.AssociatedSymbol is IPropertySymbol propertySymbol
-            && propertySymbol.IsIndexer
-        )
+        if (method.MethodKind is MethodKind.PropertyGet or MethodKind.PropertySet)
         {
-            return new IndexerGenerator(method);
+            if (
+                method.AssociatedSymbol is IPropertySymbol propertySymbol
+                && propertySymbol.IsIndexer
+            )
+            {
+                return new IndexerGenerator(method);
+            }
+
+            return new PropertyGenerator(method);
         }
 
         return new ConcreteTypeMethodSetupGenerator(method);

@@ -28,10 +28,6 @@
     </PackageReference>-->
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Asserters\" />
-  </ItemGroup>
-
   <Target Name="PushLocal" AfterTargets="Pack" Condition="Exists('$(NugetFeedPath)')">
     <Exec Command="echo After Pack: $(PackageOutputPath)$(MSBuildProjectName).$(Version).nupkg $(NugetFeedPath)" />
     <Exec Command="echo nuget package root: $(NugetPackageRoot)" />

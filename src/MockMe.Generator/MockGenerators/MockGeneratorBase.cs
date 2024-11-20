@@ -83,6 +83,8 @@ namespace {thisNamespace}
         );
 
         Dictionary<string, PropertyMetadata> callTrackerMeta = [];
+        Dictionary<string, SetupPropertyMetadata> setupMeta = [];
+        Dictionary<string, AssertPropertyMetadata> assertMeta = [];
         foreach (var method in typeSymbol.GetMembers())
         {
             if (method is not IMethodSymbol methodSymbol)
@@ -112,12 +114,12 @@ namespace {thisNamespace}
                     this.TypeName
                 );
             }
-            methodGenerator.AddMethodSetupToStringBuilder(setupBuilder);
+            methodGenerator.AddMethodSetupToStringBuilder(setupBuilder, setupMeta);
             methodGenerator.AddMethodCallTrackerToStringBuilder(
                 callTrackerBuilder,
                 callTrackerMeta
             );
-            methodGenerator.AddMethodToAsserterClass(asserterBuilder);
+            methodGenerator.AddMethodToAsserterClass(asserterBuilder, assertMeta);
         }
 
         staticConstructor.AppendLine(
@@ -133,10 +135,20 @@ namespace {thisNamespace}
     }}"
         );
 
+        foreach (var meta in assertMeta.Values)
+        {
+            meta.AddPropToSb(asserterBuilder);
+        }
+
         asserterBuilder.AppendLine(
             $@"
             }}"
         );
+
+        foreach (var meta in setupMeta.Values)
+        {
+            meta.AddPropToSb(setupBuilder);
+        }
 
         foreach (var meta in callTrackerMeta.Values)
         {

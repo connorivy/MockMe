@@ -75,7 +75,7 @@ namespace MockMe.Tests
         {
             var calculatorMock = Mock.Me<Calculator>();
 
-            calculatorMock.Setup.get_CalculatorType().Returns(CalculatorType.Graphing);
+            calculatorMock.Setup.CalculatorType.Get().Returns(CalculatorType.Graphing);
 
             Assert.Equal(CalculatorType.Graphing, calculatorMock.MockedObject.CalculatorType);
         }
@@ -85,7 +85,7 @@ namespace MockMe.Tests
         {
             var calculatorMock = Mock.Me<ICalculator>();
 
-            calculatorMock.Setup.get_CalculatorType().Returns(CalculatorType.Graphing);
+            calculatorMock.Setup.CalculatorType.Get().Returns(CalculatorType.Graphing);
 
             Assert.Equal(CalculatorType.Graphing, calculatorMock.MockedObject.CalculatorType);
         }

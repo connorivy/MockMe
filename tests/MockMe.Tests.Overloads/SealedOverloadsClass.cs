@@ -13,8 +13,22 @@ namespace MockMe.Tests.Overloads
             set => throw new NotImplementedException();
         }
 
-        public string this[int index] => throw new NotImplementedException();
-        public int this[string index] => throw new NotImplementedException();
+        public string this[int index]
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public int this[string index]
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public double this[double index]
+        {
+            set => throw new NotImplementedException();
+        }
 
         public void VoidReturn() => throw new NotImplementedException();
 

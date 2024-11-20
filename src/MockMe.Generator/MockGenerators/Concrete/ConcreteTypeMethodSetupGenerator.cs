@@ -107,7 +107,10 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         return sb;
     }
 
-    public override StringBuilder AddMethodSetupToStringBuilder(StringBuilder sb)
+    public override StringBuilder AddMethodSetupToStringBuilder(
+        StringBuilder sb,
+        Dictionary<string, SetupPropertyMetadata> setupMeta
+    )
     {
         return sb.AppendLine(
             $@"
@@ -242,7 +245,10 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         return sb;
     }
 
-    public override StringBuilder AddMethodToAsserterClass(StringBuilder sb)
+    public override StringBuilder AddMethodToAsserterClass(
+        StringBuilder sb,
+        Dictionary<string, AssertPropertyMetadata> assertMeta
+    )
     {
         var parametersDefinition = this.methodSymbol.GetParametersWithArgTypesAndModifiers();
         var parameters = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
@@ -251,7 +257,7 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         {
             sb.AppendLine(
                 $@"
-                public MemberAsserter {this.MethodName()}{this.methodSymbol.GetGenericParameterStringInBrackets()}({parametersDefinition})
+                public global::MockMe.Asserters.MemberAsserter {this.MethodName()}{this.methodSymbol.GetGenericParameterStringInBrackets()}({parametersDefinition})
                 {{
                     int genericTypeHashCode = GetUniqueIntFromTypes({string.Join(", ", this.methodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")")))});
                     return GetMemberAsserter(this.tracker.{this.GetCallStoreName()}?.GetValueOrDefault(genericTypeHashCode) as List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>, {parameters});
@@ -262,8 +268,7 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         {
             sb.AppendLine(
                 $@"
-                public MemberAsserter 
-            {this.MethodName()}() =>
+                public global::MockMe.Asserters.MemberAsserter {this.MethodName()}() =>
                     new(this.tracker.{this.GetCallStoreName()});"
             );
         }
@@ -271,7 +276,7 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         {
             sb.AppendLine(
                 $@"
-                public MemberAsserter {this.MethodName()}({parametersDefinition})
+                public global::MockMe.Asserters.MemberAsserter {this.MethodName()}({parametersDefinition})
                 {{
                     return GetMemberAsserter(this.tracker.{this.GetCallStoreName()}, {parameters});
                 }}"

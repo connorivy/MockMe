@@ -1,3 +1,4 @@
+using MockMe.Asserters;
 using MockMe.Exceptions;
 using MockMe.Tests.ExampleClasses;
 using Xunit;

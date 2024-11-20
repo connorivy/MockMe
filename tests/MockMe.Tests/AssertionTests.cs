@@ -1,3 +1,4 @@
+using MockMe.Asserters;
 using MockMe.Exceptions;
 using MockMe.Tests.ExampleClasses;
 using MockMe.Tests.ExampleClasses.Interfaces;
@@ -43,17 +44,17 @@ namespace MockMe.Tests
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
-                    calculatorMock.Assert.set_CalculatorType(CalculatorType.Scientific).WasCalled()
+                    calculatorMock.Assert.CalculatorType.Set(CalculatorType.Scientific).WasCalled()
             );
 
             Calculator calculator = calculatorMock;
 
             calculator.CalculatorType = CalculatorType.Scientific;
 
-            calculatorMock.Assert.set_CalculatorType(CalculatorType.Scientific).WasCalled();
+            calculatorMock.Assert.CalculatorType.Set(CalculatorType.Scientific).WasCalled();
 
             Assert.ThrowsAny<MockMeException>(
-                () => calculatorMock.Assert.set_CalculatorType(CalculatorType.Graphing).WasCalled()
+                () => calculatorMock.Assert.CalculatorType.Set(CalculatorType.Graphing).WasCalled()
             );
         }
 
@@ -64,17 +65,17 @@ namespace MockMe.Tests
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
-                    calculatorMock.Assert.set_CalculatorType(CalculatorType.Scientific).WasCalled()
+                    calculatorMock.Assert.CalculatorType.Set(CalculatorType.Scientific).WasCalled()
             );
 
             ICalculator calculator = calculatorMock.MockedObject;
 
             calculator.CalculatorType = CalculatorType.Scientific;
 
-            calculatorMock.Assert.set_CalculatorType(CalculatorType.Scientific).WasCalled();
+            calculatorMock.Assert.CalculatorType.Set(CalculatorType.Scientific).WasCalled();
 
             Assert.ThrowsAny<MockMeException>(
-                () => calculatorMock.Assert.set_CalculatorType(CalculatorType.Graphing).WasCalled()
+                () => calculatorMock.Assert.CalculatorType.Set(CalculatorType.Graphing).WasCalled()
             );
         }
     }

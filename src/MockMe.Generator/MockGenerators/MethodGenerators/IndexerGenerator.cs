@@ -7,7 +7,7 @@ using MockMe.Generator.Extensions;
 
 namespace MockMe.Generator.MockGenerators.MethodGenerators;
 
-internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGeneratorBase(methodSymbol)
+internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(methodSymbol)
 {
     public override StringBuilder AddMethodCallTrackerToStringBuilder(
         StringBuilder sb,
@@ -18,19 +18,27 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGenerato
             this.methodSymbol.GetParametersWithOriginalTypesAndModifiers();
         string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
 
-        var methodName = this.methodSymbol.GetUniqueMethodName();
+        var methodName = this.methodSymbol.GetPropertyName();
 
         string? indexerType = this.methodSymbol.Parameters.First().Type.ToFullTypeString();
 
-        if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
+        bool isGet = this.methodSymbol.MethodKind == MethodKind.PropertyGet;
+
+        var propertyType = isGet
+            ? this.returnType
+            : this.methodSymbol.Parameters[1].Type.ToFullReturnTypeString();
+
+        var uniqueMethodName = methodName + propertyType;
+
+        if (!callTrackerMeta.TryGetValue(uniqueMethodName, out var propMeta))
         {
             propMeta = new()
             {
                 Name = this.methodSymbol.GetPropertyName(),
-                ReturnType = this.returnType,
+                ReturnType = propertyType,
                 IndexerType = indexerType,
             };
-            callTrackerMeta.Add(methodName, propMeta);
+            callTrackerMeta.Add(uniqueMethodName, propMeta);
         }
 
         if (this.methodSymbol.MethodKind == MethodKind.PropertyGet)
@@ -53,43 +61,48 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGenerato
         return sb;
     }
 
-    public override StringBuilder AddMethodSetupToStringBuilder(StringBuilder sb)
-    {
-        return sb.AppendLine(
-            $@"
-        private {this.GetBagStoreType()}? {this.GetBagStoreName()};
-        public {this.memberMockType} this[{this.methodSymbol.GetParametersWithArgTypesAndModifiers()}] =>
-            {this.GetSetupMethod()}"
-        );
-    }
+    //public override StringBuilder AddMethodSetupToStringBuilder(
+    //    StringBuilder sb,
+    //    Dictionary<string, SetupPropertyMetadata> setupMeta
+    //)
+    //{
+    //    return sb.AppendLine(
+    //        $@"
+    //    private {this.GetBagStoreType()}? {this.GetBagStoreName()};
+    //    public {this.memberMockType} this[{this.methodSymbol.GetParametersWithArgTypesAndModifiers()}] =>
+    //        {this.GetSetupMethod()}"
+    //    );
+    //}
 
-    public override StringBuilder AddMethodToAsserterClass(StringBuilder sb)
-    {
-        var parametersDefinition = this.methodSymbol.GetParametersWithArgTypesAndModifiers();
-        var parameters = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
+    //public override StringBuilder AddMethodToAsserterClass(
+    //    StringBuilder sb,
+    //    Dictionary<string, AssertPropertyMetadata> assertMeta
+    //)
+    //{
+    //    var parametersDefinition = this.methodSymbol.GetParametersWithArgTypesAndModifiers();
+    //    var parameters = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
 
-        if (this.methodSymbol.Parameters.Length == 0)
-        {
-            sb.AppendLine(
-                $@"
-                public MemberAsserter 
-            {this.MethodName()}() =>
-                    new(this.tracker.{this.GetCallStoreName()});"
-            );
-        }
-        else
-        {
-            sb.AppendLine(
-                $@"
-                public MemberAsserter {this.MethodName()}({parametersDefinition})
-                {{
-                    return GetMemberAsserter(this.tracker.{this.GetCallStoreName()}, {parameters});
-                }}"
-            );
-        }
+    //    if (this.methodSymbol.Parameters.Length == 0)
+    //    {
+    //        sb.AppendLine(
+    //            $@"
+    //            public global::MockMe.Asserters.MemberAsserter {this.MethodName()}() =>
+    //                new(this.tracker.{this.GetCallStoreName()});"
+    //        );
+    //    }
+    //    else
+    //    {
+    //        sb.AppendLine(
+    //            $@"
+    //            public global::MockMe.Asserters.MemberAsserter {this.MethodName()}({parametersDefinition})
+    //            {{
+    //                return GetMemberAsserter(this.tracker.{this.GetCallStoreName()}, {parameters});
+    //            }}"
+    //        );
+    //    }
 
-        return sb;
-    }
+    //    return sb;
+    //}
 
     public override StringBuilder AddPatchMethod(
         StringBuilder sb,
@@ -141,4 +154,23 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGenerato
 
         return sb;
     }
+
+    protected override string GetPropertyType(bool isGet) =>
+        isGet ? this.returnType : this.methodSymbol.Parameters[1].Type.ToFullReturnTypeString();
+
+    protected override SetupPropertyMetadata CreatePropertyMetadata(
+        string propertyType,
+        string methodName
+    )
+    {
+        return new IndexerSetupPropertyMetadata()
+        {
+            Name = propertyType,
+            PropertyType = propertyType,
+            IndexerType = this.GetIndexerType(),
+        };
+    }
+
+    public override string? GetIndexerType() =>
+        this.methodSymbol.Parameters.First().Type.ToFullTypeString();
 }
