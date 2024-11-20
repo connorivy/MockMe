@@ -184,7 +184,7 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
                 propMeta = new()
                 {
                     Name = methodName,
-                    ReturnType = this.returnType,
+                    ReturnType = this.methodSymbol.Parameters.First().Type.ToFullReturnTypeString(),
                     IndexerType = indexerType,
                 };
                 callTrackerMeta.Add(methodName, propMeta);

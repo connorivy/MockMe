@@ -49,7 +49,7 @@ public static class Arg
 
     public static AnyArg Any { get; } = new AnyArg();
 
-    public static Arg<T> AnyOfType<T>() => Arg<T>.Any;
+    public static Arg<T> AnyOf<T>() => Arg<T>.Any;
 
     public static Arg<T> Where<T>(Func<T?, bool> predicate) => new(predicate);
 }

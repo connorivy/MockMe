@@ -22,17 +22,21 @@ namespace MockMe.Tests
         [Fact]
         public void GenericClass_ShouldReturnConfiguredValue()
         {
-            var mock = Mock.Me<List<int>>();
+            //var mock = Mock.Me<List<int>>();
 
             var stringMock = Mock.Me<List<string>>();
 
-            mock.Setup.Contains(5).Returns(true);
+            //mock.Setup.Contains(5).Returns(true);
 
-            List<int> list = mock;
+            stringMock.Setup.Contains("hello").Returns(true);
+
+            //List<int> list = mock;
 
             //list.set_Item(5)
 
-            var result = list.Contains(5);
+            //var result = list.Contains(5);
+
+            var x = stringMock.MockedObject.Contains("hello");
         }
     }
 }

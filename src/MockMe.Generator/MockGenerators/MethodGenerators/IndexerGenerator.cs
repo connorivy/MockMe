@@ -18,7 +18,7 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGenerato
             this.methodSymbol.GetParametersWithOriginalTypesAndModifiers();
         string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
 
-        var methodName = this.methodSymbol.GetPropertyName();
+        var methodName = this.methodSymbol.GetUniqueMethodName();
 
         string? indexerType = this.methodSymbol.Parameters.First().Type.ToFullTypeString();
 
@@ -26,7 +26,7 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGenerato
         {
             propMeta = new()
             {
-                Name = methodName,
+                Name = this.methodSymbol.GetPropertyName(),
                 ReturnType = this.returnType,
                 IndexerType = indexerType,
             };
@@ -58,7 +58,7 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : MethodMockGenerato
         return sb.AppendLine(
             $@"
         private {this.GetBagStoreType()}? {this.GetBagStoreName()};
-        public {this.memberMockType} {this.MethodName()}{this.methodSymbol.GetGenericParameterStringInBrackets()}({this.methodSymbol.GetParametersWithArgTypesAndModifiers()}) =>
+        public {this.memberMockType} this[{this.methodSymbol.GetParametersWithArgTypesAndModifiers()}] =>
             {this.GetSetupMethod()}"
         );
     }

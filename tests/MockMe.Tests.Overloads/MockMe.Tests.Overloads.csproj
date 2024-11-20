@@ -5,20 +5,19 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="6.0.0" />
-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
-    <PackageReference Include="xunit" Version="2.5.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.1.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <!-- Use project references locally -->
@@ -28,14 +27,14 @@
     <ProjectReference Include="..\..\src\MockMe\MockMe.csproj" />
     <ProjectReference Include="..\..\src\MockMe.PostBuild\MockMe.PostBuild.csproj" />
   </ItemGroup>
-  
+
   <PropertyGroup Condition="'$(MockMeNugetPackageVersion)' == ''">
     <MockMePath>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\</MockMePath>
   </PropertyGroup>
 
   <Import Project="..\..\src\MockMe\Build\MockMe.targets" Condition="'$(MockMeNugetPackageVersion)' == ''" />
 
-   <!--Use nuget in ci to make sure packing process is correct--> 
+  <!--Use nuget in ci to make sure packing process is correct-->
   <ItemGroup Condition="'$(MockMeNugetPackageVersion)' != ''">
     <PackageReference Include="MockMe" Version="$(MockMeNugetPackageVersion)" PrivateAssets="all" />
   </ItemGroup>

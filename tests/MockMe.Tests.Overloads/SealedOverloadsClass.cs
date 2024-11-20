@@ -1,10 +1,21 @@
 using System;
 using System.Threading.Tasks;
 
-namespace MockMe.Tests.MethodOverloads
+namespace MockMe.Tests.Overloads
 {
     internal sealed class SealedOverloadsClass
     {
+        public int Prop_GetSet { get; set; }
+        public int Prop_GetInit { get; init; }
+        public int Prop_GetOnly { get; }
+        public int Prop_SetOnly
+        {
+            set => throw new NotImplementedException();
+        }
+
+        public string this[int index] => throw new NotImplementedException();
+        public int this[string index] => throw new NotImplementedException();
+
         public void VoidReturn() => throw new NotImplementedException();
 
         public void VoidReturn(int p1) => throw new NotImplementedException();

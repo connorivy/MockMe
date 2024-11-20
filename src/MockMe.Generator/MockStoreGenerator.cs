@@ -152,7 +152,11 @@ namespace {NamespaceName}
                     .GetTypeInfo(genericName.TypeArgumentList.Arguments[0])
                     .Type;
 
-                if (genericArgSymbol is not null && usedSymbols.Add(genericArgSymbol))
+                if (
+                    genericArgSymbol is not null
+                    && genericArgSymbol.TypeKind != TypeKind.Error
+                    && usedSymbols.Add(genericArgSymbol)
+                )
                 {
                     yield return genericArgSymbol;
                 }
