@@ -1,3 +1,5 @@
+![MockMeFull](https://github.com/user-attachments/assets/fa30919e-922a-49bb-9548-08a0cce3b88c)
+
 ## What is it?
 
 MockMe is a library for mocking dependencies in your production code. Unlike other libraries that can only mock interfaces and virtual methods, MockMe can mock sealed classes and non-virtual methods.
