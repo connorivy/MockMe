@@ -47,14 +47,11 @@ public static class Arg
 {
     //private Arg() { }
 
-    public static AnyArg Any { get; } = new AnyArg();
+    public static AnyArg Any() => new();
 
-    public static Arg<T> AnyOf<T>() => Arg<T>.Any;
+    public static Arg<T> Any<T>() => Arg<T>.Any;
 
     public static Arg<T> Where<T>(Func<T?, bool> predicate) => new(predicate);
 }
 
-public class AnyArg
-{
-    internal AnyArg() { }
-}
+public struct AnyArg { }

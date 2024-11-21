@@ -34,7 +34,7 @@ namespace MockMe.Tests.Overloads
             Type[] intTypes = Enumerable.Repeat(typeof(int), ints.Length).ToArray();
             Type[] argIntTypes = Enumerable.Repeat(typeof(Arg<int>), ints.Length).ToArray();
             object[] boxedInts = ints.Cast<object>().ToArray();
-            object[] boxedArgInts = Enumerable.Repeat<Arg<int>>(Arg.Any, ints.Length).ToArray();
+            object[] boxedArgInts = Enumerable.Repeat<Arg<int>>(Arg.Any(), ints.Length).ToArray();
 
             var setupMethod = mock
                 .Setup.GetType()

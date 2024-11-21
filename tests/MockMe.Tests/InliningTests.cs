@@ -69,9 +69,9 @@ namespace MockMe.Tests
         {
             var inlineMock = Mock.Me<PotentiallyInlinedMethods>();
 
-            inlineMock.Setup.AddNoInline(Arg.Any, Arg.Any).Returns(99);
-            inlineMock.Setup.AddNormal(Arg.Any, Arg.Any).Returns(999);
-            inlineMock.Setup.AddAggressiveInline(Arg.Any, Arg.Any).Returns(9999);
+            inlineMock.Setup.AddNoInline(Arg.Any(), Arg.Any()).Returns(99);
+            inlineMock.Setup.AddNormal(Arg.Any(), Arg.Any()).Returns(999);
+            inlineMock.Setup.AddAggressiveInline(Arg.Any(), Arg.Any()).Returns(9999);
 
             InlineTestCaller caller = new(inlineMock);
 

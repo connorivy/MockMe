@@ -45,7 +45,7 @@ namespace MockMe.Tests.Overloads
 
             int numCalls = 0;
             mock.Setup.Prop_GetSet.Get().Returns(99).Callback(() => numCalls++);
-            mock.Setup.Prop_GetSet.Set(Arg.Any).Callback(() => numCalls++);
+            mock.Setup.Prop_GetSet.Set(Arg.Any()).Callback(() => numCalls++);
 
             SealedOverloadsClass sealedOverloadsClass = mock;
 
@@ -64,7 +64,7 @@ namespace MockMe.Tests.Overloads
             var mock = Mock.Me<SealedOverloadsClass>(default(SealedOverloadsClass));
 
             int numCalls = 0;
-            mock.Setup.Prop_SetOnly.Set(Arg.Any).Callback(() => numCalls++);
+            mock.Setup.Prop_SetOnly.Set(Arg.Any()).Callback(() => numCalls++);
 
             SealedOverloadsClass sealedOverloadsClass = mock;
 
