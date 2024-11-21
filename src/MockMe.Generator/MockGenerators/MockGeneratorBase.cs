@@ -102,7 +102,12 @@ namespace {thisNamespace}
                 continue;
             }
 
-            MethodMockGeneratorBase methodGenerator = MethodGeneratorFactory.Create(methodSymbol);
+            MethodMockGeneratorBase? methodGenerator = MethodGeneratorFactory.Create(methodSymbol);
+
+            if (methodGenerator is null)
+            {
+                continue;
+            }
 
             if (typeSymbol.TypeKind != TypeKind.Interface)
             {
