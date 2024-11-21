@@ -3,6 +3,7 @@
     "path": "..\\MockMe.sln",
     "projects": [
       "tests\\MockMe.Tests.ExampleClasses\\MockMe.Tests.ExampleClasses.csproj",
+      "tests\\MockMe.Tests.Overloads\\MockMe.Tests.Overloads.csproj",
       "tests\\MockMe.Tests\\MockMe.Tests.csproj"
     ]
   }
