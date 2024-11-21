@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using MockMe.Generator.MockGenerators.Concrete;
+using MockMe.Generator.MockGenerators.MethodGenerators;
 
 namespace MockMe.Generator.MockGenerators;
 
-internal abstract class MockGeneratorBase
+internal abstract class MockGeneratorBase(string typeName)
 {
     private const string MockNamespace = "MockMe.Mocks.Generated";
     private const string voidString = "void";
+
+    protected string TypeName { get; } = typeName;
 
     public StringBuilder CreateMockType(
         ITypeSymbol typeSymbol,
@@ -29,12 +31,12 @@ using HarmonyLib;
 using MockMe;
 using MockMe.Mocks;
 using MockMe.Mocks.ClassMemberMocks.CallTracker;
-using static {thisNamespace}.{typeSymbol.Name}MockSetup;
-using static {thisNamespace}.{typeSymbol.Name}MockSetup.{typeSymbol.Name}MockCallTracker;
+using static {thisNamespace}.{this.TypeName}MockSetup;
+using static {thisNamespace}.{this.TypeName}MockSetup.{this.TypeName}MockCallTracker;
 
 namespace {thisNamespace}
 {{
-    internal class {typeSymbol.Name}Mock
+    internal class {this.TypeName}Mock
         : {this.GetMockBaseClass(typeSymbol)}
     {{
         {this.GetConstructorAndProps(typeSymbol)}"
@@ -44,17 +46,17 @@ namespace {thisNamespace}
 
         setupBuilder.AppendLine(
             $@"
-    public class {typeSymbol.Name}MockSetup : global::MockMe.Mocks.ClassMemberMocks.Setup.MemberMockSetup
+    public class {this.TypeName}MockSetup : global::MockMe.Mocks.ClassMemberMocks.Setup.MemberMockSetup
     {{"
         );
 
         StringBuilder callTrackerBuilder = new();
         callTrackerBuilder.AppendLine(
             $@"
-        public class {typeSymbol.Name}MockCallTracker : {this.GetCallTrackerBaseClass(typeSymbol)}
+        public class {this.TypeName}MockCallTracker : {this.GetCallTrackerBaseClass(typeSymbol)}
         {{
-            private readonly {typeSymbol.Name}MockSetup setup;
-            public {typeSymbol.Name}MockCallTracker({typeSymbol.Name}MockSetup setup)
+            private readonly {this.TypeName}MockSetup setup;
+            public {this.TypeName}MockCallTracker({this.TypeName}MockSetup setup)
             {{
                 this.setup = setup;
             }}"
@@ -63,10 +65,10 @@ namespace {thisNamespace}
         StringBuilder asserterBuilder = new();
         asserterBuilder.AppendLine(
             $@"
-            public class {typeSymbol.Name}MockAsserter : MockAsserter
+            public class {this.TypeName}MockAsserter : MockAsserter
             {{
-                private readonly {typeSymbol.Name}MockCallTracker tracker;
-                public {typeSymbol.Name}MockAsserter({typeSymbol.Name}MockCallTracker tracker)
+                private readonly {this.TypeName}MockCallTracker tracker;
+                public {this.TypeName}MockAsserter({this.TypeName}MockCallTracker tracker)
                 {{
                     this.tracker = tracker;
                 }}"
@@ -75,12 +77,14 @@ namespace {thisNamespace}
         StringBuilder staticConstructor = new();
         staticConstructor.AppendLine(
             $@"
-        static {typeSymbol.Name}Mock()
+        static {this.TypeName}Mock()
         {{
             var harmony = new global::HarmonyLib.Harmony(""com.mockme.patch"");"
         );
 
         Dictionary<string, PropertyMetadata> callTrackerMeta = [];
+        Dictionary<string, SetupPropertyMetadata> setupMeta = [];
+        Dictionary<string, AssertPropertyMetadata> assertMeta = [];
         foreach (var method in typeSymbol.GetMembers())
         {
             if (method is not IMethodSymbol methodSymbol)
@@ -88,14 +92,17 @@ namespace {thisNamespace}
                 continue;
             }
 
-            var methodName = methodSymbol.Name;
-
-            if (methodName == ".ctor")
+            if (methodSymbol.MethodKind == MethodKind.Constructor)
             {
                 continue;
             }
 
-            ConcreteTypeMethodSetupGenerator methodGenerator = new(methodSymbol);
+            if (methodSymbol.DeclaredAccessibility != Accessibility.Public)
+            {
+                continue;
+            }
+
+            MethodMockGeneratorBase methodGenerator = MethodGeneratorFactory.Create(methodSymbol);
 
             if (typeSymbol.TypeKind != TypeKind.Interface)
             {
@@ -103,15 +110,16 @@ namespace {thisNamespace}
                     sb,
                     assemblyAttributesSource,
                     staticConstructor,
-                    typeSymbol
+                    typeSymbol,
+                    this.TypeName
                 );
             }
-            methodGenerator.AddMethodSetupToStringBuilder(setupBuilder);
+            methodGenerator.AddMethodSetupToStringBuilder(setupBuilder, setupMeta);
             methodGenerator.AddMethodCallTrackerToStringBuilder(
                 callTrackerBuilder,
                 callTrackerMeta
             );
-            methodGenerator.AddMethodToAsserterClass(asserterBuilder);
+            methodGenerator.AddMethodToAsserterClass(asserterBuilder, assertMeta);
         }
 
         staticConstructor.AppendLine(
@@ -127,10 +135,20 @@ namespace {thisNamespace}
     }}"
         );
 
+        foreach (var meta in assertMeta.Values)
+        {
+            meta.AddPropToSb(asserterBuilder);
+        }
+
         asserterBuilder.AppendLine(
             $@"
             }}"
         );
+
+        foreach (var meta in setupMeta.Values)
+        {
+            meta.AddPropToSb(setupBuilder);
+        }
 
         foreach (var meta in callTrackerMeta.Values)
         {

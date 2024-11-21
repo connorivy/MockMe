@@ -2,9 +2,11 @@ using System.Collections.Concurrent;
 using System.Numerics;
 using System.Reflection.Emit;
 using HarmonyLib;
+using MockMe.Asserters;
 using MockMe.Mocks.ClassMemberMocks;
 using MockMe.Mocks.ClassMemberMocks.CallTracker;
 using MockMe.Mocks.ClassMemberMocks.Setup;
+using Newtonsoft.Json.Linq;
 using static MockMe.SampleMocks.CalculatorSample.CalculatorMockSetup;
 using static MockMe.SampleMocks.CalculatorSample.CalculatorMockSetup.CalculatorMockCallTracker;
 
@@ -87,6 +89,11 @@ public class CalculatorMockSetup : MemberMockSetup
 
     public MemberMock<T[], T> AddUpAllOfThese<T>(Arg<T[]> values) =>
         SetupMethod(SetupGenericStore<T[], T>(this.AddUpAllOfTheseBagStore ??= new()), values);
+
+    private MemberMock<CalculatorType>? get_CalcTypeStore;
+    private List<ArgBagWithVoidMemberMock<CalculatorType>>? set_CalcTypeStore;
+    public GetSetPropertyMock<CalculatorType> CalculatorType =>
+        new(this.get_CalcTypeStore ??= new(), this.set_CalcTypeStore ??= new());
 
     public class CalculatorMockCallTracker : MockCallTracker
     {

@@ -193,9 +193,10 @@ public class CalculatorTestsForDesign
     //[Fact]
     //private void Test2()
     //{
-    //    var x = new TempCalcMock();
+    //    var x = new CalculatorMock();
 
-    //    var calc = (ComplexCalculator)x;
+    //    x.Setup.CalculatorType.Get().Returns(CalculatorType.Graphing);
+    //    x.Setup.CalculatorType.Set(Arg.Any).Callback(x => Console.Write(x));
 
     //    var y = new ComplexCalculator().GetDict();
 

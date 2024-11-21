@@ -144,4 +144,18 @@ public static class MethodSymbolExtensions
         var uniqueMethodName = $"{methodName}_{string.Join("_", parameterTypes)}";
         return uniqueMethodName;
     }
+
+    public static string GetUniquePropertyNameIgnoringGetSet(this IMethodSymbol methodSymbol)
+    {
+        var methodName = methodSymbol.Name;
+        var parameterTypes = methodSymbol.Parameters.Select(p => p.Type.Name);
+        var uniqueMethodName = $"{methodName}_{string.Join("_", parameterTypes)}";
+
+        if (methodSymbol.MethodKind is MethodKind.PropertyGet or MethodKind.PropertySet)
+        {
+            return uniqueMethodName[4..];
+        }
+
+        return uniqueMethodName;
+    }
 }

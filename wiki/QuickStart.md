@@ -14,13 +14,15 @@ mock.Setup.Add(1, 1).Returns(99);
 // specify that 'Add(x, y)' should return x * y
 mock.Setup.Add(5, 5).Returns((x, y) => x * y);
 
-// properties are broken down into 'get_Property' and 'set_Property' methods.
-// if there isn't a public setter, then only the 'get_Property' method will exist
-mock.Setup.get_CalculatorType().Returns(CalculatorType.Scientific);
+// properties are broken down futher into 'Get()' and 'Set(T propValue)' methods.
+// if there isn't a public setter, then only the 'Get()' method will exist
+mock.Setup.CalculatorType.Get().Returns(CalculatorType.Scientific);
 
 // async methods can be configured with typical "Returns" or "ReturnsAsync" methods
 mock.Setup.AddAsync(10, 10).ReturnsAsync(-10);
 mock.Setup.AddAsync(20, 20).Returns(Task.FromResult(-20));
+
+mock.Setup["string indexer"].Get().Returns(9.999);
 
 Calculator calc = mock; // convert to mocked object with implicit cast
 // alternatively Calculator calc = mock.MockedObject;
@@ -29,6 +31,7 @@ calc.Add(1, 1); // result is 99
 calc.Add(5, 5); // result is 25 (5 * 5)
 calc.AddAsync(10, 10); // result is -10
 calc.AddAsync(20, 20); // result is -20
+calc["string indexer"]; // result is 9.999
 
 ```
 
@@ -81,6 +84,9 @@ int? firstParameter = null;
 mock.Setup.Add(2, 2)
     .Callback((x, _) => firstParameter = x); // the variable 'firstParameter' will be assigned
 
+// access instances of objects that are assigned to properties
+CalculatorType? typeUsedBySetter
+mock.Setup.CalculatorType.Set(Arg.Any).Callback(t => typeUsedBySetter = t);
 ```
 
 # Assertions
@@ -99,6 +105,6 @@ mock.Assert.Add(1, 1).WasCalled(NumTimes.AtLeast, 3);
 mock.Assert.Add(1, 1).WasCalled(NumTimes.AtMost, 3);
 
 // assert property was set to specific value
-mock.Assert.set_CalculatorType(CalculatorType.Graphing).WasCalled();
+mock.Assert.CalculatorType.Set(CalculatorType.Graphing).WasCalled();
 
 ```

@@ -6,6 +6,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <IsPackable>true</IsPackable>
+
+    <Description>The concrete type mocking library for .NET</Description>
+    <Authors>connorivy</Authors>
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     <!--<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>-->
   </PropertyGroup>
@@ -23,10 +26,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>-->
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Asserters\" />
   </ItemGroup>
 
   <Target Name="PushLocal" AfterTargets="Pack" Condition="Exists('$(NugetFeedPath)')">

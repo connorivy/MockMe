@@ -40,7 +40,8 @@ internal static class ITypeSymbolExtensions
 
     public static bool IsValueTask(this ITypeSymbol typeSymbol)
     {
-        if (typeSymbol.ContainingNamespace.ToDisplayString() != "System.Threading.Tasks")
+        // containing namespace may be null for system types
+        if (typeSymbol.ContainingNamespace?.ToDisplayString() != "System.Threading.Tasks")
         {
             return false;
         }

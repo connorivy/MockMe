@@ -37,11 +37,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe.Tests.ExampleClasses
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wiki", "wiki", "{4723EF4B-98A5-4F3D-BEB9-0632A3939D4D}"
 	ProjectSection(SolutionItems) = preProject
-		wiki\QuickStart.md = wiki\QuickStart.md
 		wiki\AvoidingCommonPitfalls.md = wiki\AvoidingCommonPitfalls.md
+		wiki\QuickStart.md = wiki\QuickStart.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockMe.Tests", "tests\MockMe.Tests\MockMe.Tests.csproj", "{25527E94-77F8-4FBC-B8B4-BB29C4BEBD75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Tests.Overloads", "tests\MockMe.Tests.Overloads\MockMe.Tests.Overloads.csproj", "{DF4654A0-0E51-47AE-95AE-0BECF958ED49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{25527E94-77F8-4FBC-B8B4-BB29C4BEBD75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25527E94-77F8-4FBC-B8B4-BB29C4BEBD75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25527E94-77F8-4FBC-B8B4-BB29C4BEBD75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF4654A0-0E51-47AE-95AE-0BECF958ED49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF4654A0-0E51-47AE-95AE-0BECF958ED49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF4654A0-0E51-47AE-95AE-0BECF958ED49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF4654A0-0E51-47AE-95AE-0BECF958ED49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{511CE2FA-4247-4553-BFE6-AB049DC5EB5C} = {AB32507E-2EED-4403-946B-1D1E7EC0D6F7}
 		{63E88E6D-9C69-4E6A-BDD4-45F84884220D} = {134D18E2-ECAC-4571-B7BE-0C10796D5555}
 		{25527E94-77F8-4FBC-B8B4-BB29C4BEBD75} = {134D18E2-ECAC-4571-B7BE-0C10796D5555}
+		{DF4654A0-0E51-47AE-95AE-0BECF958ED49} = {134D18E2-ECAC-4571-B7BE-0C10796D5555}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF07A0CA-1140-44DC-9E7E-F99E65D9EF97}

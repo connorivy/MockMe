@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace MockMe.Tests
@@ -23,9 +19,9 @@ namespace MockMe.Tests
         public override int Return99FromParent()
         {
             //simulate doing some work
-            i1 = Random.Shared.Next();
-            i2 = Random.Shared.Next();
-            i3 = Random.Shared.Next();
+            this.i1 = Random.Shared.Next();
+            this.i2 = Random.Shared.Next();
+            this.i3 = Random.Shared.Next();
 
             // call base class
             return base.Return99FromParent();
@@ -34,9 +30,9 @@ namespace MockMe.Tests
         public override int Return55FromChildMethodOverride()
         {
             //simulate doing some work
-            i1 = Random.Shared.Next();
-            i2 = Random.Shared.Next();
-            i3 = Random.Shared.Next();
+            this.i1 = Random.Shared.Next();
+            this.i2 = Random.Shared.Next();
+            this.i3 = Random.Shared.Next();
             var x = base.Return55FromChildMethodOverride();
 
             return 55;

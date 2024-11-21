@@ -1,3 +1,5 @@
+using MockMe.Asserters;
+
 namespace MockMe;
 
 public class MockAsserter
