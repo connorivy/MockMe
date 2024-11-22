@@ -26,9 +26,7 @@ internal class GenericConcreteTypeMockGenerator(INamedTypeSymbol typeSymbol, str
             this.AddPatchMethodWhenMethodUsesClassParameter(
                 sb,
                 assemblyAttributesSource,
-                staticConstructor,
-                methodSymbol,
-                typeSymbolName
+                methodSymbol
             );
         }
         else
@@ -46,9 +44,7 @@ internal class GenericConcreteTypeMockGenerator(INamedTypeSymbol typeSymbol, str
     private void AddPatchMethodWhenMethodUsesClassParameter(
         StringBuilder sb,
         StringBuilder assemblyAttributesSource,
-        StringBuilder staticConstructor,
-        IMethodSymbol methodSymbol,
-        string typeSymbolName
+        IMethodSymbol methodSymbol
     )
     {
         var thisNamespace = $"MockMe.Generated.{this.TypeSymbolToMock.ContainingNamespace}";
@@ -67,35 +63,6 @@ internal class GenericConcreteTypeMockGenerator(INamedTypeSymbol typeSymbol, str
             _ => $"({paramString})",
         };
 
-        //if (methodSymbol.TypeParameters.Length == 0)
-        //{
-        //    string patchName = $"Patch{Guid.NewGuid():N}";
-        //    sb.AppendLine(
-        //        $@"
-        //internal sealed class {patchName}
-        //{{
-        //    private static bool Prefix({this.TypeSymbol.ToFullTypeString()} __instance{(isVoidReturnType ? string.Empty : $", ref {returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
-        //    {{
-        //        if (global::MockMe.MockStore<{this.TypeSymbol.ToFullTypeString()}>.TryGetValue<{typeSymbolName}Mock>(__instance, out var mock))
-        //        {{
-        //            {(isVoidReturnType ? string.Empty : "__result = ")}mock.CallTracker.{methodSymbol.GetPropertyName()}{callEnd};
-        //            return false;
-        //        }}
-        //        return true;
-        //    }}
-        //}}"
-        //    );
-
-        //    staticConstructor.AppendLine(
-        //        $@"
-        //    var original{patchName} = typeof({this.TypeSymbol.ToFullTypeString()}).GetMethod(""{methodSymbol.Name}"", new Type[] {{ {string.Join(", ", methodSymbol.Parameters.Select(p => "typeof(" + p.Type.ToFullTypeString() + ")"))} }} );
-        //    var {patchName} = typeof({patchName}).GetMethod(""Prefix"", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
-
-        //    harmony.Patch(original{patchName}, prefix: new HarmonyMethod({patchName}));"
-        //    );
-        //}
-        //else
-        //{
         sb.AppendLine(
             $@"
         private {returnType} {methodSymbol.Name}{methodSymbol.GetGenericParameterStringInBrackets()}({paramsWithTypesAndMods})
@@ -138,6 +105,5 @@ internal class GenericConcreteTypeMockGenerator(INamedTypeSymbol typeSymbol, str
 )]
 "
         );
-        //}
     }
 }

@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
 using MockMe.Generator.MockGenerators.MethodGenerators;
+using MockMe.Generator.MockGenerators.PatchMethodGenerators;
 
 namespace MockMe.Generator.MockGenerators.TypeGenerators;
 
@@ -138,13 +139,17 @@ namespace {thisNamespace}
                 continue;
             }
 
-            this.AddPatchMethod(
-                sb,
-                assemblyAttributesSource,
-                staticConstructor,
-                methodSymbol,
-                this.TypeName
-            );
+            PatchMethodGeneratorFactory
+                .Create(this.TypeSymbolToMock, methodSymbol)
+                ?.AddPatchMethod(sb, assemblyAttributesSource, staticConstructor, this.TypeName);
+
+            //this.AddPatchMethod(
+            //    sb,
+            //    assemblyAttributesSource,
+            //    staticConstructor,
+            //    methodSymbol,
+            //    this.TypeName
+            //);
 
             //if (typeSymbol.TypeKind != TypeKind.Interface)
             //{
