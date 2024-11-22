@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using MockMe.Generator.Extensions;
-using MockMe.Generator.MockGenerators;
+using MockMe.Generator.MockGenerators.TypeGenerators;
 
 namespace MockMe.Generator;
 
@@ -53,7 +53,8 @@ namespace {NamespaceName}
 "
                 );
 
-                Dictionary<string, int> typeNameUsageCounts = new();
+                Dictionary<string, int> typeNameUsageCounts = [];
+                Dictionary<ITypeSymbol, string> createMockSymbolToNameDict = [];
                 foreach (var typeToMock in GetTypesToBeMocked(source.Left, source.Right))
                 {
                     string patchCall = "";
@@ -72,21 +73,41 @@ namespace {NamespaceName}
                         genericConstraint = $"where T : {typeToMock.ToFullTypeString()}";
                     }
 
-                    string typeToMockName;
-                    if (typeNameUsageCounts.TryGetValue(typeToMock.Name, out int numUsages))
+                    bool mockExists = false;
+                    var typeSymbolToMock = MockGeneratorFactory.GetTypeSymbolToMock(typeToMock);
+                    if (
+                        !createMockSymbolToNameDict.TryGetValue(
+                            typeSymbolToMock,
+                            out var typeToMockName
+                        )
+                    )
                     {
-                        typeToMockName = typeToMock.Name + $"_{numUsages}";
-                        typeNameUsageCounts[typeToMock.Name] = numUsages + 1;
+                        if (typeNameUsageCounts.TryGetValue(typeToMock.Name, out int numUsages))
+                        {
+                            typeToMockName = typeToMock.Name + $"_{numUsages}";
+                            typeNameUsageCounts[typeToMock.Name] = numUsages + 1;
+                        }
+                        else
+                        {
+                            typeToMockName = typeToMock.Name;
+                            typeNameUsageCounts.Add(typeToMock.Name, 1);
+                        }
+                        createMockSymbolToNameDict.Add(typeSymbolToMock, typeToMockName);
                     }
                     else
                     {
-                        typeToMockName = typeToMock.Name;
-                        typeNameUsageCounts.Add(typeToMock.Name, 1);
+                        mockExists = true;
                     }
+
+                    var genericArgs = string.Join(
+                            ", ",
+                            typeToMock.TypeArguments.Select(p => p.ToFullTypeString())
+                        )
+                        .AddOnIfNotEmpty("<", ">");
 
                     sourceBuilder.AppendLine(
                         @$"
-        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMockName}Mock {StoreMethodName}<T>(global::{typeToMock}? unusedInstance{(typeToMock.IsSealed ? "" : " = null")})
+        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMockName}Mock{genericArgs} {StoreMethodName}<T>(global::{typeToMock}? unusedInstance{(typeToMock.IsSealed ? "" : " = null")})
             {genericConstraint}
         {{
             {patchCall}
@@ -94,15 +115,18 @@ namespace {NamespaceName}
         }}"
                     );
 
-                    string newMockCode = MockGeneratorFactory
-                        .Create(typeToMock, typeToMockName)
-                        .CreateMockType(typeToMock, assemblyAttributesSource)
-                        .ToString();
+                    if (!mockExists)
+                    {
+                        string newMockCode = MockGeneratorFactory
+                            .Create(typeToMock, typeToMockName)
+                            .CreateMockType(assemblyAttributesSource)
+                            .ToString();
 
-                    ctx.AddSource(
-                        $"{typeToMockName}Mock.g.cs",
-                        SourceText.From(newMockCode, Encoding.UTF8)
-                    );
+                        ctx.AddSource(
+                            $"{typeToMockName}Mock.g.cs",
+                            SourceText.From(newMockCode, Encoding.UTF8)
+                        );
+                    }
                 }
 
                 sourceBuilder.AppendLine(
@@ -125,7 +149,7 @@ namespace {NamespaceName}
         );
     }
 
-    private static IEnumerable<ITypeSymbol> GetTypesToBeMocked(
+    private static IEnumerable<INamedTypeSymbol> GetTypesToBeMocked(
         Compilation compilation,
         ImmutableArray<InvocationExpressionSyntax> methods
     )
@@ -155,10 +179,11 @@ namespace {NamespaceName}
                 if (
                     genericArgSymbol is not null
                     && genericArgSymbol.TypeKind != TypeKind.Error
-                    && usedSymbols.Add(genericArgSymbol)
+                    && genericArgSymbol is INamedTypeSymbol namedTypeSymbol
+                    && usedSymbols.Add(namedTypeSymbol)
                 )
                 {
-                    yield return genericArgSymbol;
+                    yield return namedTypeSymbol;
                 }
             }
         }

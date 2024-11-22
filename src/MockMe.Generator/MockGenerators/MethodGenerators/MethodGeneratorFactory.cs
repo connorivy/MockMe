@@ -1,5 +1,4 @@
 using Microsoft.CodeAnalysis;
-using MockMe.Generator.MockGenerators.Concrete;
 
 namespace MockMe.Generator.MockGenerators.MethodGenerators;
 

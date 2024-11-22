@@ -1,23 +1,54 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using MockMe.Generator.Extensions;
 using MockMe.Generator.MockGenerators.MethodGenerators;
 
-namespace MockMe.Generator.MockGenerators;
+namespace MockMe.Generator.MockGenerators.TypeGenerators;
 
-internal abstract class MockGeneratorBase(string typeName)
+internal abstract class MockGeneratorBase
 {
     private const string MockNamespace = "MockMe.Mocks.Generated";
     private const string voidString = "void";
+    private readonly string genericParamsInBrackets;
+    public string GenericParamTypesInBrackets { get; }
+    protected string mockTypeName { get; }
+    protected string mockSetupTypeName { get; }
+    protected string mockCallTrackerTypeName { get; }
+    protected string mockAsserterTypeName { get; }
+    protected string thisNamespace { get; }
 
-    protected string TypeName { get; } = typeName;
+    protected string TypeName { get; }
+    public INamedTypeSymbol TypeSymbolToMock { get; }
 
-    public StringBuilder CreateMockType(
-        ITypeSymbol typeSymbol,
-        StringBuilder assemblyAttributesSource
-    )
+    protected MockGeneratorBase(INamedTypeSymbol typeSymbol, string typeName)
     {
-        var thisNamespace = $"MockMe.Generated.{typeSymbol.ContainingNamespace}";
+        this.TypeName = typeName;
+        this.TypeSymbolToMock = typeSymbol;
+
+        this.thisNamespace = $"MockMe.Generated.{this.TypeSymbolToMock.ContainingNamespace}";
+
+        this.genericParamsInBrackets = string.Join(
+                ", ",
+                typeSymbol.TypeParameters.Select(p => p.Name)
+            )
+            .AddOnIfNotEmpty("<", ">");
+        this.GenericParamTypesInBrackets = string.Join(
+                ", ",
+                typeSymbol.TypeArguments.Select(p => p.ToFullTypeString())
+            )
+            .AddOnIfNotEmpty("<", ">");
+
+        this.mockTypeName = $"{this.TypeName}Mock{this.genericParamsInBrackets}";
+        this.mockSetupTypeName = $"{this.TypeName}MockSetup{this.genericParamsInBrackets}";
+        this.mockCallTrackerTypeName = $"{this.TypeName}MockCallTracker";
+        this.mockAsserterTypeName = $"{this.TypeName}MockAsserter";
+    }
+
+    public StringBuilder CreateMockType(StringBuilder assemblyAttributesSource)
+    {
+        var thisNamespace = $"MockMe.Generated.{this.TypeSymbolToMock.ContainingNamespace}";
         StringBuilder sb = new();
 
         sb.AppendLine(
@@ -31,32 +62,30 @@ using HarmonyLib;
 using MockMe;
 using MockMe.Mocks;
 using MockMe.Mocks.ClassMemberMocks.CallTracker;
-using static {thisNamespace}.{this.TypeName}MockSetup;
-using static {thisNamespace}.{this.TypeName}MockSetup.{this.TypeName}MockCallTracker;
 
 namespace {thisNamespace}
 {{
-    internal class {this.TypeName}Mock
-        : {this.GetMockBaseClass(typeSymbol)}
+    internal class {this.mockTypeName}
+        : {this.GetMockBaseClass(this.TypeSymbolToMock)}
     {{
-        {this.GetConstructorAndProps(typeSymbol)}"
+        {this.GetConstructorAndProps(this.TypeSymbolToMock)}"
         );
 
         StringBuilder setupBuilder = new();
 
         setupBuilder.AppendLine(
             $@"
-    public class {this.TypeName}MockSetup : global::MockMe.Mocks.ClassMemberMocks.Setup.MemberMockSetup
+    public class {this.mockSetupTypeName} : global::MockMe.Mocks.ClassMemberMocks.Setup.MemberMockSetup
     {{"
         );
 
         StringBuilder callTrackerBuilder = new();
         callTrackerBuilder.AppendLine(
             $@"
-        public class {this.TypeName}MockCallTracker : {this.GetCallTrackerBaseClass(typeSymbol)}
+        public class {this.mockCallTrackerTypeName} : {this.GetCallTrackerBaseClass(this.TypeSymbolToMock)}
         {{
-            private readonly {this.TypeName}MockSetup setup;
-            public {this.TypeName}MockCallTracker({this.TypeName}MockSetup setup)
+            private readonly {this.mockSetupTypeName} setup;
+            public {this.mockCallTrackerTypeName}({this.mockSetupTypeName} setup)
             {{
                 this.setup = setup;
             }}"
@@ -65,10 +94,10 @@ namespace {thisNamespace}
         StringBuilder asserterBuilder = new();
         asserterBuilder.AppendLine(
             $@"
-            public class {this.TypeName}MockAsserter : MockAsserter
+            public class {this.mockAsserterTypeName} : MockAsserter
             {{
-                private readonly {this.TypeName}MockCallTracker tracker;
-                public {this.TypeName}MockAsserter({this.TypeName}MockCallTracker tracker)
+                private readonly {this.mockSetupTypeName}.{this.mockCallTrackerTypeName} tracker;
+                public {this.mockAsserterTypeName}({this.mockSetupTypeName}.{this.mockCallTrackerTypeName} tracker)
                 {{
                     this.tracker = tracker;
                 }}"
@@ -85,7 +114,7 @@ namespace {thisNamespace}
         Dictionary<string, PropertyMetadata> callTrackerMeta = [];
         Dictionary<string, SetupPropertyMetadata> setupMeta = [];
         Dictionary<string, AssertPropertyMetadata> assertMeta = [];
-        foreach (var method in typeSymbol.GetMembers())
+        foreach (var method in this.TypeSymbolToMock.GetMembers())
         {
             if (method is not IMethodSymbol methodSymbol)
             {
@@ -109,16 +138,24 @@ namespace {thisNamespace}
                 continue;
             }
 
-            if (typeSymbol.TypeKind != TypeKind.Interface)
-            {
-                methodGenerator.AddPatchMethod(
-                    sb,
-                    assemblyAttributesSource,
-                    staticConstructor,
-                    typeSymbol,
-                    this.TypeName
-                );
-            }
+            this.AddPatchMethod(
+                sb,
+                assemblyAttributesSource,
+                staticConstructor,
+                methodSymbol,
+                this.TypeName
+            );
+
+            //if (typeSymbol.TypeKind != TypeKind.Interface)
+            //{
+            //    methodGenerator.AddPatchMethod(
+            //        sb,
+            //        assemblyAttributesSource,
+            //        staticConstructor,
+            //        typeSymbol,
+            //        this.TypeName
+            //    );
+            //}
             methodGenerator.AddMethodSetupToStringBuilder(setupBuilder, setupMeta);
             methodGenerator.AddMethodCallTrackerToStringBuilder(
                 callTrackerBuilder,
@@ -187,4 +224,14 @@ namespace {thisNamespace}
     public abstract string GetMockBaseClass(ITypeSymbol typeSymbol);
     public abstract string GetCallTrackerBaseClass(ITypeSymbol typeSymbol);
     public abstract string GetConstructorAndProps(ITypeSymbol typeSymbol);
+
+    protected virtual string GetMockClassNameWithGenericParameters() => $"{this.TypeName}Mock";
+
+    public virtual void AddPatchMethod(
+        StringBuilder sb,
+        StringBuilder assemblyAttributesSource,
+        StringBuilder staticConstructor,
+        IMethodSymbol method,
+        string typeName
+    ) { }
 }

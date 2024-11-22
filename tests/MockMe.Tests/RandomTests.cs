@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using HarmonyLib;
 //using MockMe.SampleMocks.CalculatorSample;
 //using MockMe.SampleMocks.CalculatorSample;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using MonoMod.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace MockMe.Tests
 {
@@ -14,443 +17,269 @@ namespace MockMe.Tests
         // Uncomment to disable tests
         private class FactAttribute : Attribute { }
 
-        //[Fact]
-        //public void CecliModifyAssembly()
+        [Fact]
+        public void Test() { }
+    }
+
+    internal class ConnorsCoolGenericType_1Mock<T>
+        : global::MockMe.Abstractions.SealedTypeMock<global::MockMe.Tests.ConnorsCoolGenericType<T>>
+    {
+        public ConnorsCoolGenericType_1Mock()
+        {
+            this.Setup = new ConnorsCoolGenericType_1MockSetup<T>();
+            this.CallTracker =
+                new MockMe.Tests.ConnorsCoolGenericType_1MockSetup<T>.ConnorsCoolGenericType_1MockCallTracker(
+                    this.Setup
+                );
+            this.Assert =
+                new MockMe.Tests.ConnorsCoolGenericType_1MockSetup<T>.ConnorsCoolGenericType_1MockCallTracker.ConnorsCoolGenericType_1MockAsserter(
+                    this.CallTracker
+                );
+            global::MockMe.MockStore<global::MockMe.Tests.ConnorsCoolGenericType<T>>.Store.TryAdd(
+                this.MockedObject,
+                this
+            );
+        }
+
+        public ConnorsCoolGenericType_1MockSetup<T> Setup { get; }
+        public MockMe.Tests.ConnorsCoolGenericType_1MockSetup<T>.ConnorsCoolGenericType_1MockCallTracker.ConnorsCoolGenericType_1MockAsserter Assert { get; }
+        private MockMe.Tests.ConnorsCoolGenericType_1MockSetup<T>.ConnorsCoolGenericType_1MockCallTracker CallTracker { get; }
+
+        private T GetRandomVal()
+        {
+            if (
+                global::MockMe.MockStore<global::MockMe.Tests.ConnorsCoolGenericType<T>>.TryGetValue<
+                    ConnorsCoolGenericType_1Mock<T>
+                >(default, out var mock)
+            )
+            {
+                var callTracker = mock.GetType()
+                    .GetProperty(
+                        "CallTracker",
+                        global::System.Reflection.BindingFlags.NonPublic
+                            | global::System.Reflection.BindingFlags.Instance
+                    )
+                    .GetValue(mock);
+
+                return (T)
+                    callTracker
+                        .GetType()
+                        .GetMethod(
+                            "GetRandomVal",
+                            global::System.Reflection.BindingFlags.Public
+                                | global::System.Reflection.BindingFlags.Instance
+                        )
+                        //.MakeGenericMethod(typeof(T))
+                        .Invoke(callTracker, new object[] { });
+            }
+            return default;
+        }
+
+        //private T GetRandomVal()
         //{
-        //    var assemblyPath = Path.Combine(
-        //        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-        //        "MockMe.SampleMocks.dll"
-        //    );
-        //    var newAssemblyPath = Path.Combine(
-        //        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-        //        "MockMe.SampleMocks-1.dll"
-        //    );
-        //    var assembly = AssemblyDefinition.ReadAssembly(
-        //        assemblyPath,
-        //        new ReaderParameters
-        //        {
-        //            ReadWrite = true,
-        //            ReadingMode = ReadingMode.Immediate,
-        //            InMemory = true
-        //        }
-        //    );
-        //    // Find the type to delete
-        //    //
-        //    var typeToRemove = assembly.MainModule.Types.FirstOrDefault(t =>
-        //        t.Name == "Calculator"
-        //    );
-
-        //    var newTypeAssembly = AssemblyDefinition.ReadAssembly(
-        //        Assembly.GetExecutingAssembly().Location
-        //    );
-        //    var newType = newTypeAssembly.MainModule.Types.First(t => t.Name == "Calculator2");
-        //    var importedNewType = assembly.MainModule.ImportReference(newType);
-
-        //    foreach (var type in assembly.MainModule.Types)
+        //    if (global::MockMe.MockStore<global::MockMe.Tests.ConnorsCoolGenericType<T>>.TryGetValue<
+        //            ConnorsCoolGenericType_1Mock<T>
+        //        >(default, out var mock))
         //    {
-        //        for (int methodIndex = type.Methods.Count - 1; methodIndex >= 0; methodIndex--)
-        //        {
-        //            var method = type.Methods[methodIndex];
-        //            if (!method.HasBody)
-        //                continue;
+        //        var callTracker = mock.GetType()
+        //            .GetProperty(
+        //                "CallTracker",
+        //                global::System.Reflection.BindingFlags.NonPublic
+        //                    | global::System.Reflection.BindingFlags.Instance
+        //            )
+        //            .GetValue(mock);
 
-        //            //// add original method that casts to new type
-        //            //if (
-        //            //    method.ReturnType.FullName == typeToRemove.FullName
-        //            //    || method.Parameters.Any(p =>
-        //            //        p.ParameterType.FullName == typeToRemove.FullName
-        //            //    )
-        //            //)
-        //            //{
-        //            //    var methodBuilder = new MethodDefinition(
-        //            //        method.Name + "_Original",
-        //            //        method.Attributes,
-        //            //        method.ReturnType
-        //            //    );
-        //            //    foreach (var parameter in method.Parameters)
-        //            //    {
-        //            //        methodBuilder.Parameters.Add(
-        //            //            new ParameterDefinition(
-        //            //                parameter.Name,
-        //            //                parameter.Attributes,
-        //            //                parameter.ParameterType
-        //            //            )
-        //            //        );
-        //            //    }
-        //            //    var ilProcessor = methodBuilder.Body.GetILProcessor();
-        //            //    ilProcessor.Emit(OpCodes.Ldarg_0); // Load 'this'
-        //            //    for (int i = 0; i < method.Parameters.Count; i++)
-        //            //    {
-        //            //        ilProcessor.Emit(OpCodes.Ldarg, i + 1); // Load arguments
-        //            //        if (
-        //            //            method.Parameters[i].ParameterType.FullName == typeToRemove.FullName
-        //            //        )
-        //            //        {
-        //            //            ilProcessor.Emit(OpCodes.Castclass, importedNewType);
-        //            //        }
-        //            //    }
-        //            //    ilProcessor.Emit(OpCodes.Call, method);
-        //            //    if (method.ReturnType.FullName == typeToRemove.FullName)
-        //            //    {
-        //            //        ilProcessor.Emit(OpCodes.Castclass, importedNewType);
-        //            //    }
-        //            //    ilProcessor.Emit(OpCodes.Ret);
-        //            //    type.Methods.Add(methodBuilder);
-        //            //    Console.WriteLine(
-        //            //        $"Added intermediary method '{methodBuilder.Name}' to '{type.Name}'"
-        //            //    );
-        //            //}
-
-        //            // Update method signatures
-        //            //if (method.ReturnType.FullName == typeToRemove.FullName)
-        //            //{
-        //            //    method.ReturnType = importedNewType;
-        //            //}
-        //            //for (int j = 0; j < method.Parameters.Count; j++)
-        //            //{
-        //            //    if (method.Parameters[j].ParameterType.FullName == typeToRemove.FullName)
-        //            //    {
-        //            //        method.Parameters[j].ParameterType = importedNewType;
-        //            //    }
-        //            //}
-        //            //var methodRelinker = new Relinker(assembly.MainModule);
-        //            foreach (var instruction in method.Body.Instructions)
-        //            {
-        //                if (
-        //                    instruction.Operand is TypeReference typeRef
-        //                    && typeRef.Name == "Calculator"
+        //        return (T)
+        //            callTracker
+        //                .GetType()
+        //                .GetMethod(
+        //                    "GetRandomVal",
+        //                    global::System.Reflection.BindingFlags.Public
+        //                        | global::System.Reflection.BindingFlags.Instance
         //                )
-        //                {
-        //                    instruction.Operand = importedNewType;
-        //                }
-        //                else if (
-        //                    instruction.Operand is MethodReference methodRef
-        //                    && methodRef.DeclaringType.FullName == typeToRemove.FullName
-        //                )
-        //                {
-        //                    var newMethod = newType.Methods.First(m => m.Name == methodRef.Name);
-        //                    var importedMethod = assembly.MainModule.ImportReference(newMethod);
-
-        //                    //var newMethodRef = new MethodReference(
-        //                    //    methodRef.Name,
-        //                    //    assembly.MainModule.ImportReference(methodRef.ReturnType),
-        //                    //    importedNewType
-        //                    //)
-        //                    //{
-        //                    //    HasThis = methodRef.HasThis,
-        //                    //    ExplicitThis = methodRef.ExplicitThis,
-        //                    //    CallingConvention = methodRef.CallingConvention
-        //                    //};
-        //                    foreach (var parameter in importedMethod.Parameters)
-        //                    {
-        //                        //newMethodRef.Parameters.Add(
-        //                        //    new ParameterDefinition(parameter.ParameterType)
-        //                        //);
-        //                        //newMethodRef.Parameters.Add(
-        //                        //    new ParameterDefinition(
-        //                        //        parameter.Name,
-        //                        //        Mono.Cecil.ParameterAttributes.None,
-        //                        //        parameter.ParameterType
-        //                        //    )
-        //                        //);
-        //                        assembly.MainModule.ImportReference(parameter.ParameterType);
-        //                    }
-        //                    if (methodRef is GenericInstanceMethod genericInstanceMethodRef)
-        //                    {
-        //                        //var gp_T_5 = new Mono.Cecil.GenericParameter("T", method);
-        //                        //newMethodRef.ReturnType = gp_T_5;
-
-        //                        GenericInstanceMethod newGenericInstanceMethod =
-        //                            new(importedMethod);
-        //                        foreach (
-        //                            var genericArg in genericInstanceMethodRef.GenericArguments
-        //                        )
-        //                        {
-        //                            //assembly.MainModule.ImportReference(genericArg);
-        //                            newGenericInstanceMethod.GenericArguments.Add(
-        //                                assembly.MainModule.ImportReference(genericArg)
-        //                            );
-        //                        }
-        //                        //methodRef.Relink(new(), newGenericInstanceMethod);
-        //                        instruction.Operand = newGenericInstanceMethod;
-        //                    }
-        //                    else
-        //                    {
-        //                        //foreach (var genericParam in methodRef.GenericParameters)
-        //                        //{
-        //                        //    newMethodRef.GenericParameters.Add(
-        //                        //        new GenericParameter(genericParam.Name, newMethodRef)
-        //                        //    );
-        //                        //}
-        //                        instruction.Operand = importedMethod;
-        //                    }
-        //                }
-        //                else if (
-        //                    instruction.Operand is FieldReference fieldRef
-        //                    && fieldRef.DeclaringType.FullName == typeToRemove.FullName
-        //                )
-        //                {
-        //                    var newFieldRef = new FieldReference(
-        //                        fieldRef.Name,
-        //                        fieldRef.FieldType,
-        //                        importedNewType
-        //                    );
-        //                    instruction.Operand = newFieldRef;
-        //                }
-        //            }
-        //        }
+        //                //.MakeGenericMethod(typeof(T))
+        //                .Invoke(callTracker, new object[] { });
         //    }
-
-        //    assembly.Write(assemblyPath);
-        //    assembly.Write(newAssemblyPath);
-        //    Console.WriteLine(
-        //        $"Type '{typeToRemove.Name}' removed and saved to '{newAssemblyPath}'"
-        //    );
-
-        //    this.DoCalculatorStuff();
+        //    return default;
         //}
 
-        //[Fact]
-        //public void DoCalculatorStuff()
-        //{
-        //    //AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(OnAssemblyResolve);
-        //    //var t = Type.GetType(
-        //    //    "MockMe.SampleMocks.CalculatorSample.Calculator, MockMe.SampleMocks"
-        //    //);
-        //    CalculatorTestsForDesign tests = new();
-        //    //var restul = tests.AddNums(new(), 1, 2);
-        //    var dubsResult = tests.AddUpAllDoubles(new(), new double[] { 7.9, 1, 1, 1 });
-        //}
+        internal sealed class Patch8ec79a7993df4f629bec06faf0471048
+        {
+            private static bool Prefix(
+                global::MockMe.Tests.ConnorsCoolGenericType<T> __instance,
+                ref T __result
+            )
+            {
+                if (
+                    global::MockMe.MockStore<global::MockMe.Tests.ConnorsCoolGenericType<T>>.TryGetValue<
+                        ConnorsCoolGenericType_1Mock<T>
+                    >(__instance, out var mock)
+                )
+                {
+                    __result = mock.CallTracker.MyCoolProp;
+                    return false;
+                }
+                return true;
+            }
+        }
 
-        //[Fact]
-        //public void CecliModifyAssembly2()
-        //{
-        //    var assemblyPath = Path.Combine(
-        //        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-        //        "MockMe.SampleMocks.dll"
-        //    );
-        //    var newAssemblyPath = Path.Combine(
-        //        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-        //        "MockMe.SampleMocks-1.dll"
-        //    );
-        //    var assembly = AssemblyDefinition.ReadAssembly(
-        //        assemblyPath,
-        //        new ReaderParameters
-        //        {
-        //            ReadWrite = true,
-        //            ReadingMode = ReadingMode.Immediate,
-        //            InMemory = true
-        //        }
-        //    );
-        //    // Find the type to delete
-        //    //
-        //    var typeToRemove = assembly.MainModule.Types.FirstOrDefault(t =>
-        //        t.Name == "Calculator"
-        //    );
-        //    var targetMethod = typeToRemove.Methods.First(m =>
-        //        m.Name == nameof(Calculator2.AddUpAllOfThese2)
-        //    );
+        internal sealed class Patch1ec57d74711f4edca0a02202a86ef4ac
+        {
+            private static bool Prefix(
+                global::MockMe.Tests.ConnorsCoolGenericType<T> __instance,
+                ref global::System.String __result,
+                T input
+            )
+            {
+                if (
+                    global::MockMe.MockStore<global::MockMe.Tests.ConnorsCoolGenericType<T>>.TryGetValue<
+                        ConnorsCoolGenericType_1Mock<T>
+                    >(__instance, out var mock)
+                )
+                {
+                    __result = mock.CallTracker.TakeAT(input);
+                    return false;
+                }
+                return true;
+            }
+        }
 
-        //    var newTypeAssembly = AssemblyDefinition.ReadAssembly(
-        //        Assembly.GetExecutingAssembly().Location
-        //    );
-        //    var newType = newTypeAssembly.MainModule.Types.First(t => t.Name == "Calculator2");
-        //    var sourceMethod = newType.Methods.First(m =>
-        //        m.Name == nameof(Calculator2.AddUpAllOfThese2)
-        //    );
-        //    //assembly.MainModule.ImportReference(newType);
-        //    //assembly.MainModule.ImportReference(secondMethod);
-        //    //var newTypeRef = assembly.MainModule.ImportReference(secondMethod.ReturnType);
-        //    //var importedNewType = assembly.MainModule.ImportReference(secondMethod);
+        static ConnorsCoolGenericType_1Mock()
+        {
+            var harmony = new global::HarmonyLib.Harmony("com.mockme.patch");
 
-        //    var instructionsToCopy = new List<Instruction>(sourceMethod.Body.Instructions);
+            //var originalPatchda3d87b696c842a3b100cfdd86e2a81e =
+            //    typeof(global::MockMe.Tests.ConnorsCoolGenericType<T>).GetMethod(
+            //        "GetRandomVal",
+            //        new Type[] { }
+            //    );
+            //var Patchda3d87b696c842a3b100cfdd86e2a81e =
+            //    typeof(Patchda3d87b696c842a3b100cfdd86e2a81e).GetMethod(
+            //        "Prefix",
+            //        global::System.Reflection.BindingFlags.Static
+            //            | global::System.Reflection.BindingFlags.NonPublic
+            //    );
 
-        //    //var module = firstMethod.Module;
-        //    var firstReturnType = targetMethod.ReturnType;
-        //    var secondReturnType = sourceMethod.ReturnType;
-        //    //assembly.MainModule.ImportReference(secondMethod.ReturnType, secondMethod);
+            //harmony.Patch(
+            //    originalPatchda3d87b696c842a3b100cfdd86e2a81e,
+            //    prefix: new HarmonyMethod(Patchda3d87b696c842a3b100cfdd86e2a81e)
+            //);
 
-        //    // Clear the body of the first method
-        //    targetMethod.Body.Instructions.Clear(); // Copy the IL from the second method to the first method
+            var originalPatch8ec79a7993df4f629bec06faf0471048 =
+                typeof(global::MockMe.Tests.ConnorsCoolGenericType<T>).GetMethod(
+                    "get_MyCoolProp",
+                    new Type[] { }
+                );
+            var Patch8ec79a7993df4f629bec06faf0471048 =
+                typeof(Patch8ec79a7993df4f629bec06faf0471048).GetMethod(
+                    "Prefix",
+                    global::System.Reflection.BindingFlags.Static
+                        | global::System.Reflection.BindingFlags.NonPublic
+                );
 
-        //    var ilProcessor = targetMethod.Body.GetILProcessor();
-        //    foreach (var instruction in sourceMethod.Body.Instructions)
-        //    {
-        //        Instruction importedInstruction = instruction;
-        //        if (instruction.Operand is MethodReference methodRef)
-        //        {
-        //            assembly.MainModule.ImportReference(methodRef.ReturnType);
-        //            foreach (var parameter in methodRef.Parameters)
-        //            {
-        //                assembly.MainModule.ImportReference(parameter.ParameterType);
-        //            }
-        //            if (methodRef is GenericInstanceMethod genericInstanceMethodRef)
-        //            {
-        //                foreach (var genericArg in genericInstanceMethodRef.GenericArguments)
-        //                {
-        //                    assembly.MainModule.ImportReference(genericArg);
-        //                }
-        //            }
-        //            foreach (var parameter in methodRef.GenericParameters)
-        //            {
-        //                //assembly.MainModule.ImportReference(parameter.Type);
-        //            }
-        //            var importedMethodRef = ImportReference(assembly.MainModule, methodRef);
-        //            importedInstruction = ilProcessor.Create(instruction.OpCode, importedMethodRef);
-        //        }
-        //        else if (instruction.Operand is FieldReference fieldRef)
-        //        {
-        //            var importedFieldRef = ImportReference(assembly.MainModule, fieldRef);
-        //            importedInstruction = ilProcessor.Create(instruction.OpCode, importedFieldRef);
-        //        }
-        //        else if (instruction.Operand is Mono.Cecil.TypeReference typeRef)
-        //        {
-        //            TypeReference importedTypeRef;
-        //            if (typeRef.IsGenericParameter)
-        //            {
-        //                var genericParam = typeRef as GenericParameter;
-        //                if (genericParam.Owner is MethodDefinition)
-        //                {
-        //                    // Method generic parameter
-        //                    importedTypeRef = targetMethod.GenericParameters[genericParam.Position];
-        //                }
-        //                else
-        //                {
-        //                    // Type generic parameter
-        //                    var declaringType = targetMethod.DeclaringType as TypeDefinition;
-        //                    importedTypeRef = declaringType.GenericParameters[
-        //                        genericParam.Position
-        //                    ];
-        //                }
-        //            }
-        //            else
-        //            {
-        //                importedTypeRef = assembly.MainModule.ImportReference(typeRef);
-        //            }
-        //            //importedTypeRef = assembly.MainModule.ImportReference(typeRef);
+            harmony.Patch(
+                originalPatch8ec79a7993df4f629bec06faf0471048,
+                prefix: new HarmonyMethod(Patch8ec79a7993df4f629bec06faf0471048)
+            );
 
-        //            importedInstruction = ilProcessor.Create(instruction.OpCode, importedTypeRef);
-        //        }
-        //        ilProcessor.Emit(importedInstruction.OpCode, importedInstruction.Operand);
-        //    }
+            var originalPatch1ec57d74711f4edca0a02202a86ef4ac =
+                typeof(global::MockMe.Tests.ConnorsCoolGenericType<T>).GetMethod(
+                    "TakeAT",
+                    new Type[] { typeof(T) }
+                );
+            var Patch1ec57d74711f4edca0a02202a86ef4ac =
+                typeof(Patch1ec57d74711f4edca0a02202a86ef4ac).GetMethod(
+                    "Prefix",
+                    global::System.Reflection.BindingFlags.Static
+                        | global::System.Reflection.BindingFlags.NonPublic
+                );
 
-        //    //foreach (var variable in sourceMethod.Body.Variables)
-        //    //{
-        //    //    var importedVariableType = assembly.MainModule.ImportReference(
-        //    //        variable.VariableType
-        //    //    );
-        //    //    targetMethod.Body.Variables.Add(new VariableDefinition(importedVariableType));
-        //    //}
+            harmony.Patch(
+                originalPatch1ec57d74711f4edca0a02202a86ef4ac,
+                prefix: new HarmonyMethod(Patch1ec57d74711f4edca0a02202a86ef4ac)
+            );
+        }
+    }
 
-        //    //secondMethod.ReturnType = firstMethod.ReturnType;
-        //    //secondMethod.GenericParameters.Clear();
-        //    //foreach (var parameter in firstMethod.GenericParameters)
-        //    //{
-        //    //    secondMethod.GenericParameters.Add(parameter);
-        //    //}
-        //    //secondMethod.Parameters.Clear();
-        //    //foreach (var parameter in firstMethod.Parameters)
-        //    //{
-        //    //    secondMethod.Parameters.Add(parameter);
-        //    //}
+    public class ConnorsCoolGenericType_1MockSetup<T>
+        : global::MockMe.Mocks.ClassMemberMocks.Setup.MemberMockSetup
+    {
+        private global::MockMe.Mocks.ClassMemberMocks.MemberMock<T>? GetRandomVal_BagStore;
 
-        //    targetMethod.Body.OptimizeMacros();
+        public global::MockMe.Mocks.ClassMemberMocks.MemberMock<T> GetRandomVal() =>
+            this.GetRandomVal_BagStore ??= new();
 
-        //    assembly.Write(assemblyPath);
-        //    assembly.Write(newAssemblyPath);
-        //    Console.WriteLine(
-        //        $"Type '{typeToRemove.Name}' removed and saved to '{newAssemblyPath}'"
-        //    );
+        private List<ArgBagWithMemberMock<T, global::System.String>>? TakeAT_DoubleBagStore;
 
-        //    this.DoCalculatorStuff();
-        //}
+        public global::MockMe.Mocks.ClassMemberMocks.MemberMock<T, global::System.String> TakeAT(
+            Arg<T> input
+        ) => SetupMethod(this.TakeAT_DoubleBagStore ??= new(), input);
 
-        ////public class CalcMock : asdfasdf
+        private global::MockMe.Mocks.ClassMemberMocks.MemberMock<T>? get_MyCoolProp_BagStore;
+        public global::MockMe.Mocks.ClassMemberMocks.GetPropertyMock<T> MyCoolProp =>
+            new(get_MyCoolProp_BagStore ??= new());
 
-        ////[Fact]
-        ////public void DynamicAssemblyTest()
-        ////{
-        ////    var assembly = Assembly.LoadFile("path_to_your_assembly.dll");
-        ////    var assemblyName = new AssemblyName("DynamicCopiedAssembly");
-        ////    var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
-        ////        assemblyName,
-        ////        AssemblyBuilderAccess.Run
-        ////    );
-        ////    var moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule");
-        ////}
+        public class ConnorsCoolGenericType_1MockCallTracker : MockCallTracker
+        {
+            private readonly ConnorsCoolGenericType_1MockSetup<T> setup;
 
-        //private static MemberReference ImportReference(
-        //    ModuleDefinition module,
-        //    MemberReference member
-        //)
-        //{
-        //    if (member is TypeReference typeRef)
-        //    {
-        //        return module.ImportReference(typeRef);
-        //    }
-        //    else if (member is MethodReference methodRef)
-        //    {
-        //        var declaringType = module.ImportReference(methodRef.DeclaringType);
-        //        var newMethodRef = new MethodReference(
-        //            methodRef.Name,
-        //            methodRef.ReturnType,
-        //            declaringType
-        //        )
-        //        {
-        //            HasThis = methodRef.HasThis,
-        //            ExplicitThis = methodRef.ExplicitThis,
-        //            CallingConvention = methodRef.CallingConvention
-        //        };
-        //        foreach (var parameter in methodRef.Parameters)
-        //        {
-        //            newMethodRef.Parameters.Add(
-        //                new ParameterDefinition(module.ImportReference(parameter.ParameterType))
-        //            );
-        //        }
-        //        if (methodRef is GenericInstanceMethod genericInstanceMethod)
-        //        {
-        //            var newGenericInstanceMethod = new GenericInstanceMethod(newMethodRef);
-        //            foreach (var argument in genericInstanceMethod.GenericArguments)
-        //            {
-        //                newGenericInstanceMethod.GenericArguments.Add(
-        //                    module.ImportReference(argument)
-        //                );
-        //            }
-        //            return newGenericInstanceMethod;
-        //        }
-        //        return newMethodRef;
-        //    }
-        //    else if (member is FieldReference fieldRef)
-        //    {
-        //        var declaringType = module.ImportReference(fieldRef.DeclaringType);
-        //        return new FieldReference(
-        //            fieldRef.Name,
-        //            module.ImportReference(fieldRef.FieldType),
-        //            declaringType
-        //        );
-        //    }
-        //    return member;
-        //}
+            public ConnorsCoolGenericType_1MockCallTracker(
+                ConnorsCoolGenericType_1MockSetup<T> setup
+            )
+            {
+                this.setup = setup;
+            }
 
-        //static Assembly HandleTypeResolve(object sender, ResolveEventArgs args)
-        //{
-        //    Console.WriteLine("TypeResolve event handler.");
+            private int GetRandomVal_CallStore;
 
-        //    // Save the dynamic assembly, and then load it using its
-        //    // display name. Return the loaded assembly.
-        //    //
-        //    //ab.Save(moduleName);
-        //    return Assembly.Load(Assembly.GetExecutingAssembly().Location);
-        //}
+            public T GetRandomVal()
+            {
+                this.GetRandomVal_CallStore++;
+                return MockCallTracker.CallMemberMock(this.setup.GetRandomVal_BagStore);
+            }
 
-        //static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
-        //{
-        //    // Check the name of the requested assembly
-        //    if (args.Name.Contains("MockMe.SampleMocks"))
-        //    {
-        //        Assembly.LoadFrom("MockMe.SampleMocks-1.dll");
-        //    }
-        //    return null;
-        //}
+            private List<T>? TakeAT_DoubleCallStore;
+
+            public global::System.String TakeAT(T input) =>
+                MockCallTracker.CallMemberMock(
+                    this.setup.TakeAT_DoubleBagStore,
+                    this.TakeAT_DoubleCallStore ??= new(),
+                    input
+                );
+
+            private int get_MyCoolProp_CallStore;
+
+            public T MyCoolProp
+            {
+                get
+                {
+                    this.get_MyCoolProp_CallStore++;
+                    return MockCallTracker.CallMemberMock(this.setup.get_MyCoolProp_BagStore);
+                }
+            }
+
+            public class ConnorsCoolGenericType_1MockAsserter : MockAsserter
+            {
+                private readonly ConnorsCoolGenericType_1MockCallTracker tracker;
+
+                public ConnorsCoolGenericType_1MockAsserter(
+                    ConnorsCoolGenericType_1MockCallTracker tracker
+                )
+                {
+                    this.tracker = tracker;
+                }
+
+                public global::MockMe.Asserters.MemberAsserter GetRandomVal() =>
+                    new(this.tracker.GetRandomVal_CallStore);
+
+                public global::MockMe.Asserters.MemberAsserter TakeAT(Arg<T> input)
+                {
+                    return GetMemberAsserter(this.tracker.TakeAT_DoubleCallStore, input);
+                }
+
+                public global::MockMe.Asserters.GetPropertyAsserter<T> MyCoolProp =>
+                    new(this.tracker.get_MyCoolProp_CallStore);
+            }
+        }
     }
 }

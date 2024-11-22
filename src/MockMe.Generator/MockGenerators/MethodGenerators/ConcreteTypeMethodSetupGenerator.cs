@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
-using MockMe.Generator.MockGenerators.MethodGenerators;
 
-namespace MockMe.Generator.MockGenerators.Concrete;
+namespace MockMe.Generator.MockGenerators.MethodGenerators;
 
 internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
     : MethodMockGeneratorBase(methodSymbol)

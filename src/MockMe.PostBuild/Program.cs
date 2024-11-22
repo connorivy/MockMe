@@ -12,41 +12,72 @@ Console.WriteLine("Hello, Task!");
 
 var testAssemblyPath = args[0];
 var binLocation = Path.GetDirectoryName(testAssemblyPath);
+string testAssemblyName = Path.GetFileNameWithoutExtension(testAssemblyPath);
 
 using var definitionAssembly = AssemblyDefinition.ReadAssembly(
     testAssemblyPath,
     new ReaderParameters
     {
-        //ReadWrite = true,
-        //ReadingMode = ReadingMode.Immediate,
-        //InMemory = true,
-        //AssemblyResolver = new CustomResolver(),
+        ReadWrite = true,
+        ReadingMode = ReadingMode.Immediate,
+        ReadSymbols = true,
+        InMemory = true,
+        AssemblyResolver = new CustomResolver(binLocation),
+        MetadataResolver = new CustomMetaResolver(new CustomResolver(binLocation)),
     }
 );
 
 List<MockReplacementInfo> genericTypes = definitionAssembly.GetMockReplacementInfo();
 
-foreach (var group in genericTypes.GroupBy(info => info.TypeToReplace.AssemblyName))
+var g1 = genericTypes
+    .Where(info => info.TypeToReplace.AssemblyName != testAssemblyName)
+    .GroupBy(info => info.TypeToReplace.AssemblyName);
+
+var g2 = genericTypes
+    .Where(info => info.TypeToReplace.AssemblyName == testAssemblyName)
+    .GroupBy(info => info.TypeToReplace.AssemblyName);
+
+var genericTypesWithTestAssemblyLast = genericTypes
+    .Where(info => info.TypeToReplace.AssemblyName != testAssemblyName)
+    .GroupBy(info => info.TypeToReplace.AssemblyName)
+    .Concat(
+        genericTypes
+            .Where(info => info.TypeToReplace.AssemblyName == testAssemblyName)
+            .GroupBy(info => info.TypeToReplace.AssemblyName)
+    );
+
+//WriterParameters writerParameters = new() { WriteSymbols = true };
+
+foreach (var group in genericTypesWithTestAssemblyLast)
 {
     string currentAssemblyPath = Path.Combine(binLocation, group.Key + ".dll");
     AssemblyDefinition assembly;
-    try
+
+    if (currentAssemblyPath == testAssemblyPath)
     {
-        assembly = AssemblyDefinition.ReadAssembly(
-            currentAssemblyPath,
-            new ReaderParameters
-            {
-                ReadWrite = true,
-                ReadingMode = ReadingMode.Immediate,
-                InMemory = true,
-                AssemblyResolver = new CustomResolver(binLocation),
-                MetadataResolver = new CustomMetaResolver(new CustomResolver(binLocation)),
-            }
-        );
+        assembly = definitionAssembly;
     }
-    catch (System.IO.FileNotFoundException)
+    else
     {
-        continue;
+        try
+        {
+            assembly = AssemblyDefinition.ReadAssembly(
+                currentAssemblyPath,
+                new ReaderParameters
+                {
+                    ReadWrite = true,
+                    ReadingMode = ReadingMode.Immediate,
+                    ReadSymbols = true,
+                    InMemory = true,
+                    AssemblyResolver = new CustomResolver(binLocation),
+                    MetadataResolver = new CustomMetaResolver(new CustomResolver(binLocation)),
+                }
+            );
+        }
+        catch (System.IO.FileNotFoundException)
+        {
+            continue;
+        }
     }
 
     foreach (MockReplacementInfo mockReplacementInfo in group)
@@ -69,7 +100,7 @@ foreach (var group in genericTypes.GroupBy(info => info.TypeToReplace.AssemblyNa
         ILManipulator.InsertMethodBodyBeforeExisting(assembly, methodToReplace, replacementMethod);
     }
 
-    assembly.Write(currentAssemblyPath);
+    assembly.Write(currentAssemblyPath, new() { WriteSymbols = true });
     assembly.Dispose();
 }
 
