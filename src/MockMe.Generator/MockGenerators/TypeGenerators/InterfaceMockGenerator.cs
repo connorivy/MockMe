@@ -35,15 +35,4 @@ internal class InterfaceMockGenerator(INamedTypeSymbol typeSymbol, string typeNa
 
     public override string GetMockBaseClass(ITypeSymbol typeSymbol) =>
         $"global::MockMe.Abstractions.InterfaceMock<{typeSymbol.ToFullTypeString()}, {this.mockSetupTypeName}.{this.mockCallTrackerTypeName}>";
-
-    public override void AddPatchMethod(
-        StringBuilder sb,
-        StringBuilder assemblyAttributesSource,
-        StringBuilder staticConstructor,
-        IMethodSymbol method,
-        string typeName
-    )
-    {
-        // interface mocks don't need method patching
-    }
 }

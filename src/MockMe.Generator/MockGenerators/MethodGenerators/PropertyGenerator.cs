@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
@@ -10,55 +8,6 @@ namespace MockMe.Generator.MockGenerators.MethodGenerators;
 
 internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGeneratorBase(methodSymbol)
 {
-    public override StringBuilder AddPatchMethod(
-        StringBuilder sb,
-        StringBuilder assemblyAttributesSource,
-        StringBuilder staticConstructor,
-        ITypeSymbol typeSymbol,
-        string typeSymbolName
-    )
-    {
-        var thisNamespace = $"MockMe.Generated.{typeSymbol.ContainingNamespace}";
-        string paramsWithTypesAndMods =
-            this.methodSymbol.GetParametersWithOriginalTypesAndModifiers();
-        string paramTypeString = this.methodSymbol.GetParameterTypesWithoutModifiers();
-        string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
-
-        string callEnd = this.methodSymbol.MethodKind switch
-        {
-            MethodKind.PropertyGet => "",
-            MethodKind.PropertySet => $" = {paramString}",
-            _ => $"({paramString})",
-        };
-
-        string patchName = $"Patch{Guid.NewGuid():N}";
-        sb.AppendLine(
-            $@"
-        internal sealed class {patchName}
-        {{
-            private static bool Prefix({typeSymbol.ToFullTypeString()} __instance{(this.isVoidReturnType ? string.Empty : $", ref {this.returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
-            {{
-                if (global::MockMe.MockStore<{typeSymbol.ToFullTypeString()}>.TryGetValue<{typeSymbolName}Mock>(__instance, out var mock))
-                {{
-                    {(this.isVoidReturnType ? string.Empty : "__result = ")}mock.CallTracker.{this.methodSymbol.GetPropertyName()}{callEnd};
-                    return false;
-                }}
-                return true;
-            }}
-        }}"
-        );
-
-        staticConstructor.AppendLine(
-            $@"
-            var original{patchName} = typeof({typeSymbol.ToFullTypeString()}).GetMethod(""{this.methodSymbol.Name}"", new Type[] {{ {string.Join(", ", this.methodSymbol.Parameters.Select(p => "typeof(" + p.Type.ToFullTypeString() + ")"))} }} );
-            var {patchName} = typeof({patchName}).GetMethod(""Prefix"", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
-
-            harmony.Patch(original{patchName}, prefix: new HarmonyMethod({patchName}));"
-        );
-
-        return sb;
-    }
-
     public override StringBuilder AddMethodSetupToStringBuilder(
         StringBuilder sb,
         Dictionary<string, SetupPropertyMetadata> setupMeta

@@ -229,14 +229,4 @@ namespace {thisNamespace}
     public abstract string GetMockBaseClass(ITypeSymbol typeSymbol);
     public abstract string GetCallTrackerBaseClass(ITypeSymbol typeSymbol);
     public abstract string GetConstructorAndProps(ITypeSymbol typeSymbol);
-
-    protected virtual string GetMockClassNameWithGenericParameters() => $"{this.TypeName}Mock";
-
-    public virtual void AddPatchMethod(
-        StringBuilder sb,
-        StringBuilder assemblyAttributesSource,
-        StringBuilder staticConstructor,
-        IMethodSymbol method,
-        string typeName
-    ) { }
 }
