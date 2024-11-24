@@ -42,7 +42,10 @@ calc["string indexer"]; // result is 9.999
 var mock = Mock.Me<Calculator>();
 
 // return no matter the arguments passed into the 'Add' method
-mock.Setup.Add(Arg.Any, Arg.Any).Returns(99);
+mock.Setup.Add(Arg.Any(), Arg.Any()).Returns(99);
+
+// match any argument while specifying the argument type
+mock.Setup.Add(Arg.Any<double>(), Arg.Any<double>()).Returns(99);
 
 // match for specific type of argument 
 // in this case, both numbers must be less than 0
@@ -71,7 +74,7 @@ mock.Setup.Add(1, 1)
 
 // the returns has an overload with you can use to access the method's parameters
 // specify that 'Add(x, y)' should return x * y
-mock.Setup.Add(Arg.Any, Arg.Any).Returns((x, y) => x * y);
+mock.Setup.Add(Arg.Any(), Arg.Any()).Returns((x, y) => x * y);
 
 // callbacks can be specified before and after invocation
 mock.Setup.Add(1, 1)
@@ -86,7 +89,7 @@ mock.Setup.Add(2, 2)
 
 // access instances of objects that are assigned to properties
 CalculatorType? typeUsedBySetter
-mock.Setup.CalculatorType.Set(Arg.Any).Callback(t => typeUsedBySetter = t);
+mock.Setup.CalculatorType.Set(Arg.Any()).Callback(t => typeUsedBySetter = t);
 ```
 
 # Assertions

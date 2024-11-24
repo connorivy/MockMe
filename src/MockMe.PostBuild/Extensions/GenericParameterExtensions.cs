@@ -17,8 +17,9 @@ internal static class GenericParameterExtensions
         else
         {
             // Type generic parameter
-            var declaringType = methodToReplace.DeclaringType;
-            return declaringType.GenericParameters[genericParamRef.Position];
+            return genericParamRef.Owner.GenericParameters[genericParamRef.Position];
+            //var declaringType = methodToReplace.DeclaringType;
+            //return declaringType.GenericParameters[genericParamRef.Position];
         }
     }
 }

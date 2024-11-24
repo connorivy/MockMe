@@ -72,17 +72,6 @@ internal abstract class MethodMockGeneratorBase
             $"global::MockMe.Mocks.ClassMemberMocks.{this.voidPrefix}{this.taskPrefix}MemberMock{paramTypesFollowedByReturnTypeIgnoringTask}";
     }
 
-    public virtual StringBuilder AddPatchMethod(
-        StringBuilder sb,
-        StringBuilder assemblyAttributesSource,
-        StringBuilder staticConstructor,
-        ITypeSymbol typeSymbol,
-        string typeName
-    )
-    {
-        return sb;
-    }
-
     public virtual StringBuilder AddMethodSetupToStringBuilder(
         StringBuilder sb,
         Dictionary<string, SetupPropertyMetadata> setupMeta

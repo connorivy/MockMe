@@ -1,112 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
-using MockMe.Generator.MockGenerators.MethodGenerators;
 
-namespace MockMe.Generator.MockGenerators.Concrete;
+namespace MockMe.Generator.MockGenerators.MethodGenerators;
 
 internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
     : MethodMockGeneratorBase(methodSymbol)
 {
-    public override StringBuilder AddPatchMethod(
-        StringBuilder sb,
-        StringBuilder assemblyAttributesSource,
-        StringBuilder staticConstructor,
-        ITypeSymbol typeSymbol,
-        string typeSymbolName
-    )
-    {
-        var thisNamespace = $"MockMe.Generated.{typeSymbol.ContainingNamespace}";
-        string paramsWithTypesAndMods =
-            this.methodSymbol.GetParametersWithOriginalTypesAndModifiers();
-        string paramTypeString = this.methodSymbol.GetParameterTypesWithoutModifiers();
-        string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
-
-        string callEnd = this.methodSymbol.MethodKind switch
-        {
-            MethodKind.PropertyGet => "",
-            MethodKind.PropertySet => $" = {paramString}",
-            _ => $"({paramString})",
-        };
-
-        if (this.methodSymbol.TypeParameters.Length == 0)
-        {
-            string patchName = $"Patch{Guid.NewGuid():N}";
-            sb.AppendLine(
-                $@"
-        internal sealed class {patchName}
-        {{
-            private static bool Prefix({typeSymbol.ToFullTypeString()} __instance{(this.isVoidReturnType ? string.Empty : $", ref {this.returnType} __result")}{paramsWithTypesAndMods.AddPrefixIfNotEmpty(", ")})
-            {{
-                if (global::MockMe.MockStore<{typeSymbol.ToFullTypeString()}>.TryGetValue<{typeSymbolName}Mock>(__instance, out var mock))
-                {{
-                    {(this.isVoidReturnType ? string.Empty : "__result = ")}mock.CallTracker.{this.methodSymbol.GetPropertyName()}{callEnd};
-                    return false;
-                }}
-                return true;
-            }}
-        }}"
-            );
-
-            staticConstructor.AppendLine(
-                $@"
-            var original{patchName} = typeof({typeSymbol.ToFullTypeString()}).GetMethod(""{this.methodSymbol.Name}"", new Type[] {{ {string.Join(", ", this.methodSymbol.Parameters.Select(p => "typeof(" + p.Type.ToFullTypeString() + ")"))} }} );
-            var {patchName} = typeof({patchName}).GetMethod(""Prefix"", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
-
-            harmony.Patch(original{patchName}, prefix: new HarmonyMethod({patchName}));"
-            );
-        }
-        else
-        {
-            sb.AppendLine(
-                $@"
-        private {this.returnType} {this.MethodName()}{this.methodSymbol.GetGenericParameterStringInBrackets()}({paramsWithTypesAndMods})
-        {{
-            if (global::MockMe.MockStore<{typeSymbol.ToFullTypeString()}>.GetStore().TryGetValue(default, out var mock))
-            {{
-                var callTracker = mock.GetType()
-                    .GetProperty(
-                        ""CallTracker"",
-                        global::System.Reflection.BindingFlags.NonPublic
-                            | global::System.Reflection.BindingFlags.Instance
-                    )
-                    .GetValue(mock);
-
-                return ({this.returnType})
-                    callTracker
-                        .GetType()
-                        .GetMethod(
-                            ""{this.MethodName()}"",
-                            global::System.Reflection.BindingFlags.Public
-                                | global::System.Reflection.BindingFlags.Instance
-                        )
-                        .MakeGenericMethod({string.Join(", ", this.methodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")")))})
-                        .Invoke(callTracker, new object[] {{ {paramString} }});
-            }}
-            return default;
-        }}
-"
-            );
-
-            assemblyAttributesSource.AppendLine(
-                $@"
-[assembly: global::MockMe.Abstractions.GenericMethodDefinition(
-    ""{typeSymbol.ContainingNamespace}"",
-    ""{typeSymbol}"",
-    ""{this.methodSymbol.Name}"",
-    ""{thisNamespace}"",
-    ""{thisNamespace}.{typeSymbol.Name}Mock"",
-    ""{this.MethodName()}""
-)]
-"
-            );
-        }
-        return sb;
-    }
-
     public override StringBuilder AddMethodSetupToStringBuilder(
         StringBuilder sb,
         Dictionary<string, SetupPropertyMetadata> setupMeta

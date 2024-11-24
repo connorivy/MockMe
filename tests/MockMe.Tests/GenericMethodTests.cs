@@ -12,7 +12,7 @@ namespace MockMe.Tests
         {
             var mock = Mock.Me<ComplexCalculator>();
 
-            mock.Setup.ComputeHashForObjects<int>(Arg.Any).Returns(99);
+            mock.Setup.ComputeHashForObjects<int>(Arg.Any()).Returns(99);
 
             ComplexCalculator calc = (ComplexCalculator)mock;
 
