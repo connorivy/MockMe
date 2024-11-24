@@ -9,5 +9,9 @@
       CA1822; <!-- Mark members as static -->
       $(WarningsNotAsErrors)
     </WarningsNotAsErrors>
+
+    <!-- These props recommended in codeCoverage readMe https://github.com/microsoft/codecoverage?tab=readme-ov-file -->
+    <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
+    <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
   </PropertyGroup>
 </Project>
