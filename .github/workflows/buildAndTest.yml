@@ -36,7 +36,7 @@ jobs:
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
-        dotnet-coverage collect "dotnet test -c Release" -f xml
+        dotnet-coverage collect "dotnet test --no-restore -c Release" -f xml
       # run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
 
     - name: Generate report
