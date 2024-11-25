@@ -91,11 +91,11 @@ namespace MockMe.Tests.Overloads
         {
             var mock = Mock.Me<SealedOverloadsClass>(default(SealedOverloadsClass));
 
-            var getGetter = mock.Setup.Prop_GetSet.GetType().GetMethod("Set");
-            var setGetter = mock.Setup.Prop_SetOnly.GetType().GetMethod("Get");
+            var getGetter = mock.Setup.Prop_GetSet.GetType().GetMethod("Get");
+            var setOnlyGetter = mock.Setup.Prop_SetOnly.GetType().GetMethod("Get");
 
             Assert.NotNull(getGetter);
-            Assert.Null(setGetter);
+            Assert.Null(setOnlyGetter);
         }
     }
 }

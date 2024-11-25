@@ -12,7 +12,7 @@ namespace MockMe.Tests
         {
             var calculatorMock = Mock.Me<Calculator>();
 
-            var calculator = (Calculator)calculatorMock;
+            Calculator calculator = calculatorMock;
 
             calculator.Add(0, 0);
             calculator.Add(1, -1);
@@ -21,14 +21,14 @@ namespace MockMe.Tests
             calculator.Add(-234, 567);
             calculator.Add(int.MaxValue, int.MinValue);
 
-            calculatorMock.Assert.Add(Arg.Any(), Arg.Any()).WasCalled(NumTimes.Exactly, 6);
+            calculatorMock.Assert.Add(Arg.Any(), Arg.Any()).WasCalled(NumTimes.Exactly(6));
             Assert.ThrowsAny<MockMeException>(
-                () => calculatorMock.Assert.Add(Arg.Any(), Arg.Any()).WasCalled(NumTimes.Exactly, 5)
+                () => calculatorMock.Assert.Add(Arg.Any(), Arg.Any()).WasCalled(NumTimes.Exactly(5))
             );
 
-            calculatorMock.Assert.Add(-234, Arg.Any()).WasCalled(NumTimes.Exactly, 3);
+            calculatorMock.Assert.Add(-234, Arg.Any()).WasCalled(NumTimes.Exactly(3));
             Assert.ThrowsAny<MockMeException>(
-                () => calculatorMock.Assert.Add(-234, Arg.Any()).WasCalled(NumTimes.Exactly, 5)
+                () => calculatorMock.Assert.Add(-234, Arg.Any()).WasCalled(NumTimes.Exactly(5))
             );
         }
     }

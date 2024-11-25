@@ -103,9 +103,9 @@ mock.Assert.Add(1, 1).WasCalled();
 
 mock.Assert.Add(1, 1).WasNotCalled();
 
-mock.Assert.Add(1, 1).WasCalled(NumTimes.AtLeast, 3);
+mock.Assert.Add(1, 1).WasCalled(NumTimes.AtLeast(3));
 
-mock.Assert.Add(1, 1).WasCalled(NumTimes.AtMost, 3);
+mock.Assert.Add(1, 1).WasCalled(NumTimes.AtMost(3));
 
 // assert property was set to specific value
 mock.Assert.CalculatorType.Set(CalculatorType.Graphing).WasCalled();
