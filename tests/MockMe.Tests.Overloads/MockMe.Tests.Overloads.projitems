@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>705ed000-6380-4c9e-bf2e-71ba8c390e28</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>MockMe.Tests.Overloads</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AsyncMethodOverloadTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AsyncOfTMethodOverloadsTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IndexerTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PropertyTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SyncMethodOverloadsTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VoidMethodOverloadsTests.cs" />
+  </ItemGroup>
+</Project>

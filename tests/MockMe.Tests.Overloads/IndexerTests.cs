@@ -8,14 +8,14 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerGetForInt_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<SealedOverloadsClass>(default(SealedOverloadsClass));
+            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<int>()].Get().Callback(() => numCalls++).Returns("hello indexer");
 
-            SealedOverloadsClass sealedOverloadsClass = mock;
+            OverloadsClass OverloadsClass = mock.MockedObject;
 
-            var val = sealedOverloadsClass[99];
+            var val = OverloadsClass[99];
 
             Assert.Equal("hello indexer", val);
             Assert.Equal(1, numCalls);
@@ -28,14 +28,14 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerSetForInt_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<SealedOverloadsClass>(default(SealedOverloadsClass));
+            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<int>()].Set(Arg.Any()).Callback(() => numCalls++);
 
-            SealedOverloadsClass sealedOverloadsClass = mock;
+            OverloadsClass OverloadsClass = mock.MockedObject;
 
-            sealedOverloadsClass[99] = "hello indexer";
+            OverloadsClass[99] = "hello indexer";
 
             Assert.Equal(1, numCalls);
             mock.Assert[Arg.Any<int>()].Set(Arg.Any()).WasCalled();
@@ -48,14 +48,14 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerGetForString_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<SealedOverloadsClass>(default(SealedOverloadsClass));
+            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<string>()].Get().Callback(() => numCalls++).Returns(99);
 
-            SealedOverloadsClass sealedOverloadsClass = mock;
+            OverloadsClass OverloadsClass = mock.MockedObject;
 
-            var val = sealedOverloadsClass["hello"];
+            var val = OverloadsClass["hello"];
 
             Assert.Equal(99, val);
             Assert.Equal(1, numCalls);
@@ -66,14 +66,14 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void SetOnlyIndexer_AssertAndCallbackShouldWork()
         {
-            var mock = Mock.Me<SealedOverloadsClass>(default(SealedOverloadsClass));
+            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<double>()].Set(Arg.Any()).Callback(() => numCalls++);
 
-            SealedOverloadsClass sealedOverloadsClass = mock;
+            OverloadsClass OverloadsClass = mock.MockedObject;
 
-            sealedOverloadsClass[9.9] = 9.9;
+            OverloadsClass[9.9] = 9.9;
 
             Assert.Equal(1, numCalls);
             mock.Assert[Arg.Any<double>()].Set(Arg.Any()).WasCalled();

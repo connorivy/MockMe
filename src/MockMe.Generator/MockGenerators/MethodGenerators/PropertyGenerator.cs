@@ -59,73 +59,62 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
             this.methodSymbol.GetParametersWithOriginalTypesAndModifiers();
         string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
 
+        var methodName = this.methodSymbol.GetPropertyName();
+
+        //string? indexerType = null;
+        //if (
+        //    this.methodSymbol.AssociatedSymbol is IPropertySymbol propertySymbol
+        //    && propertySymbol.IsIndexer
+        //)
+        //{
+        //    indexerType = propertySymbol.Type.ToFullTypeString();
+        //}
+
+
         if (this.methodSymbol.MethodKind == MethodKind.PropertyGet)
         {
-            var methodName = this.methodSymbol.GetPropertyName();
-
-            string? indexerType = null;
-            if (
-                this.methodSymbol.AssociatedSymbol is IPropertySymbol propertySymbol
-                && propertySymbol.IsIndexer
-            )
-            {
-                indexerType = propertySymbol.Type.ToFullTypeString();
-            }
-
             if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
             {
                 propMeta = new()
                 {
                     Name = methodName,
                     ReturnType = this.returnType,
-                    IndexerType = indexerType,
+                    //IndexerType = indexerType,
                 };
                 callTrackerMeta.Add(methodName, propMeta);
             }
-
-            if (string.IsNullOrEmpty(indexerType))
-            {
-                propMeta.GetterLogic =
-                    @$"
+            //if (string.IsNullOrEmpty(indexerType))
+            //{
+            propMeta.GetterLogic =
+                @$"
             this.{this.GetCallStoreName()}++;
             return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});";
-                propMeta.GetterField = $"private int {this.GetCallStoreName()};";
-            }
-            else
-            {
-                propMeta.GetterLogic =
-                    @$"
-            return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
-                propMeta.GetterField = $"private List<{indexerType}>? {this.GetCallStoreName()};";
-            }
+            propMeta.GetterField = $"private int {this.GetCallStoreName()};";
+            //}
+            //else
+            //{
+            //    propMeta.GetterLogic =
+            //        @$"
+            //return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
+            //    propMeta.GetterField = $"private List<{indexerType}>? {this.GetCallStoreName()};";
+            //}
         }
         else if (this.methodSymbol.MethodKind == MethodKind.PropertySet)
         {
-            var methodName = this.methodSymbol.GetPropertyName();
-
-            string? indexerType = null;
-            if (
-                this.methodSymbol.AssociatedSymbol is IPropertySymbol propertySymbol
-                && propertySymbol.IsIndexer
-            )
-            {
-                indexerType = propertySymbol.Type.ToFullTypeString();
-            }
-
             if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
             {
                 propMeta = new()
                 {
                     Name = methodName,
                     ReturnType = this.methodSymbol.Parameters.First().Type.ToFullReturnTypeString(),
-                    IndexerType = indexerType,
+                    //IndexerType = indexerType,
                 };
                 callTrackerMeta.Add(methodName, propMeta);
             }
 
             propMeta.SetterLogic =
                 @$"
-        {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(){(string.IsNullOrEmpty(indexerType) ? "" : ", index")}, value);";
+        {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), value);";
 
             propMeta.SetterField =
                 $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";
