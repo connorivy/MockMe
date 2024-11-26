@@ -12,6 +12,7 @@ public class PropertyMetadata
     public string? SetterField { get; set; }
     public virtual string? GetterLogic { get; set; }
     public virtual string? SetterLogic { get; set; }
+    public bool HasInit { get; set; }
 
     public void AddPropToSb(StringBuilder sb)
     {
@@ -55,6 +56,16 @@ public class PropertyMetadata
                 set
                 {{
                     {this.SetterLogic}
+                }}"
+            );
+        }
+        else if (this.HasInit)
+        {
+            sb.Append(
+                $@"
+                init
+                {{
+                    throw new global::System.NotImplementedException();
                 }}"
             );
         }

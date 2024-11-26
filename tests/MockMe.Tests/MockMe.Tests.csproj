@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -19,25 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MockMe.Tests.ExampleClasses\MockMe.Tests.ExampleClasses.csproj" />
-  </ItemGroup>
-
-  <!-- Use project references locally -->
-  <ItemGroup Condition="'$(MockMeNugetPackageVersion)' == ''">
-    <ProjectReference Include="..\..\src\MockMe.Abstractions\MockMe.Abstractions.csproj" />
-    <ProjectReference Include="..\..\src\MockMe.Generator\MockMe.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\..\src\MockMe\MockMe.csproj" />
-    <ProjectReference Include="..\..\src\MockMe.PostBuild\MockMe.PostBuild.csproj" />
-  </ItemGroup>
-  
-  <PropertyGroup Condition="'$(MockMeNugetPackageVersion)' == ''">
-    <MockMePath>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\</MockMePath>
-  </PropertyGroup>
-
-  <Import Project="..\..\src\MockMe\Build\MockMe.targets" Condition="'$(MockMeNugetPackageVersion)' == ''" />
-
-   <!--Use nuget in ci to make sure packing process is correct--> 
-  <ItemGroup Condition="'$(MockMeNugetPackageVersion)' != ''">
-    <PackageReference Include="MockMe" Version="$(MockMeNugetPackageVersion)" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

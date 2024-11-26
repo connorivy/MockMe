@@ -5,6 +5,7 @@
   <PropertyGroup>
     <LangVersion>9</LangVersion>
     <RollForward>major</RollForward>
+    <IncludeMockMeRef Condition="'$(IncludeMockMeRef)' == ''">True</IncludeMockMeRef>
     <WarningsNotAsErrors>
       CA1822; <!-- Mark members as static -->
       $(WarningsNotAsErrors)
@@ -14,4 +15,23 @@
     <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
     <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
   </PropertyGroup>
+
+  <!-- Use project references locally -->
+  <ItemGroup Condition="'$(IncludeMockMeRef)' == 'True' And '$(MockMeNugetPackageVersion)' == ''">
+    <ProjectReference Include="..\..\src\MockMe.Abstractions\MockMe.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\MockMe.Generator\MockMe.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\src\MockMe\MockMe.csproj" />
+    <ProjectReference Include="..\..\src\MockMe.PostBuild\MockMe.PostBuild.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(IncludeMockMeRef)' == 'True' And '$(MockMeNugetPackageVersion)' == ''">
+    <MockMePath>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\</MockMePath>
+  </PropertyGroup>
+
+  <Import Project="..\src\MockMe\Build\MockMe.targets" Condition="'$(IncludeMockMeRef)' == 'True' And '$(MockMeNugetPackageVersion)' == ''" />
+
+  <!--Use nuget in ci to make sure packing process is correct-->
+  <ItemGroup Condition="'$(IncludeMockMeRef)' == 'True' And '$(MockMeNugetPackageVersion)' != ''">
+    <PackageReference Include="MockMe" Version="$(MockMeNugetPackageVersion)" PrivateAssets="all" />
+  </ItemGroup>
 </Project>

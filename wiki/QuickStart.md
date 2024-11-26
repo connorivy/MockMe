@@ -18,6 +18,9 @@ mock.Setup.Add(5, 5).Returns((x, y) => x * y);
 // if there isn't a public setter, then only the 'Get()' method will exist
 mock.Setup.CalculatorType.Get().Returns(CalculatorType.Scientific);
 
+// configure methods to throw
+mock.Setup.Add(-99, -99).Throws(new InvalidOperationException());
+
 // async methods can be configured with typical "Returns" or "ReturnsAsync" methods
 mock.Setup.AddAsync(10, 10).ReturnsAsync(-10);
 mock.Setup.AddAsync(20, 20).Returns(Task.FromResult(-20));
@@ -29,6 +32,7 @@ Calculator calc = mock; // convert to mocked object with implicit cast
 
 calc.Add(1, 1); // result is 99
 calc.Add(5, 5); // result is 25 (5 * 5)
+calc.Add(-99, -99); // throws invalidOperationException
 calc.AddAsync(10, 10); // result is -10
 calc.AddAsync(20, 20); // result is -20
 calc["string indexer"]; // result is 9.999
@@ -103,9 +107,9 @@ mock.Assert.Add(1, 1).WasCalled();
 
 mock.Assert.Add(1, 1).WasNotCalled();
 
-mock.Assert.Add(1, 1).WasCalled(NumTimes.AtLeast, 3);
+mock.Assert.Add(1, 1).WasCalled(NumTimes.AtLeast(3));
 
-mock.Assert.Add(1, 1).WasCalled(NumTimes.AtMost, 3);
+mock.Assert.Add(1, 1).WasCalled(NumTimes.AtMost(3));
 
 // assert property was set to specific value
 mock.Assert.CalculatorType.Set(CalculatorType.Graphing).WasCalled();

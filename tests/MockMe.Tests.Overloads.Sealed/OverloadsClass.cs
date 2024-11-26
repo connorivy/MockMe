@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MockMe.Tests.Overloads
 {
-    internal sealed class SealedOverloadsClass
+    internal sealed class OverloadsClass
     {
         public int Prop_GetSet { get; set; }
         public int Prop_GetInit { get; init; }

@@ -15,8 +15,7 @@ internal class MethodGeneratorFactory
                     && (propertySymbol.SetMethod?.IsInitOnly ?? false)
                 )
                 {
-                    // we skip 'init' properties because they can't be set at runtime
-                    return null;
+                    return new InitPropertyGenerator(method);
                 }
                 if (propertySymbol.IsIndexer)
                 {

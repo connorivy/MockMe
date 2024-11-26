@@ -1,3 +1,5 @@
+using MockMe.Extensions;
+
 namespace MockMe.Mocks.ClassMemberMocks;
 
 public class MemberMock<TReturn>
@@ -11,7 +13,7 @@ public class MemberMock<TReturn>
     internal MemberMock(ActionCallbackManager<Action> callbackManager)
         : base(callbackManager)
     {
-        this.returnManager = new(callbackManager);
+        this.returnManager = new(callbackManager, ThrowUtils.ToThrow<TReturn>());
     }
 
     private readonly ReturnManager<TReturn> returnManager;
@@ -20,6 +22,11 @@ public class MemberMock<TReturn>
     {
         this.returnManager.Returns(returnThis, thenReturnThese);
         return this;
+    }
+
+    public void Throws(Exception ex)
+    {
+        this.returnManager.Throws(ex);
     }
 
     TReturn? IMockReturnCallRetriever<TReturn>.GetReturnValue() =>

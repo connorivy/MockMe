@@ -23,17 +23,25 @@ namespace MockMe.Tests
             calculator.TurnOff();
 
             calculatorMock.Assert.TurnOff().WasCalled();
-            calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtLeast, 5);
-            calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtMost, 5);
-            calculatorMock.Assert.TurnOff().WasCalled(NumTimes.Exactly, 5);
+            calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtLeast(5));
+            calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtMost(5));
+            calculatorMock.Assert.TurnOff().WasCalled(NumTimes.Exactly(5));
+            calculatorMock.Assert.TurnOff().WasCalled(NumTimes.Between(4, 5));
+            calculatorMock.Assert.TurnOff().WasCalled(NumTimes.Between(5, 6));
             Assert.ThrowsAny<MockMeException>(
-                () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.Exactly, 4)
+                () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.Exactly(4))
             );
             Assert.ThrowsAny<MockMeException>(
-                () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtLeast, 6)
+                () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtLeast(6))
             );
             Assert.ThrowsAny<MockMeException>(
-                () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtMost, 4)
+                () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.AtMost(4))
+            );
+            Assert.ThrowsAny<MockMeException>(
+                () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.Between(1, 4))
+            );
+            Assert.ThrowsAny<MockMeException>(
+                () => calculatorMock.Assert.TurnOff().WasCalled(NumTimes.Between(6, 10))
             );
         }
 
