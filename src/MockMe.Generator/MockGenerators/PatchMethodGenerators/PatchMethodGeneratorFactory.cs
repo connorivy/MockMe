@@ -6,6 +6,11 @@ internal static class PatchMethodGeneratorFactory
 {
     public static IPatchMethodGenerator? Create(INamedTypeSymbol typeSymbol, IMethodSymbol method)
     {
+        if (method.DeclaredAccessibility != Accessibility.Public)
+        {
+            return null;
+        }
+
         if (typeSymbol.TypeKind == TypeKind.Interface)
         {
             return null;

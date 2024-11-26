@@ -364,3 +364,5 @@ MigrationBackup/
 
 # OpenSees
 openSees/lib
+
+output.xml
