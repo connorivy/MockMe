@@ -2,11 +2,20 @@ using System.Threading.Tasks;
 
 namespace MockMe.Tests.Overloads
 {
-    internal interface OverloadsClass
+    internal interface AllOverloads
     {
+        protected int ProtectedProp { get; set; }
+        protected int ProtectedMethod();
+
+        internal int InternalProp { get; set; }
+        internal int InternalMethod();
+
         double this[double index] { set; }
         string this[int index] { get; set; }
         int this[string index] { get; set; }
+
+        internal int this[float index] { get; set; }
+        protected int this[decimal index] { get; set; }
 
         int Prop_GetInit { get; init; }
         int Prop_GetOnly { get; }

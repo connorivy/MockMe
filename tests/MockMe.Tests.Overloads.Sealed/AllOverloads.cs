@@ -3,8 +3,16 @@ using System.Threading.Tasks;
 
 namespace MockMe.Tests.Overloads
 {
-    internal sealed class OverloadsClass
+    internal sealed class AllOverloads
     {
+        protected int ProtectedProp { get; set; }
+
+        protected int ProtectedMethod() => throw new NotImplementedException();
+
+        internal int InternalProp { get; set; }
+
+        internal int InternalMethod() => throw new NotImplementedException();
+
         public int Prop_GetSet { get; set; }
         public int Prop_GetInit { get; init; }
         public int Prop_GetOnly { get; }
@@ -27,6 +35,16 @@ namespace MockMe.Tests.Overloads
 
         public double this[double index]
         {
+            set => throw new NotImplementedException();
+        }
+        internal int this[float index]
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+        protected int this[decimal index]
+        {
+            get => throw new NotImplementedException();
             set => throw new NotImplementedException();
         }
 

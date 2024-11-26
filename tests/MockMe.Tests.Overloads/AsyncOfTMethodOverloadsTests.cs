@@ -28,7 +28,7 @@ namespace MockMe.Tests.Overloads
         [InlineData(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)]
         public async Task AsyncOfTReturnOverload_CallbackAndAssertShouldWork(params int[] ints)
         {
-            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
+            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
 
             int numCalls = 0;
 
@@ -39,14 +39,14 @@ namespace MockMe.Tests.Overloads
 
             var setupMethod = mock
                 .Setup.GetType()
-                .GetMethod(nameof(OverloadsClass.AsyncOfTReturn), argIntTypes)
+                .GetMethod(nameof(AllOverloads.AsyncOfTReturn), argIntTypes)
                 .Invoke(mock.Setup, boxedArgInts);
 
             Action incrementNumCalls = () => numCalls++;
             ((dynamic)setupMethod).Callback(incrementNumCalls);
             ((dynamic)setupMethod).ReturnsAsync(9999);
 
-            OverloadsClass sealedClass = mock.MockedObject;
+            AllOverloads sealedClass = mock.MockedObject;
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
@@ -54,7 +54,7 @@ namespace MockMe.Tests.Overloads
                         (MemberAsserter)
                             mock
                                 .Assert.GetType()
-                                .GetMethod(nameof(OverloadsClass.AsyncOfTReturn), argIntTypes)
+                                .GetMethod(nameof(AllOverloads.AsyncOfTReturn), argIntTypes)
                                 .Invoke(mock.Assert, boxedArgInts)
                     ).WasCalled()
             );
@@ -62,7 +62,7 @@ namespace MockMe.Tests.Overloads
             var ret = await (Task<int>)
                 sealedClass
                     .GetType()
-                    .GetMethod(nameof(OverloadsClass.AsyncOfTReturn), intTypes)
+                    .GetMethod(nameof(AllOverloads.AsyncOfTReturn), intTypes)
                     .Invoke(sealedClass, boxedInts);
 
             Assert.Equal(9999, ret);
@@ -72,7 +72,7 @@ namespace MockMe.Tests.Overloads
                 (MemberAsserter)
                     mock
                         .Assert.GetType()
-                        .GetMethod(nameof(OverloadsClass.AsyncOfTReturn), argIntTypes)
+                        .GetMethod(nameof(AllOverloads.AsyncOfTReturn), argIntTypes)
                         .Invoke(mock.Assert, boxedArgInts)
             ).WasCalled();
         }

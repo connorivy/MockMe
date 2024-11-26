@@ -13,6 +13,7 @@ public class PropertyMetadata
     public virtual string? GetterLogic { get; set; }
     public virtual string? SetterLogic { get; set; }
     public bool HasInit { get; set; }
+    public const string ThrowExceptionLogic = "throw new global::System.NotImplementedException();";
 
     public void AddPropToSb(StringBuilder sb)
     {
@@ -65,7 +66,7 @@ public class PropertyMetadata
                 $@"
                 init
                 {{
-                    throw new global::System.NotImplementedException();
+                    {ThrowExceptionLogic}
                 }}"
             );
         }

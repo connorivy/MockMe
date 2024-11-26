@@ -8,12 +8,12 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerGetForInt_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
+            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<int>()].Get().Callback(() => numCalls++).Returns("hello indexer");
 
-            OverloadsClass OverloadsClass = mock.MockedObject;
+            AllOverloads OverloadsClass = mock.MockedObject;
 
             var val = OverloadsClass[99];
 
@@ -28,12 +28,12 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerSetForInt_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
+            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<int>()].Set(Arg.Any()).Callback(() => numCalls++);
 
-            OverloadsClass OverloadsClass = mock.MockedObject;
+            AllOverloads OverloadsClass = mock.MockedObject;
 
             OverloadsClass[99] = "hello indexer";
 
@@ -48,12 +48,12 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerGetForString_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
+            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<string>()].Get().Callback(() => numCalls++).Returns(99);
 
-            OverloadsClass OverloadsClass = mock.MockedObject;
+            AllOverloads OverloadsClass = mock.MockedObject;
 
             var val = OverloadsClass["hello"];
 
@@ -66,12 +66,12 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void SetOnlyIndexer_AssertAndCallbackShouldWork()
         {
-            var mock = Mock.Me<OverloadsClass>(default(OverloadsClass));
+            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<double>()].Set(Arg.Any()).Callback(() => numCalls++);
 
-            OverloadsClass OverloadsClass = mock.MockedObject;
+            AllOverloads OverloadsClass = mock.MockedObject;
 
             OverloadsClass[9.9] = 9.9;
 

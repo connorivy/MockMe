@@ -127,11 +127,6 @@ namespace {thisNamespace}
                 continue;
             }
 
-            if (methodSymbol.DeclaredAccessibility != Accessibility.Public)
-            {
-                continue;
-            }
-
             MethodMockGeneratorBase? methodGenerator = MethodGeneratorFactory.Create(methodSymbol);
 
             if (methodGenerator is null)
