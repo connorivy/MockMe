@@ -14,6 +14,11 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         Dictionary<string, SetupPropertyMetadata> setupMeta
     )
     {
+        if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
+        {
+            return sb;
+        }
+
         return sb.AppendLine(
             $@"
         private {this.GetBagStoreType()}? {this.GetBagStoreName()};
@@ -30,6 +35,15 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         string paramsWithTypesAndMods =
             this.methodSymbol.GetParametersWithOriginalTypesAndModifiers();
         string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
+
+        if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
+        {
+            sb.Append(
+                $@"
+            public {this.returnType} {this.MethodName()}({paramsWithTypesAndMods}) => default({this.returnType});"
+            );
+            return sb;
+        }
 
         if (this.methodSymbol.MethodKind == MethodKind.PropertyGet)
         {
@@ -152,6 +166,11 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         Dictionary<string, AssertPropertyMetadata> assertMeta
     )
     {
+        if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
+        {
+            return sb;
+        }
+
         var parametersDefinition = this.methodSymbol.GetParametersWithArgTypesAndModifiers();
         var parameters = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
 

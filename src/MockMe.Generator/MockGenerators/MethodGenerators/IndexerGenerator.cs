@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +27,7 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(
             ? this.returnType
             : this.methodSymbol.Parameters[1].Type.ToFullReturnTypeString();
 
-        var uniqueMethodName = methodName + propertyType;
+        var uniqueMethodName = methodName + indexerType;
 
         if (!callTrackerMeta.TryGetValue(uniqueMethodName, out var propMeta))
         {
@@ -43,19 +42,33 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(
 
         if (this.methodSymbol.MethodKind == MethodKind.PropertyGet)
         {
-            propMeta.GetterLogic =
-                @$"
+            if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
+            {
+                propMeta.GetterLogic = $"return default({propertyType});";
+            }
+            else
+            {
+                propMeta.GetterLogic =
+                    @$"
             return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
-            propMeta.GetterField = $"private List<{indexerType}>? {this.GetCallStoreName()};";
+                propMeta.GetterField = $"private List<{indexerType}>? {this.GetCallStoreName()};";
+            }
         }
         else if (this.methodSymbol.MethodKind == MethodKind.PropertySet)
         {
-            propMeta.SetterLogic =
-                @$"
+            if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
+            {
+                propMeta.SetterLogic = $"_ = value;";
+            }
+            else
+            {
+                propMeta.SetterLogic =
+                    @$"
         {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index, value);";
 
-            propMeta.SetterField =
-                $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";
+                propMeta.SetterField =
+                    $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";
+            }
         }
 
         return sb;

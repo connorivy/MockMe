@@ -28,7 +28,7 @@ namespace MockMe.Tests.Overloads
         [InlineData(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)]
         public async Task SyncReturnOverload_CallbackAndAssertShouldWork(params int[] ints)
         {
-            var mock = Mock.Me<OverloadsClass>(default);
+            var mock = Mock.Me<AllOverloads>(default);
 
             int numCalls = 0;
 
@@ -39,7 +39,7 @@ namespace MockMe.Tests.Overloads
 
             var setupMethod = mock
                 .Setup.GetType()
-                .GetMethod(nameof(OverloadsClass.SyncReturn), argIntTypes)
+                .GetMethod(nameof(AllOverloads.SyncReturn), argIntTypes)
                 .Invoke(mock.Setup, boxedArgInts);
 
             Action incrementNumCalls = () => numCalls++;
@@ -47,7 +47,7 @@ namespace MockMe.Tests.Overloads
 
             ((dynamic)setupMethod).Returns(9999);
 
-            OverloadsClass sealedClass = mock.MockedObject;
+            AllOverloads sealedClass = mock.MockedObject;
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
@@ -55,14 +55,14 @@ namespace MockMe.Tests.Overloads
                         (MemberAsserter)
                             mock
                                 .Assert.GetType()
-                                .GetMethod(nameof(OverloadsClass.SyncReturn), argIntTypes)
+                                .GetMethod(nameof(AllOverloads.SyncReturn), argIntTypes)
                                 .Invoke(mock.Assert, boxedArgInts)
                     ).WasCalled()
             );
 
             object ret = sealedClass
                 .GetType()
-                .GetMethod(nameof(OverloadsClass.SyncReturn), intTypes)
+                .GetMethod(nameof(AllOverloads.SyncReturn), intTypes)
                 .Invoke(sealedClass, boxedInts);
 
             Assert.Equal(9999, (int)ret);
@@ -73,7 +73,7 @@ namespace MockMe.Tests.Overloads
                 (MemberAsserter)
                     mock
                         .Assert.GetType()
-                        .GetMethod(nameof(OverloadsClass.SyncReturn), argIntTypes)
+                        .GetMethod(nameof(AllOverloads.SyncReturn), argIntTypes)
                         .Invoke(mock.Assert, boxedArgInts)
             ).WasCalled();
         }

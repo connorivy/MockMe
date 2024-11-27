@@ -13,6 +13,11 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
         Dictionary<string, SetupPropertyMetadata> setupMeta
     )
     {
+        if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
+        {
+            return sb;
+        }
+
         bool isGet = this.methodSymbol.MethodKind == MethodKind.PropertyGet;
         string propertyType = this.GetPropertyType(isGet);
 
@@ -57,67 +62,58 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
     {
         string paramsWithTypesAndMods =
             this.methodSymbol.GetParametersWithOriginalTypesAndModifiers();
+
         string paramString = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
 
         var methodName = this.methodSymbol.GetPropertyName();
 
-        //string? indexerType = null;
-        //if (
-        //    this.methodSymbol.AssociatedSymbol is IPropertySymbol propertySymbol
-        //    && propertySymbol.IsIndexer
-        //)
-        //{
-        //    indexerType = propertySymbol.Type.ToFullTypeString();
-        //}
+        bool isGet = this.methodSymbol.MethodKind == MethodKind.PropertyGet;
 
+        var propertyType = isGet
+            ? this.returnType
+            : this.methodSymbol.Parameters[0].Type.ToFullReturnTypeString();
 
-        if (this.methodSymbol.MethodKind == MethodKind.PropertyGet)
+        if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
         {
-            if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
+            propMeta = new()
             {
-                propMeta = new()
-                {
-                    Name = methodName,
-                    ReturnType = this.returnType,
-                    //IndexerType = indexerType,
-                };
-                callTrackerMeta.Add(methodName, propMeta);
+                Name = methodName,
+                ReturnType = propertyType,
+                //IndexerType = indexerType,
+            };
+            callTrackerMeta.Add(methodName, propMeta);
+        }
+
+        if (isGet)
+        {
+            if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
+            {
+                propMeta.GetterLogic = $"return default({propertyType});";
             }
-            //if (string.IsNullOrEmpty(indexerType))
-            //{
-            propMeta.GetterLogic =
-                @$"
-            this.{this.GetCallStoreName()}++;
-            return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});";
-            propMeta.GetterField = $"private int {this.GetCallStoreName()};";
-            //}
-            //else
-            //{
-            //    propMeta.GetterLogic =
-            //        @$"
-            //return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
-            //    propMeta.GetterField = $"private List<{indexerType}>? {this.GetCallStoreName()};";
-            //}
+            else
+            {
+                propMeta.GetterLogic =
+                    @$"
+                this.{this.GetCallStoreName()}++;
+                return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});";
+                propMeta.GetterField = $"private int {this.GetCallStoreName()};";
+            }
         }
         else if (this.methodSymbol.MethodKind == MethodKind.PropertySet)
         {
-            if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
+            if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
             {
-                propMeta = new()
-                {
-                    Name = methodName,
-                    ReturnType = this.methodSymbol.Parameters.First().Type.ToFullReturnTypeString(),
-                    //IndexerType = indexerType,
-                };
-                callTrackerMeta.Add(methodName, propMeta);
+                propMeta.SetterLogic = "_ = value;";
             }
-
-            propMeta.SetterLogic =
-                @$"
+            else
+            {
+                propMeta.SetterLogic =
+                    @$"
         {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), value);";
 
-            propMeta.SetterField =
-                $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";
+                propMeta.SetterField =
+                    $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";
+            }
         }
 
         return sb;
@@ -128,6 +124,11 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
         Dictionary<string, AssertPropertyMetadata> assertMeta
     )
     {
+        if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
+        {
+            return sb;
+        }
+
         bool isGet = this.methodSymbol.MethodKind == MethodKind.PropertyGet;
 
         var propertyType = this.GetPropertyType(isGet);
