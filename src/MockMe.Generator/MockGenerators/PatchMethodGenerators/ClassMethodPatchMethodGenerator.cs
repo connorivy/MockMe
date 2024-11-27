@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -25,11 +26,15 @@ internal class ClassMethodPatchMethodGenerator(
         string paramsWithTypesAndMods =
             this.MethodSymbol.GetParametersWithOriginalTypesAndModifiers();
         string paramTypeString = this.MethodSymbol.GetParameterTypesWithoutModifiers();
-        string paramString = this.MethodSymbol.GetParametersWithoutTypesAndModifiers();
+        string paramString = this.MethodSymbol.GetParametersWithModifiersAndNoTypes();
 
         var returnType = this.MethodSymbol.ReturnType.ToFullReturnTypeString();
 
         var isVoidReturnType = this.MethodSymbol.ReturnType.SpecialType == SpecialType.System_Void;
+
+        List<IParameterSymbol> refOrOutParameters = this
+            .MethodSymbol.Parameters.Where(p => p.RefKind is RefKind.Ref or RefKind.Out)
+            .ToList();
 
         string callEnd = this.MethodSymbol.MethodKind switch
         {
@@ -51,7 +56,19 @@ internal class ClassMethodPatchMethodGenerator(
                 {{
                     {(isVoidReturnType ? string.Empty : "__result = ")}mock.CallTracker.{this.MethodSymbol.GetPropertyName()}{callEnd};
                     return false;
-                }}
+                }}"
+            );
+
+            foreach (var p in refOrOutParameters)
+            {
+                sb.Append(
+                    $@"
+    {p.Name} = default({p.Type.ToFullTypeString()});"
+                );
+            }
+
+            sb.Append(
+                $@"
                 return true;
             }}
         }}"

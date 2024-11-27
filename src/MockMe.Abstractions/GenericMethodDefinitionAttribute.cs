@@ -3,41 +3,19 @@ using System;
 namespace MockMe.Abstractions;
 
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-public class GenericMethodDefinitionAttribute : Attribute
+public class GenericMethodDefinitionAttribute(
+    string typeToReplaceAssemblyName,
+    string typeToReplaceTypeFullName,
+    string typeToReplaceMethodName,
+    string sourceTypeAssemblyName,
+    string sourceTypeFullName,
+    string sourceTypeMethodName
+) : Attribute
 {
-    public GenericMethodDefinitionAttribute(
-        string typeToReplaceAssemblyName,
-        string typeToReplaceTypeFullName,
-        string typeToReplaceMethodName,
-        string sourceTypeAssemblyName,
-        string sourceTypeFullName,
-        string sourceTypeMethodName
-    )
-    {
-        this.TypeToReplaceAssemblyName = typeToReplaceAssemblyName;
-        this.TypeToReplaceTypeFullName = typeToReplaceTypeFullName;
-        this.TypeToReplaceMethoName = typeToReplaceMethodName;
-        this.SourceTypeAssemblyName = sourceTypeAssemblyName;
-        this.SourceTypeFullName = sourceTypeFullName;
-        this.SourceTypeMethodName = sourceTypeMethodName;
-    }
-
-    public string TypeToReplaceAssemblyName { get; }
-    public string TypeToReplaceTypeFullName { get; }
-    public string TypeToReplaceMethoName { get; }
-    public string SourceTypeAssemblyName { get; }
-    public string SourceTypeFullName { get; }
-    public string SourceTypeMethodName { get; }
-}
-
-[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-public class GenericMethodDefinition2Attribute : Attribute
-{
-    public GenericMethodDefinition2Attribute(
-        string typeToReplaceAssemblyName,
-        string typeToReplaceTypeFullName,
-        string typeToReplaceMethodName,
-        string mockClassNamespace,
-        string mockClassName
-    ) { }
+    public string TypeToReplaceAssemblyName { get; } = typeToReplaceAssemblyName;
+    public string TypeToReplaceTypeFullName { get; } = typeToReplaceTypeFullName;
+    public string TypeToReplaceMethoName { get; } = typeToReplaceMethodName;
+    public string SourceTypeAssemblyName { get; } = sourceTypeAssemblyName;
+    public string SourceTypeFullName { get; } = sourceTypeFullName;
+    public string SourceTypeMethodName { get; } = sourceTypeMethodName;
 }
