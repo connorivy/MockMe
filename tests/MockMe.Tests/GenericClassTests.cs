@@ -7,7 +7,7 @@ namespace MockMe.Tests
     {
         public T GetRandomVal() => throw new NotImplementedException();
 
-        public T MyCoolProp => throw new NotImplementedException();
+        public T MyCoolProp { get; set; }
 
         public string TakeAT(T input) => throw new NotImplementedException();
     }
@@ -106,6 +106,24 @@ namespace MockMe.Tests
 
             Assert.Equal(myObj, returnVal);
             Assert.Equal("returnVal", returnString);
+        }
+
+        [Fact]
+        public void PropertyOfGenericClassType_ShouldReturnConfiguredValues()
+        {
+            var mockString = Mock.Me<ConnorsCoolGenericType<string>>();
+
+            mockString.Setup.MyCoolProp.Get().Returns("returnVal");
+            string? setVal = null;
+            mockString.Setup.MyCoolProp.Set(Arg.Any()).Callback(x => setVal = x);
+
+            ConnorsCoolGenericType<string> coolStringType = mockString;
+
+            Assert.Equal("returnVal", coolStringType.MyCoolProp);
+            coolStringType.MyCoolProp = "set value";
+            Assert.Equal("set value", setVal);
+            mockString.Assert.MyCoolProp.Get().WasCalled();
+            mockString.Assert.MyCoolProp.Set("set value").WasCalled();
         }
     }
 }

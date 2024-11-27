@@ -1,5 +1,4 @@
 //using MockMe.Tests.SampleClasses;
-using System.Collections.Generic;
 using MockMe.Tests.ExampleClasses;
 using Xunit;
 
@@ -17,26 +16,21 @@ namespace MockMe.Tests
             ComplexCalculator calc = (ComplexCalculator)mock;
 
             var result = calc.ComputeHashForObjects(new int[] { 1, 2, 3, 4, 5 });
+            Assert.Equal(99, result);
         }
 
-        //[Fact]
-        //public void GenericClass_ShouldReturnConfiguredValue()
-        //{
-        //    //var mock = Mock.Me<List<int>>();
+        [Fact]
+        public void GenericMethodWithMultipleGenericArgs_ShouldReturnConfiguredValue()
+        {
+            var mock = Mock.Me<ClassWithGenericMethods>();
 
-        //    var stringMock = Mock.Me<List<string>>();
+            mock.Setup.ThreeGenericTypes<string, int, double>(Arg.Any(), Arg.Any(), Arg.Any())
+                .Returns("asdf");
 
-        //    //mock.Setup.Contains(5).Returns(true);
+            ClassWithGenericMethods obj = mock;
 
-        //    stringMock.Setup.Contains("hello").Returns(true);
-
-        //    //List<int> list = mock;
-
-        //    //list.set_Item(5)
-
-        //    //var result = list.Contains(5);
-
-        //    var x = stringMock.MockedObject.Contains("hello");
-        //}
+            var result = obj.ThreeGenericTypes("Hello", 1, 9.9);
+            Assert.Equal("asdf", result);
+        }
     }
 }
