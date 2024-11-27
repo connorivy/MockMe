@@ -7,7 +7,7 @@ namespace MockMe.Tests
     {
         public T GetRandomVal() => throw new NotImplementedException();
 
-        public T MyCoolProp { get; set; }
+        public T? MyCoolProp { get; set; }
 
         public string TakeAT(T input) => throw new NotImplementedException();
     }
