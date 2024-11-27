@@ -6,7 +6,8 @@ public class ClassWithGenericMethods
 {
     public T OneGenericType<T>(T t) => throw new NotImplementedException();
 
-    public T TwoGenericTypes<T, U>(T t, U u) => throw new NotImplementedException();
+    public T1 TwoGenericTypes<T1, T2>(T1 t, T2 t2) => throw new NotImplementedException();
 
-    public T ThreeGenericTypes<T, U, V>(T t, U u, V v) => throw new NotImplementedException();
+    public T3 ThreeGenericTypes<T1, T2, T3>(T1 t, T2 t2, T3 t3) =>
+        throw new NotImplementedException();
 }
