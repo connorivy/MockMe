@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -9,9 +9,12 @@
 
     <Description>The concrete type mocking library for .NET</Description>
     <Authors>connorivy</Authors>
-    <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
-    <!--<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>-->
-  </PropertyGroup>
+    <PackageIcon>MockMeM.png</PackageIcon>
+   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="Images/MockMeM.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.3.3" />
@@ -22,10 +25,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <!--<PackageReference Include="Tenekon.MSBuild.Packaging.ProjectBuildInPackage" Version="2.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>-->
   </ItemGroup>
 
   <Target Name="PushLocal" AfterTargets="Pack" Condition="Exists('$(NugetFeedPath)')">
@@ -33,16 +32,6 @@
     <Exec Command="echo nuget package root: $(NugetPackageRoot)" />
     <Exec Command="dotnet nuget push $(PackageOutputPath)$(MSBuildProjectName).$(Version).nupkg -s $(NugetFeedPath)" />
   </Target>
-
-  <!--<Target Name="ClearExisting" AfterTargets="Pack">
-    <RemoveDir Directories="$(NugetPackageRoot)/$(PackageId.ToLower())/$(Version)" />
-  </Target>-->
-
-  <!--<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
-    <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')->WithMetadataValue('PrivateAssets', 'All'))" />
-    </ItemGroup>
-  </Target>-->
 
   <ItemGroup>
     <ProjectReference Include="..\MockMe.Abstractions\MockMe.Abstractions.csproj" PrivateAssets="all" />
