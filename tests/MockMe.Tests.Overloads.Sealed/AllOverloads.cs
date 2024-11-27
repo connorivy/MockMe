@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1716 // Using reserved word in namespace
 namespace MockMe.Tests.Overloads
 #pragma warning restore CA1716 // Using reserved word in namespace
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class AllOverloads
     {
 #pragma warning disable CS0628 // New protected member declared in sealed type
