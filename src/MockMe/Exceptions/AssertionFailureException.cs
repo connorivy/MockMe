@@ -1,3 +1,4 @@
-﻿namespace MockMe.Exceptions;
+namespace MockMe.Exceptions;
 
-public class AssertionFailureException : MockMeException { }
+public class AssertionFailureException(string? message, Exception? innerException = null)
+    : MockMeException(message, innerException) { }

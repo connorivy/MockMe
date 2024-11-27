@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IndexerTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PropertyTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SyncMethodOverloadsTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VoidMethodOverloadsTests.cs" />
   </ItemGroup>
 </Project>

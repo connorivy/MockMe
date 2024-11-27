@@ -9,7 +9,7 @@
   
   <PropertyGroup Label="General Config">
     <LangVersion>preview</LangVersion>
-    <!--<TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>-->
+    <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
     <ContinuousIntegrationBuild Condition="'$(ContinuousIntegrationBuild)' == ''">false</ContinuousIntegrationBuild>
     <NoWarn>
       CA1000; <!-- Do not declare static members on generic types -->

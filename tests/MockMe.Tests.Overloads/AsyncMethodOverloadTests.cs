@@ -40,10 +40,12 @@ namespace MockMe.Tests.Overloads
             var setupMethod = mock
                 .Setup.GetType()
                 .GetMethod(nameof(AllOverloads.AsyncReturn), argIntTypes)
-                .Invoke(mock.Setup, boxedArgInts);
+                .NotNull()
+                .Invoke(mock.Setup, boxedArgInts)
+                .NotNull();
 
-            Action incrementNumCalls = () => numCalls++;
-            ((dynamic)setupMethod).Callback(incrementNumCalls);
+            void incrementNumCalls() => numCalls++;
+            ((dynamic)setupMethod).Callback((Action)incrementNumCalls);
 
             AllOverloads overloadsObj = mock.MockedObject;
 
@@ -54,7 +56,9 @@ namespace MockMe.Tests.Overloads
                             mock
                                 .Assert.GetType()
                                 .GetMethod(nameof(AllOverloads.AsyncReturn), argIntTypes)
+                                .NotNull()
                                 .Invoke(mock.Assert, boxedArgInts)
+                                .NotNull()
                     ).WasCalled()
             );
 
@@ -62,7 +66,9 @@ namespace MockMe.Tests.Overloads
                 overloadsObj
                     .GetType()
                     .GetMethod(nameof(AllOverloads.AsyncReturn), intTypes)
-                    .Invoke(overloadsObj, boxedInts);
+                    .NotNull()
+                    .Invoke(overloadsObj, boxedInts)
+                    .NotNull();
 
             await ret;
 
@@ -73,7 +79,9 @@ namespace MockMe.Tests.Overloads
                     mock
                         .Assert.GetType()
                         .GetMethod(nameof(AllOverloads.AsyncReturn), argIntTypes)
+                        .NotNull()
                         .Invoke(mock.Assert, boxedArgInts)
+                        .NotNull()
             ).WasCalled();
         }
     }

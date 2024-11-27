@@ -11,7 +11,12 @@ System.Diagnostics.Debugger.Launch();
 Console.WriteLine("Hello, Task!");
 
 var testAssemblyPath = args[0];
-var binLocation = Path.GetDirectoryName(testAssemblyPath);
+var binLocation =
+    Path.GetDirectoryName(testAssemblyPath)
+    ?? throw new InvalidOperationException(
+        $"Could not get directory name of provided assembly path, {testAssemblyPath}"
+    );
+
 string testAssemblyName = Path.GetFileNameWithoutExtension(testAssemblyPath);
 
 using var definitionAssembly = AssemblyDefinition.ReadAssembly(
@@ -74,7 +79,7 @@ foreach (var group in genericTypesWithTestAssemblyLast)
                 }
             );
         }
-        catch (System.IO.FileNotFoundException)
+        catch (FileNotFoundException)
         {
             continue;
         }

@@ -2,15 +2,8 @@ using MockMe.Exceptions;
 
 namespace MockMe.Asserters;
 
-public class MemberAsserter
+public class MemberAsserter(int numTimesActuallyCalled)
 {
-    private readonly int numTimesCalled;
-
-    public MemberAsserter(int numTimesCalled)
-    {
-        this.numTimesCalled = numTimesCalled;
-    }
-
     public void WasCalled() => this.WasCalled(NumTimes.AtLeast(1));
 
     public void WasNotCalled() => this.WasCalled(NumTimes.Exactly(0));
@@ -18,7 +11,7 @@ public class MemberAsserter
     public void WasCalled(int numTimesCalled) => this.WasCalled(NumTimes.Exactly(numTimesCalled));
 
     public void WasCalled(NumTimes numTimesExpected) =>
-        numTimesExpected.AssertSatisfied(this.numTimesCalled);
+        numTimesExpected.AssertSatisfied(numTimesActuallyCalled);
 }
 
 public abstract class NumTimes
@@ -56,19 +49,25 @@ internal class SingleNumComparisonNumTimes : NumTimes
             case NumComparison.Exactly:
                 if (numTimesActuallyCalled != this.expectedNumTimes)
                 {
-                    throw new AssertionFailureException();
+                    throw new AssertionFailureException(
+                        $"Expected method to be called {this.expectedNumTimes} times, but method was actually called {numTimesActuallyCalled} times"
+                    );
                 }
                 break;
             case NumComparison.AtLeast:
                 if (numTimesActuallyCalled < this.expectedNumTimes)
                 {
-                    throw new AssertionFailureException();
+                    throw new AssertionFailureException(
+                        $"Expected method to be called at least {this.expectedNumTimes} times, but method was actually called {numTimesActuallyCalled} times"
+                    );
                 }
                 break;
             case NumComparison.AtMost:
                 if (numTimesActuallyCalled > this.expectedNumTimes)
                 {
-                    throw new AssertionFailureException();
+                    throw new AssertionFailureException(
+                        $"Expected method to be called at most {this.expectedNumTimes} times, but method was actually called {numTimesActuallyCalled} times"
+                    );
                 }
                 break;
             default:
@@ -98,7 +97,9 @@ internal class BetweenNumTimes : NumTimes
             return;
         }
 
-        throw new AssertionFailureException();
+        throw new AssertionFailureException(
+            $"Expected method to be called between {this.lowestPossible} and {this.highestPossible} times, but method was actually called {numTimesActuallyCalled} times"
+        );
     }
 }
 

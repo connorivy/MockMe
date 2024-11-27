@@ -1,3 +1,4 @@
-﻿namespace MockMe.Exceptions;
+namespace MockMe.Exceptions;
 
-public class MockMeException : Exception { }
+public class MockMeException(string? message, Exception? innerException = null)
+    : Exception(message, innerException) { }

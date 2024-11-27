@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 
+#pragma warning disable CA1716 // Using reserved word in namespace
 namespace MockMe.Tests.Overloads
+#pragma warning restore IDE0130 // Using reserved word in namespace
 {
     internal interface AllOverloads
     {
