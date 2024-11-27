@@ -5,6 +5,7 @@
       "tests\\MockMe.Tests.ExampleClasses\\MockMe.Tests.ExampleClasses.csproj",
       "tests\\MockMe.Tests.Overloads.Interface\\MockMe.Tests.Overloads.Interface.csproj",
       "tests\\MockMe.Tests.Overloads.Sealed\\MockMe.Tests.Overloads.Sealed.csproj",
+      "tests\\MockMe.Tests.Overloads.Virtual\\MockMe.Tests.Overloads.Virtual.csproj",
       "tests\\MockMe.Tests.Overloads\\MockMe.Tests.Overloads.shproj",
       "tests\\MockMe.Tests\\MockMe.Tests.csproj"
     ]
