@@ -73,7 +73,7 @@ internal class GenericClassMethodPatchMethodGenerator(
                     )
                     .GetValue(mock);
 
-                return ({returnType})
+                {(isVoidReturnType ? "" : $"return ({returnType})")}
                     callTracker
                         .GetType()
                         .GetMethod(
@@ -84,7 +84,7 @@ internal class GenericClassMethodPatchMethodGenerator(
                         {string.Join(", ", this.MethodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")"))) .AddOnIfNotEmpty(".MakeGenericMethod(", ")")}
                         .Invoke(callTracker, new object[] {{ {paramString} }});
             }}
-            return default;
+            return{(isVoidReturnType ? "" : " default")};
         }}
 "
         );

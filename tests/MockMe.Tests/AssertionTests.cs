@@ -11,7 +11,7 @@ namespace MockMe.Tests
         [Fact]
         public void TestWasCalled_ForMethodWithNoArgsAndNoReturnVal()
         {
-            var calculatorMock = Mock.Me<Calculator>(default(Calculator));
+            var calculatorMock = Mock.Me<Calculator>();
 
             Assert.ThrowsAny<MockMeException>(() => calculatorMock.Assert.TurnOff().WasCalled());
 
