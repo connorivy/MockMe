@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using MockMe.Asserters;
 using MockMe.Exceptions;
 using Xunit;
@@ -26,7 +25,7 @@ namespace MockMe.Tests.Overloads
         [InlineData(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)]
         [InlineData(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)]
         [InlineData(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)]
-        public async Task SyncReturnOverload_CallbackAndAssertShouldWork(params int[] ints)
+        public void SyncReturnOverload_CallbackAndAssertShouldWork(params int[] ints)
         {
             var mock = Mock.Me<AllOverloads>(default);
 
@@ -40,10 +39,12 @@ namespace MockMe.Tests.Overloads
             var setupMethod = mock
                 .Setup.GetType()
                 .GetMethod(nameof(AllOverloads.SyncReturn), argIntTypes)
-                .Invoke(mock.Setup, boxedArgInts);
+                .NotNull()
+                .Invoke(mock.Setup, boxedArgInts)
+                .NotNull();
 
-            Action incrementNumCalls = () => numCalls++;
-            ((dynamic)setupMethod).Callback(incrementNumCalls);
+            void incrementNumCalls() => numCalls++;
+            ((dynamic)setupMethod).Callback((Action)incrementNumCalls);
 
             ((dynamic)setupMethod).Returns(9999);
 
@@ -56,14 +57,18 @@ namespace MockMe.Tests.Overloads
                             mock
                                 .Assert.GetType()
                                 .GetMethod(nameof(AllOverloads.SyncReturn), argIntTypes)
+                                .NotNull()
                                 .Invoke(mock.Assert, boxedArgInts)
+                                .NotNull()
                     ).WasCalled()
             );
 
             object ret = sealedClass
                 .GetType()
                 .GetMethod(nameof(AllOverloads.SyncReturn), intTypes)
-                .Invoke(sealedClass, boxedInts);
+                .NotNull()
+                .Invoke(sealedClass, boxedInts)
+                .NotNull();
 
             Assert.Equal(9999, (int)ret);
 
@@ -74,7 +79,9 @@ namespace MockMe.Tests.Overloads
                     mock
                         .Assert.GetType()
                         .GetMethod(nameof(AllOverloads.SyncReturn), argIntTypes)
+                        .NotNull()
                         .Invoke(mock.Assert, boxedArgInts)
+                        .NotNull()
             ).WasCalled();
         }
     }

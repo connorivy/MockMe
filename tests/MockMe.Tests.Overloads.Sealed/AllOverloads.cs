@@ -1,13 +1,17 @@
 using System;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1716 // Using reserved word in namespace
 namespace MockMe.Tests.Overloads
+#pragma warning restore CA1716 // Using reserved word in namespace
 {
     internal sealed class AllOverloads
     {
+#pragma warning disable CS0628 // New protected member declared in sealed type
         protected int ProtectedProp { get; set; }
 
         protected int ProtectedMethod() => throw new NotImplementedException();
+#pragma warning restore CS0628 // New protected member declared in sealed type
 
         internal int InternalProp { get; set; }
 
@@ -42,7 +46,9 @@ namespace MockMe.Tests.Overloads
             get => throw new NotImplementedException();
             set => throw new NotImplementedException();
         }
+#pragma warning disable CS0628 // New protected member declared in sealed type
         protected int this[decimal index]
+#pragma warning restore CS0628 // New protected member declared in sealed type
         {
             get => throw new NotImplementedException();
             set => throw new NotImplementedException();

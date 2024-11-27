@@ -1,6 +1,4 @@
-using System.Reflection.Metadata;
 using MockMe.Extensions;
-using MockMe.Mocks.ClassMemberMocks;
 
 namespace MockMe;
 
@@ -65,30 +63,33 @@ public class MockCallTracker
         TReturn? returnVal = default;
         bool returnValAssigned = false;
 
-        for (int i = (mockStore?.Count ?? 0) - 1; i >= 0; i--)
+        if (mockStore is not null)
         {
-            var argBag = mockStore[i];
-            if (!argBag.AllArgsSatisfy(argCollection))
+            for (int i = mockStore.Count - 1; i >= 0; i--)
             {
-                continue;
-            }
+                var argBag = mockStore[i];
+                if (!argBag.AllArgsSatisfy(argCollection))
+                {
+                    continue;
+                }
 
-            var localReturn = CallMemberMockBase(
-                argBag.Mock,
-                argCollection,
-                callbackAction,
-                returnCallFunc,
-                out bool retValIsUserConfigured
-            );
+                var localReturn = CallMemberMockBase(
+                    argBag.Mock,
+                    argCollection,
+                    callbackAction,
+                    returnCallFunc,
+                    out bool retValIsUserConfigured
+                );
 
-            if (!returnValAssigned)
-            {
-                returnVal = localReturn;
-            }
+                if (!returnValAssigned)
+                {
+                    returnVal = localReturn;
+                }
 
-            if (retValIsUserConfigured)
-            {
-                returnValAssigned = true;
+                if (retValIsUserConfigured)
+                {
+                    returnValAssigned = true;
+                }
             }
         }
 
@@ -162,9 +163,10 @@ public class MockCallTracker
             var resultType = typeof(TReturn).GetGenericArguments()[0];
             var taskFromResultMethod = typeof(Task)
                 .GetMethod(nameof(Task.FromResult))
+                .NotNull()
                 .MakeGenericMethod(resultType);
             return (TReturn)
-                taskFromResultMethod.Invoke(null, new[] { Activator.CreateInstance(resultType) });
+                taskFromResultMethod.Invoke(null, [Activator.CreateInstance(resultType)]).NotNull();
         }
         else if (
             typeof(TReturn).IsGenericType
@@ -174,9 +176,12 @@ public class MockCallTracker
             var resultType = typeof(TReturn).GetGenericArguments()[0];
             var valueTaskConstructor = typeof(ValueTask<>)
                 .MakeGenericType(resultType)
-                .GetConstructor(new[] { resultType });
+                .GetConstructor([resultType]);
             return (TReturn)
-                valueTaskConstructor.Invoke(new[] { Activator.CreateInstance(resultType) });
+                valueTaskConstructor
+                    .NotNull()
+                    .Invoke([Activator.CreateInstance(resultType)])
+                    .NotNull();
         }
         else
         {

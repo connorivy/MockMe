@@ -39,10 +39,12 @@ namespace MockMe.Tests.Overloads
             var setupMethod = mock
                 .Setup.GetType()
                 .GetMethod(nameof(AllOverloads.VoidReturn), argIntTypes)
-                .Invoke(mock.Setup, boxedArgInts);
+                .NotNull()
+                .Invoke(mock.Setup, boxedArgInts)
+                .NotNull();
 
-            Action incrementNumCalls = () => numCalls++;
-            ((dynamic)setupMethod).Callback(incrementNumCalls);
+            void incrementNumCalls() => numCalls++;
+            ((dynamic)setupMethod).Callback((Action)incrementNumCalls);
 
             AllOverloads sealedClass = mock.MockedObject;
 
@@ -53,13 +55,16 @@ namespace MockMe.Tests.Overloads
                             mock
                                 .Assert.GetType()
                                 .GetMethod(nameof(AllOverloads.VoidReturn), argIntTypes)
+                                .NotNull()
                                 .Invoke(mock.Assert, boxedArgInts)
+                                .NotNull()
                     ).WasCalled()
             );
 
             sealedClass
                 .GetType()
                 .GetMethod(nameof(AllOverloads.VoidReturn), intTypes)
+                .NotNull()
                 .Invoke(sealedClass, boxedInts);
 
             Assert.Equal(1, numCalls);
@@ -69,7 +74,9 @@ namespace MockMe.Tests.Overloads
                     mock
                         .Assert.GetType()
                         .GetMethod(nameof(AllOverloads.VoidReturn), argIntTypes)
+                        .NotNull()
                         .Invoke(mock.Assert, boxedArgInts)
+                        .NotNull()
             ).WasCalled();
         }
     }

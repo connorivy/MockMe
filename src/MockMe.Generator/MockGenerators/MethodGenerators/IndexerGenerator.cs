@@ -90,6 +90,6 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(
         };
     }
 
-    public override string? GetIndexerType() =>
+    public override string GetIndexerType() =>
         this.methodSymbol.Parameters.First().Type.ToFullTypeString();
 }

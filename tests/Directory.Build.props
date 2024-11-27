@@ -8,6 +8,10 @@
     <IncludeMockMeRef Condition="'$(IncludeMockMeRef)' == ''">True</IncludeMockMeRef>
     <WarningsNotAsErrors>
       CA1822; <!-- Mark members as static -->
+      IDE0161; <!-- Convert to file-scoped namespace -->
+      IDE0130; <!-- Namespace does not match folder structure -->
+      IDE0034; <!-- Simplify 'default' expression -->
+      AD0001; <!-- XUnit inline data. This messes up when passing empty array into 'params' method -->
       $(WarningsNotAsErrors)
     </WarningsNotAsErrors>
 

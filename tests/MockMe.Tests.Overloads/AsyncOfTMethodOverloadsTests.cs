@@ -40,10 +40,12 @@ namespace MockMe.Tests.Overloads
             var setupMethod = mock
                 .Setup.GetType()
                 .GetMethod(nameof(AllOverloads.AsyncOfTReturn), argIntTypes)
-                .Invoke(mock.Setup, boxedArgInts);
+                .NotNull()
+                .Invoke(mock.Setup, boxedArgInts)
+                .NotNull();
 
-            Action incrementNumCalls = () => numCalls++;
-            ((dynamic)setupMethod).Callback(incrementNumCalls);
+            void incrementNumCalls() => numCalls++;
+            ((dynamic)setupMethod).Callback((Action)incrementNumCalls);
             ((dynamic)setupMethod).ReturnsAsync(9999);
 
             AllOverloads sealedClass = mock.MockedObject;
@@ -55,7 +57,9 @@ namespace MockMe.Tests.Overloads
                             mock
                                 .Assert.GetType()
                                 .GetMethod(nameof(AllOverloads.AsyncOfTReturn), argIntTypes)
+                                .NotNull()
                                 .Invoke(mock.Assert, boxedArgInts)
+                                .NotNull()
                     ).WasCalled()
             );
 
@@ -63,7 +67,9 @@ namespace MockMe.Tests.Overloads
                 sealedClass
                     .GetType()
                     .GetMethod(nameof(AllOverloads.AsyncOfTReturn), intTypes)
-                    .Invoke(sealedClass, boxedInts);
+                    .NotNull()
+                    .Invoke(sealedClass, boxedInts)
+                    .NotNull();
 
             Assert.Equal(9999, ret);
             Assert.Equal(1, numCalls);
@@ -73,7 +79,9 @@ namespace MockMe.Tests.Overloads
                     mock
                         .Assert.GetType()
                         .GetMethod(nameof(AllOverloads.AsyncOfTReturn), argIntTypes)
+                        .NotNull()
                         .Invoke(mock.Assert, boxedArgInts)
+                        .NotNull()
             ).WasCalled();
         }
     }
