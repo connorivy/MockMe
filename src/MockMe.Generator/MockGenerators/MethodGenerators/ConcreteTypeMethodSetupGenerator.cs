@@ -3,11 +3,14 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
+using MockMe.Generator.MockGenerators.TypeGenerators;
 
 namespace MockMe.Generator.MockGenerators.MethodGenerators;
 
-internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
-    : MethodMockGeneratorBase(methodSymbol)
+internal class ConcreteTypeMethodSetupGenerator(
+    IMethodSymbol methodSymbol,
+    MockGeneratorBase mockGenerator
+) : MethodMockGeneratorBase(methodSymbol)
 {
     public override StringBuilder AddMethodSetupToStringBuilder(
         StringBuilder sb,
@@ -101,9 +104,9 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
                     this.setup.{this.GetBagStoreName()}?.GetValueOrDefault(genericTypeHashCode)
                     as List<ArgBagWith{this.voidPrefix}MemberMock{(this.paramTypes + this.returnType.AddPrefixIfNotEmpty(", ")).AddOnIfNotEmpty("<", ">")}>;
 
-                {(this.isVoidReturnType ? string.Empty : "return ")}{this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(
+                {(this.isVoidReturnType ? string.Empty : "return ")}MockCallTracker.Call{this.voidPrefix}MemberMock<{this.GetArgCollectionName()}{(this.isVoidReturnType ? "" : $", {this.returnType}")}>(
                     mockStore,
-                    GenericCallStoreRetriever.GetGenericCallStore{this.paramTypes.AddOnIfNotEmpty("<", ">")}({this.GetCallStoreName()} ??= new(), genericTypeHashCode){paramString.AddPrefixIfNotEmpty(", ")}
+                    GenericCallStoreRetriever.GetGenericCallStore{this.paramTypes.AddOnIfNotEmpty("<", ">")}({this.GetCallStoreName()} ??= new(), genericTypeHashCode){paramString.AddOnIfNotEmpty(", new(", ")")}
                 );
             }}"
             );
@@ -117,7 +120,7 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
             public {this.returnType} {this.MethodName()}()
             {{
                 this.{this.GetCallStoreName()}++;
-                {(this.isVoidReturnType ? string.Empty : "return ")}{this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});
+                {(this.isVoidReturnType ? string.Empty : "return ")}{this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock<{this.returnType}>(this.setup.{this.GetBagStoreName()});
             }}"
             );
         }
@@ -125,7 +128,7 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
         {
             sb.AppendLine(
                 $@"
-            private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};
+            private List<{mockGenerator.MockSetupTypeName}.{this.GetArgCollectionName()}>? {this.GetCallStoreName()};
             public {this.returnType} {this.MethodName()}({paramsWithTypesAndMods})
             {{"
             );
@@ -140,7 +143,7 @@ internal class ConcreteTypeMethodSetupGenerator(IMethodSymbol methodSymbol)
 
             sb.Append(
                 $@"
-                {(this.isVoidReturnType ? "" : "return ")}{this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), {paramString});
+                {(this.isVoidReturnType ? "" : "return ")}MockCallTracker.Call{this.voidPrefix}MemberMock<{this.GetArgCollectionName()}{(this.isVoidReturnType ? "" : $", {this.returnType}")}>(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), new({paramString}));
             }}"
             );
         }

@@ -25,6 +25,35 @@ public class ArgBagWithMemberMock<T1, TReturn>(
     >.Mock => this.Mock;
 }
 
+public interface IArgBagWithMock2<TOriginalArgCollection, TCallback>
+{
+    public IArgBag<TOriginalArgCollection> ArgBag { get; }
+    public IMockCallbackRetriever<TCallback> Mock { get; }
+}
+
+//public record ArgBagWithMock<TReturn>(
+//    IArgBag<OriginalArgBag<TReturn>> ArgBag,
+//    IMockCallbackAndReturnCallRetriever<Action, Func<TReturn>> Mock
+//) : IHasArgBag<OriginalArgBag<TReturn>>;
+
+//public class ArgBagWithMock<TOriginalArgCollection, TReturnCall>(
+//    IArgBag<TOriginalArgCollection> argBag,
+//    IMockCallbackAndReturnCallRetriever<Action<TOriginalArgCollection>, TReturnCall> mock
+//) : IArgBagWithMock2<TOriginalArgCollection, Action<TOriginalArgCollection>>
+//{
+//    public IArgBag<TOriginalArgCollection> ArgBag { get; } = argBag;
+//    public IMockCallbackRetriever<Action<TOriginalArgCollection>> Mock { get; } = mock;
+//}
+
+public class ArgBagWithMock<TOriginalArgCollection>(
+    IArgBag<TOriginalArgCollection> argBag,
+    IMockCallbackRetriever<Action<TOriginalArgCollection>> mock
+) : IArgBagWithMock2<TOriginalArgCollection, Action<TOriginalArgCollection>>
+{
+    public IArgBag<TOriginalArgCollection> ArgBag { get; } = argBag;
+    public IMockCallbackRetriever<Action<TOriginalArgCollection>> Mock { get; } = mock;
+}
+
 public class ArgBagWithMemberMock<T1, T2, TReturn>(
     Arg<T1> arg1,
     Arg<T2> arg2,

@@ -18,21 +18,21 @@ internal class InterfaceMockGenerator(INamedTypeSymbol typeSymbol, string typeNa
             this.Assert = asserter;
         }}
 
-        private static {this.mockSetupTypeName}.{this.mockCallTrackerTypeName} CreateCallTracker(
-            out {this.mockSetupTypeName} setup,
-            out {this.mockSetupTypeName}.{this.mockCallTrackerTypeName}.{this.mockAsserterTypeName} asserter 
+        private static {this.MockSetupTypeName}.{this.mockCallTrackerTypeName} CreateCallTracker(
+            out {this.MockSetupTypeName} setup,
+            out {this.MockSetupTypeName}.{this.mockCallTrackerTypeName}.{this.mockAsserterTypeName} asserter 
         )
         {{
-            setup = new {this.mockSetupTypeName}();
-            var callTracker = new {this.mockSetupTypeName}.{this.mockCallTrackerTypeName}(setup);
-            asserter = new {this.mockSetupTypeName}.{this.mockCallTrackerTypeName}.{this.mockAsserterTypeName}(callTracker);
+            setup = new {this.MockSetupTypeName}();
+            var callTracker = new {this.MockSetupTypeName}.{this.mockCallTrackerTypeName}(setup);
+            asserter = new {this.MockSetupTypeName}.{this.mockCallTrackerTypeName}.{this.mockAsserterTypeName}(callTracker);
 
             return callTracker;
         }}
 
-        public {this.mockSetupTypeName} Setup {{ get; }}
-        public {this.mockSetupTypeName}.{this.mockCallTrackerTypeName}.{this.mockAsserterTypeName} Assert {{ get; }}";
+        public {this.MockSetupTypeName} Setup {{ get; }}
+        public {this.MockSetupTypeName}.{this.mockCallTrackerTypeName}.{this.mockAsserterTypeName} Assert {{ get; }}";
 
     public override string GetMockBaseClass(ITypeSymbol typeSymbol) =>
-        $"global::MockMe.Abstractions.InterfaceMock<{typeSymbol.ToFullTypeString()}, {this.mockSetupTypeName}.{this.mockCallTrackerTypeName}>";
+        $"global::MockMe.Abstractions.InterfaceMock<{typeSymbol.ToFullTypeString()}, {this.MockSetupTypeName}.{this.mockCallTrackerTypeName}>";
 }

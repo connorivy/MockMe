@@ -1,10 +1,14 @@
 using Microsoft.CodeAnalysis;
+using MockMe.Generator.MockGenerators.TypeGenerators;
 
 namespace MockMe.Generator.MockGenerators.MethodGenerators;
 
 internal class MethodGeneratorFactory
 {
-    public static MethodMockGeneratorBase? Create(IMethodSymbol method)
+    public static MethodMockGeneratorBase? Create(
+        IMethodSymbol method,
+        MockGeneratorBase mockGenerator
+    )
     {
         if (method.MethodKind is MethodKind.PropertyGet or MethodKind.PropertySet)
         {
@@ -26,6 +30,6 @@ internal class MethodGeneratorFactory
             return new PropertyGenerator(method);
         }
 
-        return new ConcreteTypeMethodSetupGenerator(method);
+        return new ConcreteTypeMethodSetupGenerator(method, mockGenerator);
     }
 }

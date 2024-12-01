@@ -1,35 +1,36 @@
 namespace MockMe.Mocks.ClassMemberMocks;
 
-public abstract class VoidMemberNoArgsBaseMock<TSelf>
-    : IVoidMemberMock<TSelf>,
-        IMockCallbackRetriever<Action>
-    where TSelf : VoidMemberNoArgsBaseMock<TSelf>
-{
-    private readonly ActionCallbackManager<Action> callbackManager;
 
-    internal VoidMemberNoArgsBaseMock(ActionCallbackManager<Action> callbackManager)
-    {
-        this.callbackManager = callbackManager;
-    }
+//public abstract class VoidMemberNoArgsBaseMock<TSelf>
+//    : IVoidMemberMock<TSelf>,
+//        IMockCallbackRetriever<Action>
+//    where TSelf : VoidMemberNoArgsBaseMock<TSelf>
+//{
+//    private readonly ActionCallbackManager<Action> callbackManager;
 
-    public TSelf Callback(Action callback)
-    {
-        this.callbackManager.AddCallback(callback);
-        return (TSelf)this;
-    }
+//    internal VoidMemberNoArgsBaseMock(ActionCallbackManager<Action> callbackManager)
+//    {
+//        this.callbackManager = callbackManager;
+//    }
 
-    IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredAfterReturnCall() =>
-        this.callbackManager.GetCallbacksRegisteredAfterReturnCall();
+//    public TSelf Callback(Action callback)
+//    {
+//        this.callbackManager.AddCallback(callback);
+//        return (TSelf)this;
+//    }
 
-    IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredBeforeReturnCall() =>
-        this.callbackManager.GetCallbacksRegisteredBeforeReturnCall();
-}
+//    IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredAfterReturnCall() =>
+//        this.callbackManager.GetCallbacksRegisteredAfterReturnCall();
 
-public class VoidMemberMock : VoidMemberNoArgsBaseMock<VoidMemberMock>
-{
-    public VoidMemberMock()
-        : this(new()) { }
+//    IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredBeforeReturnCall() =>
+//        this.callbackManager.GetCallbacksRegisteredBeforeReturnCall();
+//}
 
-    internal VoidMemberMock(ActionCallbackManager<Action> callbackManager)
-        : base(callbackManager) { }
-}
+//public class VoidMemberMock : VoidMemberNoArgsBaseMock<VoidMemberMock>
+//{
+//    public VoidMemberMock()
+//        : this(new()) { }
+
+//    internal VoidMemberMock(ActionCallbackManager<Action> callbackManager)
+//        : base(callbackManager) { }
+//}

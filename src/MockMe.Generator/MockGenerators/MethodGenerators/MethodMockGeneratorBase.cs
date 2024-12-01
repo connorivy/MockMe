@@ -65,11 +65,40 @@ internal abstract class MethodMockGeneratorBase
             : $", {asyncReturnType ?? this.returnType}";
         var paramTypesFollowedByReturnTypeIgnoringTask = GetParamTypesFollowedByReturnType(
             returnTypeIgnoringTaskGenericParamSuffix,
-            this.paramTypes
+            this.methodSymbol.Parameters.Length == 0 ? "" : this.GetArgCollectionName()
         );
 
         this.memberMockType =
             $"global::MockMe.Mocks.ClassMemberMocks.{this.voidPrefix}{this.taskPrefix}MemberMock{paramTypesFollowedByReturnTypeIgnoringTask}";
+    }
+
+    public virtual StringBuilder AddOriginalCollectionType(StringBuilder sb)
+    {
+        if (this.methodSymbol.Parameters.Length == 0)
+        {
+            return sb;
+        }
+
+        sb.Append(
+            $@"
+        internal class {this.GetArgCollectionName()} : OriginalArgBag<{this.paramTypes}>
+        {{
+            public {this.GetArgCollectionName(includeGenericType: false)}({this.methodSymbol.GetParametersWithOriginalTypesAndModifiers()}) : base({this.parametersWithoutTypesAndModifiers})
+            {{ }}"
+        );
+
+        for (int i = 0; i < this.methodSymbol.Parameters.Length; i++)
+        {
+            sb.Append(
+                $@"
+            public {this .methodSymbol.Parameters[i] .Type.ToFullReturnTypeString()} {this.methodSymbol.Parameters[i].Name} {{ get => this.Arg{i + 1}; set => this.Arg{i + 1} = value; }}"
+            );
+        }
+
+        return sb.Append(
+            $@"
+        }}"
+        );
     }
 
     public virtual StringBuilder AddMethodSetupToStringBuilder(
@@ -126,8 +155,20 @@ internal abstract class MethodMockGeneratorBase
         }
         else
         {
-            return $"List<ArgBagWith{this.voidPrefix}MemberMock{this.paramTypesFollowedByReturnType}>";
+            //return $"List<ArgBagWith{this.voidPrefix}MemberMock{this.paramTypesFollowedByReturnType}>";
+            return $"List<ArgBagWithMock<{this.GetArgCollectionName()}>>";
         }
+    }
+
+    protected string GetArgCollectionName(bool includeGenericType = true)
+    {
+        if (includeGenericType)
+        {
+            return this.methodSymbol.GetUniqueMethodName()
+                + "Collection"
+                + this.methodSymbol.GetGenericParameterStringInBrackets();
+        }
+        return this.methodSymbol.GetUniqueMethodName() + "Collection";
     }
 
     protected string GetBagStoreName() => this.methodSymbol.GetUniqueMethodName() + "BagStore";
@@ -146,7 +187,7 @@ internal abstract class MethodMockGeneratorBase
         }
         else
         {
-            return $"Setup{this.voidPrefix}{this.taskPrefix}Method(this.{this.GetBagStoreName()} ??= new(), {this.parametersWithoutTypesAndModifiers});";
+            return $"SetupMethod(this.{this.GetBagStoreName()} ??= new(), new ArgBag<{this.paramTypes}>({this.parametersWithoutTypesAndModifiers}));";
         }
     }
 

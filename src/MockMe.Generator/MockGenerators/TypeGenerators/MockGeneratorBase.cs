@@ -15,7 +15,7 @@ internal abstract class MockGeneratorBase
     private readonly string genericParamsInBrackets;
     public string GenericParamTypesInBrackets { get; }
     protected string mockTypeName { get; }
-    protected string mockSetupTypeName { get; }
+    public string MockSetupTypeName { get; }
     protected string mockCallTrackerTypeName { get; }
     protected string mockAsserterTypeName { get; }
     protected string thisNamespace { get; }
@@ -42,7 +42,7 @@ internal abstract class MockGeneratorBase
             .AddOnIfNotEmpty("<", ">");
 
         this.mockTypeName = $"{this.TypeName}Mock{this.genericParamsInBrackets}";
-        this.mockSetupTypeName = $"{this.TypeName}MockSetup{this.genericParamsInBrackets}";
+        this.MockSetupTypeName = $"{this.TypeName}MockSetup{this.genericParamsInBrackets}";
         this.mockCallTrackerTypeName = $"{this.TypeName}MockCallTracker";
         this.mockAsserterTypeName = $"{this.TypeName}MockAsserter";
     }
@@ -80,7 +80,7 @@ namespace {thisNamespace}
         setupBuilder.AppendLine(
             $@"
     [global::System.CodeDom.Compiler.GeneratedCode(""MockMe"", ""{MockStoreGenerator.MockMeVersion}"")]
-    public class {this.mockSetupTypeName} : global::MockMe.Mocks.ClassMemberMocks.Setup.MemberMockSetup
+    internal class {this.MockSetupTypeName} : global::MockMe.Mocks.ClassMemberMocks.Setup.MemberMockSetup
     {{"
         );
 
@@ -88,10 +88,10 @@ namespace {thisNamespace}
         callTrackerBuilder.AppendLine(
             $@"
         [global::System.CodeDom.Compiler.GeneratedCode(""MockMe"", ""{MockStoreGenerator.MockMeVersion}"")]
-        public class {this.mockCallTrackerTypeName} : {this.GetCallTrackerBaseClass(this.TypeSymbolToMock)}
+        internal class {this.mockCallTrackerTypeName} : {this.GetCallTrackerBaseClass(this.TypeSymbolToMock)}
         {{
-            private readonly {this.mockSetupTypeName} setup;
-            public {this.mockCallTrackerTypeName}({this.mockSetupTypeName} setup)
+            private readonly {this.MockSetupTypeName} setup;
+            public {this.mockCallTrackerTypeName}({this.MockSetupTypeName} setup)
             {{
                 this.setup = setup;
             }}"
@@ -101,10 +101,10 @@ namespace {thisNamespace}
         asserterBuilder.AppendLine(
             $@"
             [global::System.CodeDom.Compiler.GeneratedCode(""MockMe"", ""{MockStoreGenerator.MockMeVersion}"")]
-            public class {this.mockAsserterTypeName} : MockAsserter
+            internal class {this.mockAsserterTypeName} : MockAsserter
             {{
-                private readonly {this.mockSetupTypeName}.{this.mockCallTrackerTypeName} tracker;
-                public {this.mockAsserterTypeName}({this.mockSetupTypeName}.{this.mockCallTrackerTypeName} tracker)
+                private readonly {this.MockSetupTypeName}.{this.mockCallTrackerTypeName} tracker;
+                public {this.mockAsserterTypeName}({this.MockSetupTypeName}.{this.mockCallTrackerTypeName} tracker)
                 {{
                     this.tracker = tracker;
                 }}"
@@ -133,7 +133,10 @@ namespace {thisNamespace}
                 continue;
             }
 
-            MethodMockGeneratorBase? methodGenerator = MethodGeneratorFactory.Create(methodSymbol);
+            MethodMockGeneratorBase? methodGenerator = MethodGeneratorFactory.Create(
+                methodSymbol,
+                this
+            );
 
             if (methodGenerator is null)
             {
@@ -144,6 +147,7 @@ namespace {thisNamespace}
                 .Create(this.TypeSymbolToMock, methodSymbol)
                 ?.AddPatchMethod(sb, assemblyAttributesSource, staticConstructor, this.TypeName);
 
+            methodGenerator.AddOriginalCollectionType(setupBuilder);
             methodGenerator.AddMethodSetupToStringBuilder(setupBuilder, setupMeta);
             methodGenerator.AddMethodCallTrackerToStringBuilder(
                 callTrackerBuilder,
