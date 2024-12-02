@@ -10,26 +10,6 @@ public partial class MemberMockSetup
         return mock;
     }
 
-    //protected static MemberMock<TReturn> SetupMethod<TReturn>(
-    //    List<MemberMock<TReturn>> mockAndArgsStore
-    //)
-    //{
-    //    MemberMock<TReturn> mock = new();
-    //    mockAndArgsStore.Add(mock);
-    //    return mock;
-    //}
-
-    //public static TMock SetupMethod<TArgBag, TMock>(
-    //    List<(TArgBag, TMock)> mockAndArgsStore,
-    //    TArgBag argBag
-    //)
-    //    where TMock : new()
-    //{
-    //    TMock mock = new();
-    //    mockAndArgsStore.Add((argBag, mock));
-    //    return mock;
-    //}
-
     public static TMock SetupMethod<TOriginalArgCollection, TMock>(
         List<ArgBagWithMock<TOriginalArgCollection>> mockAndArgsStore,
         IArgBag<TOriginalArgCollection> argBag

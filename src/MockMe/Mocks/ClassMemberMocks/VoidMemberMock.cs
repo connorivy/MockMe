@@ -61,26 +61,6 @@ public interface IVoidMemberMock<out TSelf, TArgCollection>
     }
 }
 
-//public interface IVoidMemberMock<TSelf, TCallback, TCallbackManager>
-//    : IMockCallbackRetriever<TCallback>
-//    where TSelf : IVoidMemberMock<TSelf, TCallback, TCallbackManager>
-//    where TCallbackManager : CallbackManagerBase<TCallback>
-//{
-//    internal TCallbackManager CallbackManager { get; }
-
-//    public TSelf Callback(TCallback callback)
-//    {
-//        this.CallbackManager.AddCallback(callback);
-//        return (TSelf)this;
-//    }
-
-//    IEnumerable<TCallback> IMockCallbackRetriever<TCallback>.GetCallbacksRegisteredAfterReturnCall() =>
-//        this.CallbackManager.GetCallbacksRegisteredAfterReturnCall();
-
-//    IEnumerable<TCallback> IMockCallbackRetriever<TCallback>.GetCallbacksRegisteredBeforeReturnCall() =>
-//        this.CallbackManager.GetCallbacksRegisteredBeforeReturnCall();
-//}
-
 public class VoidMemberMockBase<TSelf> : IMockCallbackRetriever<Action>
     where TSelf : VoidMemberMockBase<TSelf>
 {
