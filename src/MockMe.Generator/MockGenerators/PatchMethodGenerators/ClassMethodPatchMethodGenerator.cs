@@ -76,7 +76,7 @@ internal class ClassMethodPatchMethodGenerator(
 
             staticConstructor.AppendLine(
                 $@"
-            var original{patchName} = typeof({this.TypeSymbol.ToFullTypeString()}).GetMethod(""{this.MethodSymbol.Name}"", new Type[] {{ {string.Join(", ", this.MethodSymbol.Parameters.Select(p => "typeof(" + p.Type.ToFullTypeString() + ")"))} }} );
+            var original{patchName} = typeof({this.TypeSymbol.ToFullTypeString()}).GetMethod(""{this.MethodSymbol.Name}"", new Type[] {{ {string.Join(", ", this.MethodSymbol.Parameters.Select(p => "typeof(" + p.Type.ToFullTypeString() + ")" + (p.RefKind is not RefKind.None ? ".MakeByRefType()" : "")))} }} );
             var {patchName} = typeof({patchName}).GetMethod(""Prefix"", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
             harmony.Patch(original{patchName}, prefix: new HarmonyMethod({patchName}));"

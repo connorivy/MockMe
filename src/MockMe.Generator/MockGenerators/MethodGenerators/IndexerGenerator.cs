@@ -50,8 +50,9 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(
             {
                 propMeta.GetterLogic =
                     @$"
-            return MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
-                propMeta.GetterField = $"private List<{indexerType}>? {this.GetCallStoreName()};";
+            return MockCallTracker.CallMemberMock<IndexerGetterArgs<{indexerType}>, {propertyType}>(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), new(index));";
+                propMeta.GetterField =
+                    $"private List<IndexerGetterArgs<{indexerType}>>? {this.GetCallStoreName()};";
             }
         }
         else if (this.methodSymbol.MethodKind == MethodKind.PropertySet)
@@ -64,10 +65,10 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(
             {
                 propMeta.SetterLogic =
                     @$"
-        MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index, value);";
+        MockCallTracker.CallVoidMemberMock<IndexerSetterArgs<{indexerType}, {propertyType}>>(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), new(index, value));";
 
                 propMeta.SetterField =
-                    $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";
+                    $"private List<IndexerSetterArgs<{indexerType}, {propertyType}>>? {this.GetCallStoreName()};";
             }
         }
 
@@ -92,4 +93,6 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(
 
     public override string GetIndexerType() =>
         this.methodSymbol.Parameters.First().Type.ToFullTypeString();
+
+    public override StringBuilder AddOriginalCollectionType(StringBuilder sb) => sb;
 }

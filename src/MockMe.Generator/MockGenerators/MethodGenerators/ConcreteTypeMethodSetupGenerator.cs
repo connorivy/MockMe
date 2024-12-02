@@ -99,15 +99,29 @@ internal class ConcreteTypeMethodSetupGenerator(
 
             sb.Append(
                 $@"
+                {paramString.AddOnIfNotEmpty($"{this.GetArgCollectionName()} mockMe_argCollection = new(", ");")}
                 int genericTypeHashCode = typeof({this.GetArgCollectionName()}).GetHashCode();
                 var mockStore =
                     this.setup.{this.GetBagStoreName()}?.GetValueOrDefault(genericTypeHashCode)
                     as List<ArgBagWithMock<{this.GetArgCollectionName()}>>;
 
-                {(this.isVoidReturnType ? string.Empty : "return ")}MockCallTracker.Call{this.voidPrefix}MemberMock<{this.GetArgCollectionName()}{(this.isVoidReturnType ? "" : $", {this.returnType}")}>(
+                {(this.isVoidReturnType ? string.Empty : "var mockMe_methodResult = ")}MockCallTracker.Call{this.voidPrefix}MemberMock<{this.GetArgCollectionName()}{(this.isVoidReturnType ? "" : $", {this.returnType}")}>(
                     mockStore,
-                    GenericCallStoreRetriever.GetGenericCallStore<{this.GetArgCollectionName()}>({this.GetCallStoreName()} ??= new(), genericTypeHashCode){paramString.AddOnIfNotEmpty(", new(", ")")}
+                    GenericCallStoreRetriever.GetGenericCallStore<{this.GetArgCollectionName()}>({this.GetCallStoreName()} ??= new(), genericTypeHashCode){(string.IsNullOrEmpty(paramString) ? "" : ", mockMe_argCollection")}
+                );"
+            );
+
+            foreach (var p in refOrOutParameters)
+            {
+                sb.Append(
+                    $@"
+                {p.Name} = mockMe_argCollection.{p.Name};"
                 );
+            }
+
+            sb.Append(
+                $@"
+                {(this.isVoidReturnType ? "" : "return mockMe_methodResult;")}
             }}"
             );
         }
@@ -143,7 +157,21 @@ internal class ConcreteTypeMethodSetupGenerator(
 
             sb.Append(
                 $@"
-                {(this.isVoidReturnType ? "" : "return ")}MockCallTracker.Call{this.voidPrefix}MemberMock<{this.GetArgCollectionName()}{(this.isVoidReturnType ? "" : $", {this.returnType}")}>(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), new({paramString}));
+                {this.GetArgCollectionName()} mockMe_argCollection = new({paramString});
+                {(this.isVoidReturnType ? "" : "var mockMe_methodResult = ")}MockCallTracker.Call{this.voidPrefix}MemberMock<{this.GetArgCollectionName()}{(this.isVoidReturnType ? "" : $", {this.returnType}")}>(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), mockMe_argCollection);"
+            );
+
+            foreach (var p in refOrOutParameters)
+            {
+                sb.Append(
+                    $@"
+                {p.Name} = mockMe_argCollection.{p.Name};"
+                );
+            }
+
+            sb.Append(
+                $@"
+                {(this.isVoidReturnType ? "" : "return mockMe_methodResult;")}
             }}"
             );
         }
@@ -178,14 +206,14 @@ internal class ConcreteTypeMethodSetupGenerator(
             {
                 sb.Append(
                     $@"
-                    {p.Name} = default({p.Type.ToFullTypeString()});"
+                    {p.Name} = Arg.Any();"
                 );
             }
 
             sb.Append(
                 $@"
-                    int genericTypeHashCode = GetUniqueIntFromTypes({string.Join(", ", this.methodSymbol.TypeParameters.Select(p => p.Name.AddOnIfNotEmpty("typeof(", ")")))});
-                    return GetMemberAsserter(this.tracker.{this.GetCallStoreName()}?.GetValueOrDefault(genericTypeHashCode) as List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>, new ArgBag<{this.paramTypes}>({parameters}));
+                    int genericTypeHashCode = typeof({this.GetArgCollectionName()}).GetHashCode();
+                    return GetMemberAsserter(this.tracker.{this.GetCallStoreName()}?.GetValueOrDefault(genericTypeHashCode) as List<{this.GetArgCollectionName()}>, new ArgBag<{this.paramTypes}>({parameters}));
                 }}"
             );
         }
@@ -209,13 +237,13 @@ internal class ConcreteTypeMethodSetupGenerator(
             {
                 sb.Append(
                     $@"
-                    {p.Name} = default({p.Type.ToFullTypeString()});"
+                    {p.Name} = Arg.Any();"
                 );
             }
 
             sb.Append(
                 $@"
-                    return GetMemberAsserter(this.tracker.{this.GetCallStoreName()}, new ArgBag<{this.paramTypes}>({parameters}));
+                    return GetMemberAsserter<{this.GetArgCollectionName()}>(this.tracker.{this.GetCallStoreName()}, new ArgBag<{this.paramTypes}>({parameters}));
                 }}"
             );
         }

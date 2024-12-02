@@ -95,7 +95,7 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
                 propMeta.GetterLogic =
                     @$"
                 this.{this.GetCallStoreName()}++;
-                return MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()});";
+                return MockCallTracker.CallMemberMock<{propertyType}>(this.setup.{this.GetBagStoreName()});";
                 propMeta.GetterField = $"private int {this.GetCallStoreName()};";
             }
         }
@@ -109,7 +109,7 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
             {
                 propMeta.SetterLogic =
                     @$"
-        MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), new PropertySetterArgs<{propertyType}>(value));";
+        MockCallTracker.CallVoidMemberMock<PropertySetterArgs<{propertyType}>>(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), new PropertySetterArgs<{propertyType}>(value));";
 
                 propMeta.SetterField =
                     $"private List<PropertySetterArgs<{propertyType}>>? {this.GetCallStoreName()};";

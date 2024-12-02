@@ -4,13 +4,8 @@ public partial class MemberMockSetup
 {
     protected static List<
         ArgBagWithMock<TOriginalArgCollection>
-    > SetupGenericStore<TOriginalArgCollection>(
-        Dictionary<int, object> mockAndArgsStore,
-        params Type[] genericParameterTypes
-    )
+    > SetupGenericStore<TOriginalArgCollection>(Dictionary<int, object> mockAndArgsStore)
     {
-        //int hashCode = GetUniqueIntFromTypes(genericParameterTypes);
-        var x = typeof(TOriginalArgCollection);
         int hashCode = typeof(TOriginalArgCollection).GetHashCode();
         if (!mockAndArgsStore.TryGetValue(hashCode, out object? specificStore))
         {

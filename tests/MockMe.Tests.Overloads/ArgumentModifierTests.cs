@@ -10,9 +10,9 @@ public class ArgumentModifierTests
         var mock = Mock.Me<AllOverloads>(default(AllOverloads));
 
         mock.Setup.OutArgument(out _)
-            .Returns(arg =>
+            .Returns(args =>
             {
-                arg = 55;
+                args.arg = 55;
                 return 99;
             });
 

@@ -75,6 +75,29 @@ public static class MethodSymbolExtensions
         );
     }
 
+    public static string GetParametersWithOriginalTypesAndNoModifiers(this IMethodSymbol method)
+    {
+        if (method.Parameters.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        return string.Join(
+            ", ",
+            method.Parameters.Select(p =>
+            {
+                var paramString = $"{p.Type.ToFullTypeString()} {p.Name}";
+                //if (p.HasExplicitDefaultValue)
+                //{
+                //    var defaultValue =
+                //        p.ExplicitDefaultValue != null ? p.ExplicitDefaultValue.ToString() : "null";
+                //    paramString += $" = {defaultValue}";
+                //}
+                return paramString;
+            })
+        );
+    }
+
     public static string GetParametersWithModifiersAndNoTypes(this IMethodSymbol method)
     {
         if (method.Parameters.Length == 0)

@@ -83,8 +83,7 @@ internal abstract class MethodMockGeneratorBase
             $@"
         internal class {this.GetArgCollectionName()} : OriginalArgBag<{this.paramTypes}>
         {{
-            public {this.GetArgCollectionName(includeGenericType: false)}({this.methodSymbol.GetParametersWithOriginalTypesAndModifiers()}) : base({this.parametersWithoutTypesAndModifiers})
-            {{ }}"
+            public {this.GetArgCollectionName(includeGenericType: false)}({this.methodSymbol.GetParametersWithOriginalTypesAndNoModifiers()}) : base({this.parametersWithoutTypesAndModifiers}) {{ }}"
         );
 
         for (int i = 0; i < this.methodSymbol.Parameters.Length; i++)
