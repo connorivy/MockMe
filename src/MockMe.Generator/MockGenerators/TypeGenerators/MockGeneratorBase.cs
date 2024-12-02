@@ -64,6 +64,7 @@ using System.Reflection;
 using HarmonyLib;
 using MockMe;
 using MockMe.Mocks;
+using MockMe.Mocks.ClassMemberMocks;
 using MockMe.Mocks.ClassMemberMocks.CallTracker;
 
 namespace {thisNamespace}

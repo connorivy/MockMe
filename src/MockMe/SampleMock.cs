@@ -36,7 +36,6 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
         Scientific,
         Graphing,
     }
-    [global::System.CodeDom.Compiler.GeneratedCode("MockMe", "1.0.0.0")]
     internal class CalculatorMock
         : global::MockMe.Abstractions.SealedTypeMock<Calculator>
     {
@@ -53,7 +52,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
         public CalculatorMockSetup.CalculatorMockCallTracker.CalculatorMockAsserter Assert { get; }
         private CalculatorMockSetup.CalculatorMockCallTracker CallTracker { get; }
 
-        internal sealed class Patcha998d05b568441ffae20afbe87c8f103
+        internal sealed class Patch3bd2c95aee1747e3bb09b73665755823
         {
             private static bool Prefix(Calculator __instance, ref global::System.Int32 __result, global::System.Int32 x, global::System.Int32 y)
             {
@@ -66,7 +65,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
                 return true;
             }
         }
-        internal sealed class Patch8c3fd4577f8d462a86493c7c36f86cee
+        internal sealed class Patch1cd8d4bafbdf459a8797b0156fc33ff2
         {
             private static bool Prefix(Calculator __instance, ref global::System.Double __result, global::System.Double x, global::System.Double y)
             {
@@ -79,7 +78,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
                 return true;
             }
         }
-        internal sealed class Patch21cc0ea43c274fb9a3a046b77adc67e1
+        internal sealed class Patche2a230cd1d03422791a7f71b3497c46e
         {
             private static bool Prefix(Calculator __instance, ref CalculatorType __result)
             {
@@ -92,7 +91,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
             }
         }
 
-        internal sealed class Patch2df041c75c36424d9ff3c696a2d1de1d
+        internal sealed class Patch61607ea2bec640e7aa155fd5efc30776
         {
             private static bool Prefix(Calculator __instance, CalculatorType value)
             {
@@ -105,7 +104,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
             }
         }
 
-        internal sealed class Patch997ac6d1203e4e939512e7603cad4a42
+        internal sealed class Patch23cd1a2f27f64aef86e5176fc9fec2b2
         {
             private static bool Prefix(Calculator __instance, global::System.Double numToDivide)
             {
@@ -118,7 +117,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
                 return true;
             }
         }
-        internal sealed class Patch47541ab8e1984c08b7cca45a36e810ef
+        internal sealed class Patchbc250df528ff4ef7adb7bef03ef4a145
         {
             private static bool Prefix(Calculator __instance, ref global::System.Boolean __result)
             {
@@ -131,7 +130,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
                 return true;
             }
         }
-        internal sealed class Patcheec2cff683124024b98e047f693db80e
+        internal sealed class Patchac4efd0fdc3a49aa9133de9cbb45fcba
         {
             private static bool Prefix(Calculator __instance)
             {
@@ -148,40 +147,40 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
         {
             var harmony = new global::HarmonyLib.Harmony("com.mockme.patch");
 
-            var originalPatcha998d05b568441ffae20afbe87c8f103 = typeof(Calculator).GetMethod("Add", new Type[] { typeof(global::System.Int32), typeof(global::System.Int32) });
-            var Patcha998d05b568441ffae20afbe87c8f103 = typeof(Patcha998d05b568441ffae20afbe87c8f103).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
+            var originalPatch3bd2c95aee1747e3bb09b73665755823 = typeof(Calculator).GetMethod("Add", new Type[] { typeof(global::System.Int32), typeof(global::System.Int32) });
+            var Patch3bd2c95aee1747e3bb09b73665755823 = typeof(Patch3bd2c95aee1747e3bb09b73665755823).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
-            harmony.Patch(originalPatcha998d05b568441ffae20afbe87c8f103, prefix: new HarmonyMethod(Patcha998d05b568441ffae20afbe87c8f103));
+            harmony.Patch(originalPatch3bd2c95aee1747e3bb09b73665755823, prefix: new HarmonyMethod(Patch3bd2c95aee1747e3bb09b73665755823));
 
-            var originalPatch8c3fd4577f8d462a86493c7c36f86cee = typeof(Calculator).GetMethod("Multiply", new Type[] { typeof(global::System.Double), typeof(global::System.Double) });
-            var Patch8c3fd4577f8d462a86493c7c36f86cee = typeof(Patch8c3fd4577f8d462a86493c7c36f86cee).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
+            var originalPatch1cd8d4bafbdf459a8797b0156fc33ff2 = typeof(Calculator).GetMethod("Multiply", new Type[] { typeof(global::System.Double), typeof(global::System.Double) });
+            var Patch1cd8d4bafbdf459a8797b0156fc33ff2 = typeof(Patch1cd8d4bafbdf459a8797b0156fc33ff2).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
-            harmony.Patch(originalPatch8c3fd4577f8d462a86493c7c36f86cee, prefix: new HarmonyMethod(Patch8c3fd4577f8d462a86493c7c36f86cee));
+            harmony.Patch(originalPatch1cd8d4bafbdf459a8797b0156fc33ff2, prefix: new HarmonyMethod(Patch1cd8d4bafbdf459a8797b0156fc33ff2));
 
-            var originalPatch21cc0ea43c274fb9a3a046b77adc67e1 = typeof(Calculator).GetMethod("get_CalculatorType", new Type[] { });
-            var Patch21cc0ea43c274fb9a3a046b77adc67e1 = typeof(Patch21cc0ea43c274fb9a3a046b77adc67e1).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
+            var originalPatche2a230cd1d03422791a7f71b3497c46e = typeof(Calculator).GetMethod("get_CalculatorType", new Type[] { });
+            var Patche2a230cd1d03422791a7f71b3497c46e = typeof(Patche2a230cd1d03422791a7f71b3497c46e).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
-            harmony.Patch(originalPatch21cc0ea43c274fb9a3a046b77adc67e1, prefix: new HarmonyMethod(Patch21cc0ea43c274fb9a3a046b77adc67e1));
+            harmony.Patch(originalPatche2a230cd1d03422791a7f71b3497c46e, prefix: new HarmonyMethod(Patche2a230cd1d03422791a7f71b3497c46e));
 
-            var originalPatch2df041c75c36424d9ff3c696a2d1de1d = typeof(Calculator).GetMethod("set_CalculatorType", new Type[] { typeof(CalculatorType) });
-            var Patch2df041c75c36424d9ff3c696a2d1de1d = typeof(Patch2df041c75c36424d9ff3c696a2d1de1d).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
+            var originalPatch61607ea2bec640e7aa155fd5efc30776 = typeof(Calculator).GetMethod("set_CalculatorType", new Type[] { typeof(CalculatorType) });
+            var Patch61607ea2bec640e7aa155fd5efc30776 = typeof(Patch61607ea2bec640e7aa155fd5efc30776).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
-            harmony.Patch(originalPatch2df041c75c36424d9ff3c696a2d1de1d, prefix: new HarmonyMethod(Patch2df041c75c36424d9ff3c696a2d1de1d));
+            harmony.Patch(originalPatch61607ea2bec640e7aa155fd5efc30776, prefix: new HarmonyMethod(Patch61607ea2bec640e7aa155fd5efc30776));
 
-            var originalPatch997ac6d1203e4e939512e7603cad4a42 = typeof(Calculator).GetMethod("DivideByZero", new Type[] { typeof(global::System.Double) });
-            var Patch997ac6d1203e4e939512e7603cad4a42 = typeof(Patch997ac6d1203e4e939512e7603cad4a42).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
+            var originalPatch23cd1a2f27f64aef86e5176fc9fec2b2 = typeof(Calculator).GetMethod("DivideByZero", new Type[] { typeof(global::System.Double) });
+            var Patch23cd1a2f27f64aef86e5176fc9fec2b2 = typeof(Patch23cd1a2f27f64aef86e5176fc9fec2b2).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
-            harmony.Patch(originalPatch997ac6d1203e4e939512e7603cad4a42, prefix: new HarmonyMethod(Patch997ac6d1203e4e939512e7603cad4a42));
+            harmony.Patch(originalPatch23cd1a2f27f64aef86e5176fc9fec2b2, prefix: new HarmonyMethod(Patch23cd1a2f27f64aef86e5176fc9fec2b2));
 
-            var originalPatch47541ab8e1984c08b7cca45a36e810ef = typeof(Calculator).GetMethod("IsOn", new Type[] { });
-            var Patch47541ab8e1984c08b7cca45a36e810ef = typeof(Patch47541ab8e1984c08b7cca45a36e810ef).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
+            var originalPatchbc250df528ff4ef7adb7bef03ef4a145 = typeof(Calculator).GetMethod("IsOn", new Type[] { });
+            var Patchbc250df528ff4ef7adb7bef03ef4a145 = typeof(Patchbc250df528ff4ef7adb7bef03ef4a145).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
-            harmony.Patch(originalPatch47541ab8e1984c08b7cca45a36e810ef, prefix: new HarmonyMethod(Patch47541ab8e1984c08b7cca45a36e810ef));
+            harmony.Patch(originalPatchbc250df528ff4ef7adb7bef03ef4a145, prefix: new HarmonyMethod(Patchbc250df528ff4ef7adb7bef03ef4a145));
 
-            var originalPatcheec2cff683124024b98e047f693db80e = typeof(Calculator).GetMethod("TurnOff", new Type[] { });
-            var Patcheec2cff683124024b98e047f693db80e = typeof(Patcheec2cff683124024b98e047f693db80e).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
+            var originalPatchac4efd0fdc3a49aa9133de9cbb45fcba = typeof(Calculator).GetMethod("TurnOff", new Type[] { });
+            var Patchac4efd0fdc3a49aa9133de9cbb45fcba = typeof(Patchac4efd0fdc3a49aa9133de9cbb45fcba).GetMethod("Prefix", global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.NonPublic);
 
-            harmony.Patch(originalPatcheec2cff683124024b98e047f693db80e, prefix: new HarmonyMethod(Patcheec2cff683124024b98e047f693db80e));
+            harmony.Patch(originalPatchac4efd0fdc3a49aa9133de9cbb45fcba, prefix: new HarmonyMethod(Patchac4efd0fdc3a49aa9133de9cbb45fcba));
 
         }
 
@@ -202,7 +201,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
         public global::MockMe.Mocks.ClassMemberMocks.MemberMock<Add_Int32_Int32Collection, global::System.Int32> Add(Arg<global::System.Int32> x, Arg<global::System.Int32> y)
         {
 
-            return SetupMethod<Add_Int32_Int32Collection, MemberMock<Add_Int32_Int32Collection, int>>(this.Add_Int32_Int32BagStore ??= new(), new ArgBag<int, int>(x, y));
+            return SetupMethod<Add_Int32_Int32Collection, global::MockMe.Mocks.ClassMemberMocks.MemberMock<Add_Int32_Int32Collection, global::System.Int32>>(this.Add_Int32_Int32BagStore ??= new(), new ArgBag<global::System.Int32, global::System.Int32>(x, y));
             ;
         }
         internal class Multiply_Double_DoubleCollection : OriginalArgBag<global::System.Double, global::System.Double>
@@ -216,7 +215,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
         public global::MockMe.Mocks.ClassMemberMocks.MemberMock<Multiply_Double_DoubleCollection, global::System.Double> Multiply(Arg<global::System.Double> x, Arg<global::System.Double> y)
         {
 
-            return SetupMethod(this.Multiply_Double_DoubleBagStore ??= new(), new(x, y));
+            return SetupMethod<Multiply_Double_DoubleCollection, global::MockMe.Mocks.ClassMemberMocks.MemberMock<Multiply_Double_DoubleCollection, global::System.Double>>(this.Multiply_Double_DoubleBagStore ??= new(), new ArgBag<global::System.Double, global::System.Double>(x, y));
             ;
         }
         internal class set_CalculatorType_CalculatorTypeCollection : OriginalArgBag<CalculatorType>
@@ -235,7 +234,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
         public global::MockMe.Mocks.ClassMemberMocks.VoidMemberMock<DivideByZero_DoubleCollection> DivideByZero(Arg<global::System.Double> numToDivide)
         {
 
-            return SetupMethod(this.DivideByZero_DoubleBagStore ??= new(), new(numToDivide));
+            return SetupMethod<DivideByZero_DoubleCollection, global::MockMe.Mocks.ClassMemberMocks.VoidMemberMock<DivideByZero_DoubleCollection>>(this.DivideByZero_DoubleBagStore ??= new(), new ArgBag<global::System.Double>(numToDivide));
             ;
         }
         private global::MockMe.Mocks.ClassMemberMocks.MemberMock<global::System.Boolean>? IsOn_BagStore;
@@ -253,7 +252,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
             ;
         }
         private global::MockMe.Mocks.ClassMemberMocks.MemberMock<CalculatorType>? get_CalculatorType_BagStore;
-        private List<ArgBagWithVoidMemberMock<CalculatorType>>? set_CalculatorType_CalculatorTypeBagStore;
+        private List<ArgBagWithMock<PropertySetterArgs<CalculatorType>>>? set_CalculatorType_CalculatorTypeBagStore;
         public global::MockMe.Mocks.ClassMemberMocks.GetSetPropertyMock<CalculatorType> CalculatorType =>
             new(get_CalculatorType_BagStore ??= new(), set_CalculatorType_CalculatorTypeBagStore ??= new());
         [global::System.CodeDom.Compiler.GeneratedCode("MockMe", "1.0.0.0")]
@@ -269,26 +268,26 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
             public global::System.Int32 Add(global::System.Int32 x, global::System.Int32 y)
             {
 
-                return MockCallTracker.CallMemberMock<Add_Int32_Int32Collection, int>(this.setup.Add_Int32_Int32BagStore, this.Add_Int32_Int32CallStore ??= new(), new(x, y));
+                return MockCallTracker.CallMemberMock<Add_Int32_Int32Collection, global::System.Int32>(this.setup.Add_Int32_Int32BagStore, this.Add_Int32_Int32CallStore ??= new(), new(x, y));
             }
             private List<CalculatorMockSetup.Multiply_Double_DoubleCollection>? Multiply_Double_DoubleCallStore;
             public global::System.Double Multiply(global::System.Double x, global::System.Double y)
             {
 
-                return MockCallTracker.CallMemberMock<Multiply_Double_DoubleCollection, double>(this.setup.Multiply_Double_DoubleBagStore, this.Multiply_Double_DoubleCallStore ??= new(), new(x, y));
+                return MockCallTracker.CallMemberMock<Multiply_Double_DoubleCollection, global::System.Double>(this.setup.Multiply_Double_DoubleBagStore, this.Multiply_Double_DoubleCallStore ??= new(), new(x, y));
             }
             private List<CalculatorMockSetup.DivideByZero_DoubleCollection>? DivideByZero_DoubleCallStore;
             public void DivideByZero(global::System.Double numToDivide)
             {
 
-                MockCallTracker.CallVoidMemberMock(this.setup.DivideByZero_DoubleBagStore, this.DivideByZero_DoubleCallStore ??= new(), new(numToDivide));
+                MockCallTracker.CallVoidMemberMock<DivideByZero_DoubleCollection>(this.setup.DivideByZero_DoubleBagStore, this.DivideByZero_DoubleCallStore ??= new(), new(numToDivide));
             }
             private int IsOn_CallStore;
 
             public global::System.Boolean IsOn()
             {
                 this.IsOn_CallStore++;
-                return MockCallTracker.CallMemberMock(this.setup.IsOn_BagStore);
+                return MockCallTracker.CallMemberMock<global::System.Boolean>(this.setup.IsOn_BagStore);
             }
 
             private int TurnOff_CallStore;
@@ -296,11 +295,11 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
             public void TurnOff()
             {
                 this.TurnOff_CallStore++;
-                VoidMockCallTracker.CallVoidMemberMock(this.setup.TurnOff_BagStore);
+                MockCallTracker.CallVoidMemberMock(this.setup.TurnOff_BagStore);
             }
 
             private int get_CalculatorType_CallStore;
-            private List<CalculatorType>? set_CalculatorType_CalculatorTypeCallStore;
+            private List<PropertySetterArgs<CalculatorType>>? set_CalculatorType_CalculatorTypeCallStore;
             public CalculatorType CalculatorType
             {
                 get
@@ -312,7 +311,7 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
                 set
                 {
 
-                    VoidMockCallTracker.CallVoidMemberMock(this.setup.set_CalculatorType_CalculatorTypeBagStore, this.set_CalculatorType_CalculatorTypeCallStore ??= new(), value);
+                    MockCallTracker.CallVoidMemberMock<PropertySetterArgs<CalculatorType>>(this.setup.set_CalculatorType_CalculatorTypeBagStore, this.set_CalculatorType_CalculatorTypeCallStore ??= new(), new PropertySetterArgs<CalculatorType>(value));
                 }
             }
             [global::System.CodeDom.Compiler.GeneratedCode("MockMe", "1.0.0.0")]
@@ -327,17 +326,17 @@ namespace MockMe.Generated.MockMe.Tests.ExampleClasses
                 public global::MockMe.Asserters.MemberAsserter Add(Arg<global::System.Int32> x, Arg<global::System.Int32> y)
                 {
 
-                    return GetMemberAsserter(this.tracker.Add_Int32_Int32CallStore, x, y);
+                    return GetMemberAsserter(this.tracker.Add_Int32_Int32CallStore, new ArgBag<global::System.Int32, global::System.Int32>(x, y));
                 }
                 public global::MockMe.Asserters.MemberAsserter Multiply(Arg<global::System.Double> x, Arg<global::System.Double> y)
                 {
 
-                    return GetMemberAsserter(this.tracker.Multiply_Double_DoubleCallStore, x, y);
+                    return GetMemberAsserter(this.tracker.Multiply_Double_DoubleCallStore, new ArgBag<global::System.Double, global::System.Double>(x, y));
                 }
                 public global::MockMe.Asserters.MemberAsserter DivideByZero(Arg<global::System.Double> numToDivide)
                 {
 
-                    return GetMemberAsserter(this.tracker.DivideByZero_DoubleCallStore, numToDivide);
+                    return GetMemberAsserter(this.tracker.DivideByZero_DoubleCallStore, new ArgBag<global::System.Double>(numToDivide));
                 }
                 public global::MockMe.Asserters.MemberAsserter IsOn() =>
                     new(this.tracker.IsOn_CallStore);

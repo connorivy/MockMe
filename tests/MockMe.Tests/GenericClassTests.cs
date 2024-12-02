@@ -115,7 +115,7 @@ namespace MockMe.Tests
 
             mockString.Setup.MyCoolProp.Get().Returns("returnVal");
             string? setVal = null;
-            mockString.Setup.MyCoolProp.Set(Arg.Any()).Callback(x => setVal = x);
+            mockString.Setup.MyCoolProp.Set(Arg.Any()).Callback(args => setVal = args.Value);
 
             ConnorsCoolGenericType<string> coolStringType = mockString;
 

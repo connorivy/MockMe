@@ -89,7 +89,7 @@ public class SetupPropertyMetadata
         $"private global::MockMe.Mocks.ClassMemberMocks.MemberMock<{this.PropertyType}>? {this.GetterFieldName};";
 
     protected virtual string SetterField() =>
-        $"private List<ArgBagWithVoidMemberMock<{this.PropertyType}>>? {this.SetterFieldName};";
+        $"private List<ArgBagWithMock<PropertySetterArgs<{this.PropertyType}>>>? {this.SetterFieldName};";
 
     protected virtual string Body() =>
         $@"
@@ -127,10 +127,10 @@ public class IndexerSetupPropertyMetadata : SetupPropertyMetadata
     public required string IndexerType { get; init; }
 
     protected override string GetterField() =>
-        $"private List<ArgBagWithMemberMock<{this.IndexerType}, {this.PropertyType}>>? {this.GetterFieldName};";
+        $"private List<ArgBagWithMock<IndexerGetterArgs<{this.IndexerType}>>>? {this.GetterFieldName};";
 
     protected override string SetterField() =>
-        $"private List<ArgBagWithVoidMemberMock<{this.IndexerType}, {this.PropertyType}>>? {this.SetterFieldName};";
+        $"private List<ArgBagWithMock<IndexerSetterArgs<{this.IndexerType}, {this.PropertyType}>>>? {this.SetterFieldName};";
 
     protected override string Body() =>
         $@"

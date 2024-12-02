@@ -392,13 +392,13 @@ public class MockCallTracker
     }
 
     public static TReturn? CallMemberMock<TReturn>(
-        IMockCallbackAndReturnCallRetriever<Action, TReturn>? mockStore
+        IMockCallbackAndReturnCallRetriever<Action, Func<TReturn>>? mockStore
     ) =>
-        CallMemberMockBase<TReturn, bool, Action, TReturn>(
+        CallMemberMockBase<TReturn, bool, Action, Func<TReturn>>(
             mockStore,
             false,
             static (_, action) => action(),
-            static (_, ret) => ret,
+            static (_, ret) => ret(),
             out _
         );
 

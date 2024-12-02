@@ -19,6 +19,14 @@ public class IndexerSetterArgs<TIndexer, TProperty> : OriginalArgBag<TIndexer, T
     public TProperty Value { get; }
 }
 
+public class IndexerGetterArgs<TIndexer> : OriginalArgBag<TIndexer>
+{
+    public IndexerGetterArgs(TIndexer index)
+        : base(index) { }
+
+    public TIndexer Index { get; }
+}
+
 public class GetPropertyMock<TProperty>(MemberMock<TProperty> getter)
 {
     public MemberMock<TProperty> Get() => getter;
@@ -44,12 +52,12 @@ public class GetSetPropertyMock<TProperty>(
 }
 
 public class GetSetPropertyMock<TIndexer, TProperty>(
-    MemberMock<TIndexer, TProperty> getter,
+    MemberMock<IndexerGetterArgs<TIndexer>, TProperty> getter,
     List<ArgBagWithMock<IndexerSetterArgs<TIndexer, TProperty>>> setterArgBag,
     Arg<TIndexer> indexer
 )
 {
-    public MemberMock<TIndexer, TProperty> Get() => getter;
+    public MemberMock<IndexerGetterArgs<TIndexer>, TProperty> Get() => getter;
 
     public VoidMemberMock<IndexerSetterArgs<TIndexer, TProperty>> Set(Arg<TProperty> propValue) =>
         MemberMockSetup.SetupMethod<

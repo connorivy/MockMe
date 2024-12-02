@@ -50,7 +50,7 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(
             {
                 propMeta.GetterLogic =
                     @$"
-            return {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
+            return MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index);";
                 propMeta.GetterField = $"private List<{indexerType}>? {this.GetCallStoreName()};";
             }
         }
@@ -64,7 +64,7 @@ internal class IndexerGenerator(IMethodSymbol methodSymbol) : PropertyGenerator(
             {
                 propMeta.SetterLogic =
                     @$"
-        {this.voidPrefix}MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index, value);";
+        MockCallTracker.Call{this.voidPrefix}MemberMock(this.setup.{this.GetBagStoreName()}, this.{this.GetCallStoreName()} ??= new(), index, value);";
 
                 propMeta.SetterField =
                     $"private List<{this.methodSymbol.GetMethodArgumentsAsCollection()}>? {this.GetCallStoreName()};";

@@ -179,7 +179,7 @@ internal abstract class MethodMockGeneratorBase
     {
         if (this.NumGenericParameters() > 0)
         {
-            return $"Setup{this.voidPrefix}{this.taskPrefix}Method(SetupGenericStore{this.paramTypesFollowedByReturnType}(this.{this.GetBagStoreName()} ??= new()){this.parametersWithoutTypesAndModifiers.AddPrefixIfNotEmpty(", ")});";
+            return $"SetupMethod<{this.GetArgCollectionName()}, {this.memberMockType}>(SetupGenericStore<ArgBagWithMock<{this.GetArgCollectionName()}>>(this.{this.GetBagStoreName()} ??= new()){this.parametersWithoutTypesAndModifiers.AddOnIfNotEmpty($", new ArgBag<{this.paramTypes}>(", ")")});";
         }
         if (this.NumParameters() == 0)
         {
@@ -187,7 +187,7 @@ internal abstract class MethodMockGeneratorBase
         }
         else
         {
-            return $"SetupMethod(this.{this.GetBagStoreName()} ??= new(), new ArgBag<{this.paramTypes}>({this.parametersWithoutTypesAndModifiers}));";
+            return $"SetupMethod<{this.GetArgCollectionName()}, {this.memberMockType}>(this.{this.GetBagStoreName()} ??= new(), new ArgBag<{this.paramTypes}>({this.parametersWithoutTypesAndModifiers}));";
         }
     }
 
