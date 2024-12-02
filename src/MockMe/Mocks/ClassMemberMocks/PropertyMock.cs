@@ -7,7 +7,7 @@ public class PropertySetterArgs<TProperty> : OriginalArgBag<TProperty>
     public PropertySetterArgs(TProperty value)
         : base(value) { }
 
-    public TProperty Value { get; }
+    public TProperty Value => this.Arg1;
 }
 
 public class IndexerSetterArgs<TIndexer, TProperty> : OriginalArgBag<TIndexer, TProperty>
@@ -15,8 +15,8 @@ public class IndexerSetterArgs<TIndexer, TProperty> : OriginalArgBag<TIndexer, T
     public IndexerSetterArgs(TIndexer index, TProperty value)
         : base(index, value) { }
 
-    public TIndexer Index { get; }
-    public TProperty Value { get; }
+    public TIndexer Index => this.Arg1;
+    public TProperty Value => this.Arg2;
 }
 
 public class IndexerGetterArgs<TIndexer> : OriginalArgBag<TIndexer>
@@ -24,7 +24,7 @@ public class IndexerGetterArgs<TIndexer> : OriginalArgBag<TIndexer>
     public IndexerGetterArgs(TIndexer index)
         : base(index) { }
 
-    public TIndexer Index { get; }
+    public TIndexer Index => this.Arg1;
 }
 
 public class GetPropertyMock<TProperty>(MemberMock<TProperty> getter)
