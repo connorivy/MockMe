@@ -99,7 +99,7 @@ internal class ConcreteTypeMethodSetupGenerator(
 
             sb.Append(
                 $@"
-                int genericTypeHashCode = GetUniqueIntFromTypes({string.Join(", ", this.methodSymbol.Parameters.Select(p => p.Type.ToFullTypeString().AddOnIfNotEmpty("typeof(", ")")))});
+                int genericTypeHashCode = typeof({this.GetArgCollectionName()}).GetHashCode();
                 var mockStore =
                     this.setup.{this.GetBagStoreName()}?.GetValueOrDefault(genericTypeHashCode)
                     as List<ArgBagWithMock<{this.GetArgCollectionName()}>>;

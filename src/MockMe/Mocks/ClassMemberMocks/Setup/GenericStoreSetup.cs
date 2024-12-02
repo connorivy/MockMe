@@ -2,18 +2,22 @@ namespace MockMe.Mocks.ClassMemberMocks.Setup;
 
 public partial class MemberMockSetup
 {
-    protected static List<TArgBag> SetupGenericStore<TArgBag>(
+    protected static List<
+        ArgBagWithMock<TOriginalArgCollection>
+    > SetupGenericStore<TOriginalArgCollection>(
         Dictionary<int, object> mockAndArgsStore,
         params Type[] genericParameterTypes
     )
     {
-        int hashCode = GetUniqueIntFromTypes(genericParameterTypes);
+        //int hashCode = GetUniqueIntFromTypes(genericParameterTypes);
+        var x = typeof(TOriginalArgCollection);
+        int hashCode = typeof(TOriginalArgCollection).GetHashCode();
         if (!mockAndArgsStore.TryGetValue(hashCode, out object? specificStore))
         {
-            specificStore = new List<TArgBag>();
+            specificStore = new List<ArgBagWithMock<TOriginalArgCollection>>();
             mockAndArgsStore.Add(hashCode, specificStore);
         }
-        return (List<TArgBag>)specificStore;
+        return (List<ArgBagWithMock<TOriginalArgCollection>>)specificStore;
     }
 
     protected static int GetUniqueIntFromTypes(params Type[] types)

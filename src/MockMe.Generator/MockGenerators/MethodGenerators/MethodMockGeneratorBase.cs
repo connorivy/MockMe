@@ -179,7 +179,7 @@ internal abstract class MethodMockGeneratorBase
     {
         if (this.NumGenericParameters() > 0)
         {
-            return $"SetupMethod<{this.GetArgCollectionName()}, {this.memberMockType}>(SetupGenericStore<ArgBagWithMock<{this.GetArgCollectionName()}>>(this.{this.GetBagStoreName()} ??= new()){this.parametersWithoutTypesAndModifiers.AddOnIfNotEmpty($", new ArgBag<{this.paramTypes}>(", ")")});";
+            return $"SetupMethod<{this.GetArgCollectionName()}, {this.memberMockType}>(SetupGenericStore<{this.GetArgCollectionName()}>(this.{this.GetBagStoreName()} ??= new()){this.parametersWithoutTypesAndModifiers.AddOnIfNotEmpty($", new ArgBag<{this.paramTypes}>(", ")")});";
         }
         if (this.NumParameters() == 0)
         {
