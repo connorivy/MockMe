@@ -2,10 +2,30 @@
 <RunSettings>
     <DataCollectionRunSettings>
         <DataCollectors>
-            <DataCollector friendlyName="Code Coverage">
+            <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0" assemblyQualifiedName="Microsoft.VisualStudio.Coverage.DynamicCoverageDataCollector, Microsoft.VisualStudio.TraceCollector, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
                 <Configuration>
-                    <Option Name="IncludeUninstrumentedCode" Value="true" />
+                    <!--<Option Name="IncludeUninstrumentedCode" Value="true" />-->
                     <!--<Option Name="ExcludeFromCodeCoverage"> */**/*.g.cs </Option>-->
+                    <CodeCoverage>
+                        <ModulePaths>
+                            <Exclude>
+                                <!--<ModulePath>.*MockMe.Tests.dll$</ModulePath>
+                                <ModulePath>.*Tests.*</ModulePath>-->
+                            </Exclude>
+                        </ModulePaths>
+                        <Sources>
+                            <Exclude>
+                                <!--<Source>.*Polysharp.*</Source>
+                                <Source>.*.g.cs$</Source>-->
+                            </Exclude>
+                        </Sources>
+
+                        <CollectFromChildProcesses>True</CollectFromChildProcesses>
+                        <UseVerifiableInstrumentation>False</UseVerifiableInstrumentation>
+                        <!--<UseVerifiableInstrumentation>False</UseVerifiableInstrumentation>-->
+                        <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
+                        <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
+                    </CodeCoverage>
                 </Configuration>
             </DataCollector>
         </DataCollectors>
