@@ -45,13 +45,13 @@ public class MockStoreGenerator : IIncrementalGenerator
                 string message;
 #if DEBUG
                 message =
-                    $"Generator is running in debug at {Assembly.GetExecutingAssembly().Location}";
+                    $"Generator is running in debug at {typeof(MockStoreGenerator).Assembly.Location}";
 #elif RELEASE
                 message =
-                    $"Generator is running in release at {Assembly.GetExecutingAssembly().Location}";
+                    $"Generator is running in release at {typeof(MockStoreGenerator).Assembly.Location}";
 #else
                 message =
-                    $"Generator is running in other at {Assembly.GetExecutingAssembly().Location}";
+                    $"Generator is running in other at {typeof(MockStoreGenerator).Assembly.Location}";
 #endif
                 ctx.ReportDiagnostic(
                     Diagnostic.Create(
