@@ -160,4 +160,6 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
     }
 
     public virtual string? GetIndexerType() => null;
+
+    public override StringBuilder AddOriginalCollectionType(StringBuilder sb) => sb;
 }

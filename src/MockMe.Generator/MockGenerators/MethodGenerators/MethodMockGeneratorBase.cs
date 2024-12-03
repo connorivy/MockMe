@@ -88,9 +88,10 @@ internal abstract class MethodMockGeneratorBase
 
         for (int i = 0; i < this.methodSymbol.Parameters.Length; i++)
         {
+            var param = this.methodSymbol.Parameters[i];
             sb.Append(
                 $@"
-            public {this .methodSymbol.Parameters[i] .Type.ToFullReturnTypeString()} {this.methodSymbol.Parameters[i].Name} {{ get => this.Arg{i + 1}; set => this.Arg{i + 1} = value; }}"
+            public {this .methodSymbol.Parameters[i] .Type.ToFullReturnTypeString()} {param.Name} {{ get => this.Arg{i + 1};{(param.RefKind == RefKind.None ? "" : $" set => this.Arg{i + 1} = value;")} }}"
             );
         }
 

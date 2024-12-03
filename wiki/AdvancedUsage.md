@@ -24,3 +24,5 @@ MyCoolClass myClass = mock;
 myClass.TryGetValue(99, out var outValue); // outValue is "my out value"
 
 ```
+
+**_NOTE:_** The `arg.val` will only be settable if the method parameter is passed by reference, such as with ref and out parameters because assigning to this parameter is meaningless for a normal method parameter.

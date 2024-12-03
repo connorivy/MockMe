@@ -1,3 +1,4 @@
+using MockMe.Generated.MockMe.Tests.Overloads;
 using Xunit;
 
 namespace MockMe.Tests.Overloads;
@@ -37,5 +38,24 @@ public class ArgumentModifierTests
         Assert.Equal(55, outArg);
         Assert.Equal(99, result);
         mock.Assert.OutArgument(out _).WasCalled();
+    }
+
+    [Fact]
+    public void ParametersNotPassedByReference_ShouldNotHaveASetter()
+    {
+        var mock = Mock.Me<AllOverloads>(default(AllOverloads));
+
+        var outParamType = typeof(AllOverloadsMockSetup.OutArgument_OutInt32Collection);
+        var regularParamType = typeof(AllOverloadsMockSetup.OutArgument_Int32Collection);
+
+        var outParamGetter = outParamType.GetMethod("get_arg");
+        var outParamSetter = outParamType.GetMethod("set_arg");
+        Assert.NotNull(outParamGetter);
+        Assert.NotNull(outParamSetter);
+
+        var regularParamGetter = regularParamType.GetMethod("get_arg");
+        var regularParamSetter = regularParamType.GetMethod("set_arg");
+        Assert.NotNull(regularParamGetter);
+        Assert.Null(regularParamSetter); // this type should NOT have a setter because that wouldn't make sense
     }
 }
