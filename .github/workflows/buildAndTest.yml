@@ -20,6 +20,7 @@ jobs:
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
+        # export PATH="$PATH:/root/.dotnet/tools"
         dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/" -f cobertura -s ./CodeCoverage.runsettings
       
     - name: Generate report
@@ -28,7 +29,14 @@ jobs:
         reports: './output.cobertura.xml'
         targetdir: './tests/TestResults'
         reporttypes: 'lcov'
+        # reporttypes: 'html'
         filefilters: '-*\*.g.cs'
+
+    # - name: Upload Report
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: report
+    #     path: ./tests/TestResults
 
     - name: Coveralls
       uses: coverallsapp/github-action@master

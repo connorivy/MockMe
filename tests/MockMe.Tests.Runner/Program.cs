@@ -4,18 +4,52 @@ using System.Reflection;
 
 Console.WriteLine("Hello, World!");
 
-var testsFolderPath = Path.Combine(Assembly.GetExecutingAssembly().Location, @"..\..\..\..\..");
+var testsFolderPath = Path.Combine(
+    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+    "..",
+    "..",
+    "..",
+    ".."
+);
 
 var slnf = Path.Combine(testsFolderPath, "MockMe.Tests.slnf");
 
-Thread.Sleep(5000);
+Thread.Sleep(3000);
 
-ProcessStartInfo cleanStartInfo = new() { FileName = "dotnet", Arguments = $"clean {slnf}" };
+//ProcessStartInfo cleanStartInfo = new() { FileName = "dotnet", Arguments = $"clean {slnf}" };
+
+//using Process clean =
+//    Process.Start(cleanStartInfo)
+//    ?? throw new InvalidOperationException("process must not be null");
+//await clean.WaitForExitAsync();
+
+ProcessStartInfo cleanStartInfo =
+    new()
+    {
+        FileName = "dotnet",
+        Arguments = $"build {Path.Combine(testsFolderPath, "..\\", "src", "MockMe")} -c Debug",
+    };
 
 using Process clean =
     Process.Start(cleanStartInfo)
     ?? throw new InvalidOperationException("process must not be null");
 await clean.WaitForExitAsync();
+
+var generatorBinPath = Path.Combine(
+    testsFolderPath,
+    "..",
+    "src",
+    "MockMe.Generator",
+    "bin",
+    "Debug",
+    "netstandard2.0"
+);
+foreach (var x in Directory.GetFiles(generatorBinPath))
+{
+    Console.WriteLine(x);
+}
+
+//Assembly.LoadFrom(Path.Combine(generatorBinPath, "MockMe.Generator.dll"));
 
 ProcessStartInfo buildStartInfo =
     new() { FileName = "dotnet", Arguments = $"build {slnf} --no-incremental -c Debug" };
