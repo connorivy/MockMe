@@ -20,7 +20,6 @@ jobs:
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
-        # export PATH="$PATH:/root/.dotnet/tools"
         dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/" -f cobertura -s ./CodeCoverage.runsettings
       
     - name: Generate report
@@ -30,13 +29,6 @@ jobs:
         targetdir: './tests/TestResults'
         reporttypes: 'lcov'
         # reporttypes: 'html'
-        # filefilters: '-*\*.g.cs'
-
-    # - name: Upload Report
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: report
-    #     path: ./tests/TestResults
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
@@ -44,57 +36,57 @@ jobs:
         github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
         path-to-lcov: ./tests/TestResults/lcov.info
 
-    # - name: Pack NuGet Packages
-    #   run: dotnet pack --configuration Release --output ./packages /p:Version=0.0.1-dev
+    - name: Pack NuGet Packages
+      run: dotnet pack --configuration Release --output ./packages /p:Version=0.0.1-dev
 
-    # - name: Upload NuGet Packages
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: nuget-packages
-    #     path: ./packages
+    - name: Upload NuGet Packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./packages
 
-  # test_linux:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       dotnet:
-  #         - '6.0'
-  #         - '7.0'
-  #         - '8.0'
-  #         - '9.0'
-  #   env:
-  #     ContinuousIntegrationBuild: true
-  #     LATEST_DOTNET_VERSION: '9.0'
+  test_linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet:
+          - '6.0'
+          - '7.0'
+          - '8.0'
+          - '9.0'
+    env:
+      ContinuousIntegrationBuild: true
+      LATEST_DOTNET_VERSION: '9.0'
 
-  #   needs: build_and_pack
+    needs: build_and_pack
 
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - name: Setup .NET
-  #     uses: actions/setup-dotnet@v3
-  #     with:
-  #       dotnet-version: ${{ matrix.dotnet }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
 
-  #   - name: Download NuGet Packages
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: nuget-packages
-  #       path: ./packages
+    - name: Download NuGet Packages
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./packages
     
-  #   - name: Create local package feed
-  #     run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
+    - name: Create local package feed
+      run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
 
-  #   - name: Print NuGet Sources
-  #     run: dotnet nuget list source
+    - name: Print NuGet Sources
+      run: dotnet nuget list source
 
-  #   - name: Restore dependencies
-  #     run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
+    - name: Restore dependencies
+      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
 
-  #   - name: Build
-  #     run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+    - name: Build
+      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
 
-  #   - name: Test
-  #     run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal
+    - name: Test
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal
 
   # test-windows:
   #   runs-on: windows-latest
