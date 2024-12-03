@@ -18,4 +18,6 @@ public class GenericMethodDefinitionAttribute(
     public string SourceTypeAssemblyName { get; } = sourceTypeAssemblyName;
     public string SourceTypeFullName { get; } = sourceTypeFullName;
     public string SourceTypeMethodName { get; } = sourceTypeMethodName;
+
+    public static string GetCoolMessage() => "This only comes from abstractions";
 }

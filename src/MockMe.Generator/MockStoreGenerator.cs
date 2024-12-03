@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using MockMe.Abstractions;
 using MockMe.Generator.Extensions;
 using MockMe.Generator.MockGenerators.TypeGenerators;
 
@@ -45,13 +46,13 @@ public class MockStoreGenerator : IIncrementalGenerator
                 string message;
 #if DEBUG
                 message =
-                    $"Generator is running in debug at {typeof(MockStoreGenerator).Assembly.Location} {typeof(Abstractions.GenericMethodInfo).Assembly.Location}";
+                    $"Generator is running in debug at {typeof(MockStoreGenerator).Assembly.Location} ab loc = {typeof(Abstractions.GenericMethodInfo).Assembly.Location} cool message = {GenericMethodDefinitionAttribute.GetCoolMessage()}";
 #elif RELEASE
                 message =
-                    $"Generator is running in release at {typeof(MockStoreGenerator).Assembly.Location} {typeof(Abstractions.GenericMethodInfo).Assembly.Location}";
+                    $"Generator is running in release at {typeof(MockStoreGenerator).Assembly.Location} {typeof(Abstractions.GenericMethodInfo).Assembly.Location} {GenericMethodDefinitionAttribute.GetCoolMessage()}";
 #else
                 message =
-                    $"Generator is running in other at {typeof(MockStoreGenerator).Assembly.Location} {typeof(Abstractions.GenericMethodInfo).Assembly.Location}";
+                    $"Generator is running in other at {typeof(MockStoreGenerator).Assembly.Location} {typeof(Abstractions.GenericMethodInfo).Assembly.Location} {GenericMethodDefinitionAttribute.GetCoolMessage()}";
 #endif
                 ctx.ReportDiagnostic(
                     Diagnostic.Create(
