@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -37,7 +38,7 @@ public class MockStoreGenerator : IIncrementalGenerator
         );
 
         //System.Diagnostics.Debugger.Launch();
-        Console.WriteLine("Running source gen");
+        Debug.WriteLine("Running source gen!");
         context.RegisterSourceOutput(
             compilationAndMethods,
             (ctx, source) =>

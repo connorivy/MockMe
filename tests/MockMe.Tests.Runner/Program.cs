@@ -23,36 +23,36 @@ Thread.Sleep(3000);
 //    ?? throw new InvalidOperationException("process must not be null");
 //await clean.WaitForExitAsync();
 
-ProcessStartInfo cleanStartInfo =
-    new()
-    {
-        FileName = "dotnet",
-        Arguments = $"build {Path.Combine(testsFolderPath, "..\\", "src", "MockMe")} -c Debug",
-    };
+//ProcessStartInfo cleanStartInfo =
+//    new()
+//    {
+//        FileName = "dotnet",
+//        Arguments = $"build {Path.Combine(testsFolderPath, "..\\", "src", "MockMe")} -c Debug",
+//    };
 
-using Process clean =
-    Process.Start(cleanStartInfo)
-    ?? throw new InvalidOperationException("process must not be null");
-await clean.WaitForExitAsync();
+//using Process clean =
+//    Process.Start(cleanStartInfo)
+//    ?? throw new InvalidOperationException("process must not be null");
+//await clean.WaitForExitAsync();
 
-var generatorBinPath = Path.Combine(
-    testsFolderPath,
-    "..",
-    "src",
-    "MockMe.Generator",
-    "bin",
-    "Debug",
-    "netstandard2.0"
-);
-foreach (var x in Directory.GetFiles(generatorBinPath))
-{
-    Console.WriteLine(x);
-}
+//var generatorBinPath = Path.Combine(
+//    testsFolderPath,
+//    "..",
+//    "src",
+//    "MockMe.Generator",
+//    "bin",
+//    "Debug",
+//    "netstandard2.0"
+//);
+//foreach (var x in Directory.GetFiles(generatorBinPath))
+//{
+//    Console.WriteLine(x);
+//}
 
-Assembly.LoadFrom(Path.Combine(generatorBinPath, "MockMe.Generator.dll"));
+//Assembly.LoadFrom(Path.Combine(generatorBinPath, "MockMe.Generator.dll"));
 
 ProcessStartInfo buildStartInfo =
-    new() { FileName = "dotnet", Arguments = $"build {slnf} --no-incremental -c Debug" };
+    new() { FileName = "dotnet", Arguments = $"build --no-incremental -c Debug" };
 
 using Process build =
     Process.Start(buildStartInfo)
@@ -60,7 +60,7 @@ using Process build =
 await build.WaitForExitAsync();
 
 ProcessStartInfo testStartInfo =
-    new() { FileName = "dotnet", Arguments = $"test {slnf} --no-build -c Debug" };
+    new() { FileName = "dotnet", Arguments = $"test --no-build -c Debug" };
 
 using Process test =
     Process.Start(testStartInfo) ?? throw new InvalidOperationException("process must not be null");
