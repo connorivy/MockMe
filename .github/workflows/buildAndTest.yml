@@ -44,15 +44,14 @@ jobs:
         github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
         path-to-lcov: ./tests/TestResults/lcov.info
 
-    - name: Pack NuGet Packages
-      # run: dotnet pack --configuration Release --no-build --output ./packages --version 0.0.1-dev.$GITHUB_RUN_ID
-      run: dotnet pack --configuration Release --output ./packages /p:Version=0.0.1-dev
+    # - name: Pack NuGet Packages
+    #   run: dotnet pack --configuration Release --output ./packages /p:Version=0.0.1-dev
 
-    - name: Upload NuGet Packages
-      uses: actions/upload-artifact@v4
-      with:
-        name: nuget-packages
-        path: ./packages
+    # - name: Upload NuGet Packages
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: nuget-packages
+    #     path: ./packages
 
   # test_linux:
   #   runs-on: ubuntu-latest

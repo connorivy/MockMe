@@ -38,11 +38,24 @@ public class MockStoreGenerator : IIncrementalGenerator
         );
 
         //System.Diagnostics.Debugger.Launch();
-        Debug.WriteLine("Running source gen!");
         context.RegisterSourceOutput(
             compilationAndMethods,
             (ctx, source) =>
             {
+                ctx.ReportDiagnostic(
+                    Diagnostic.Create(
+                        new DiagnosticDescriptor(
+                            id: "SG0001",
+                            title: "Source Generator Running",
+                            messageFormat: "Your source generator is running.",
+                            category: "SourceGenerator",
+                            DiagnosticSeverity.Info,
+                            isEnabledByDefault: true
+                        ),
+                        Location.None
+                    )
+                );
+
                 var sourceBuilder = new StringBuilder();
                 StringBuilder assemblyAttributesSource = new();
                 sourceBuilder.AppendLine(
