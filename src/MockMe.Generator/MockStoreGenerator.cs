@@ -240,7 +240,7 @@ namespace {NamespaceName}
         public static Mock<T> {StoreMethodName}<T>(global::{NamespaceName}.DummyClass unusedInstance)
             where T : global::{NamespaceName}.DummyClass
         {{
-            throw new global::System.NotImplementedException();
+            throw new NotImplementedException();
         }}
 
         private static bool isPatched;
