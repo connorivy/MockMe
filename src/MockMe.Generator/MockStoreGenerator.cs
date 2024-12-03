@@ -42,12 +42,23 @@ public class MockStoreGenerator : IIncrementalGenerator
             compilationAndMethods,
             (ctx, source) =>
             {
+                string message;
+#if DEBUG
+                message =
+                    $"Generator is running in debug at {Assembly.GetExecutingAssembly().Location}";
+#elif RELEASE
+                message =
+                    $"Generator is running in release at {Assembly.GetExecutingAssembly().Location}";
+#else
+                message =
+                    $"Generator is running in other at {Assembly.GetExecutingAssembly().Location}";
+#endif
                 ctx.ReportDiagnostic(
                     Diagnostic.Create(
                         new DiagnosticDescriptor(
                             id: "SG0001",
                             title: "Source Generator Running",
-                            messageFormat: "Your source generator is running.",
+                            messageFormat: message,
                             category: "SourceGenerator",
                             DiagnosticSeverity.Warning,
                             isEnabledByDefault: true
