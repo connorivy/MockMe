@@ -49,7 +49,7 @@ public class MockStoreGenerator : IIncrementalGenerator
                             title: "Source Generator Running",
                             messageFormat: "Your source generator is running.",
                             category: "SourceGenerator",
-                            DiagnosticSeverity.Info,
+                            DiagnosticSeverity.Warning,
                             isEnabledByDefault: true
                         ),
                         Location.None
