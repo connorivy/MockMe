@@ -17,14 +17,6 @@ jobs:
       with:
         dotnet-version: '9.0.x'
 
-    - name: Restore Dependencies
-      run: dotnet restore
-
-    - name: Build src projects and test runner
-      run: |
-        dotnet build -c Debug ./src/MockMe/
-        dotnet build -c Debug ./tests/MockMe.Tests.Runner/
-
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
