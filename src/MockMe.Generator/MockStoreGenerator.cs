@@ -43,31 +43,6 @@ public class MockStoreGenerator : IIncrementalGenerator
             compilationAndMethods,
             (ctx, source) =>
             {
-                string message;
-#if DEBUG
-                message =
-                    $"Generator is running in debug at {typeof(MockStoreGenerator).Assembly.Location} ab loc = {typeof(Abstractions.GenericMethodInfo).Assembly.Location} cool message = {GenericMethodDefinitionAttribute.GetCoolMessage()}";
-#elif RELEASE
-                message =
-                    $"Generator is running in release at {typeof(MockStoreGenerator).Assembly.Location} {typeof(Abstractions.GenericMethodInfo).Assembly.Location} {GenericMethodDefinitionAttribute.GetCoolMessage()}";
-#else
-                message =
-                    $"Generator is running in other at {typeof(MockStoreGenerator).Assembly.Location} {typeof(Abstractions.GenericMethodInfo).Assembly.Location} {GenericMethodDefinitionAttribute.GetCoolMessage()}";
-#endif
-                ctx.ReportDiagnostic(
-                    Diagnostic.Create(
-                        new DiagnosticDescriptor(
-                            id: "SG0001",
-                            title: "Source Generator Running",
-                            messageFormat: message,
-                            category: "SourceGenerator",
-                            DiagnosticSeverity.Warning,
-                            isEnabledByDefault: true
-                        ),
-                        Location.None
-                    )
-                );
-
                 var sourceBuilder = new StringBuilder();
                 StringBuilder assemblyAttributesSource = new();
                 sourceBuilder.AppendLine(
