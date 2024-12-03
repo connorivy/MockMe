@@ -49,7 +49,7 @@ foreach (var x in Directory.GetFiles(generatorBinPath))
     Console.WriteLine(x);
 }
 
-//Assembly.LoadFrom(Path.Combine(generatorBinPath, "MockMe.Generator.dll"));
+Assembly.LoadFrom(Path.Combine(generatorBinPath, "MockMe.Generator.dll"));
 
 ProcessStartInfo buildStartInfo =
     new() { FileName = "dotnet", Arguments = $"build {slnf} --no-incremental -c Debug" };
