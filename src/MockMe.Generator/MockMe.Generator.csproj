@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -21,7 +21,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\MockMe.Abstractions\MockMe.Abstractions.csproj" />
+	  <ProjectReference Include="..\MockMe.Abstractions\MockMe.Abstractions.csproj" GeneratePathProperty="true" PrivateAssets="all"/>
 	</ItemGroup>
+
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GetDependencyTargetPaths">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(MSBuildProjectDirectory)\$(OutputPath)MockMe.Abstractions.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
 
 </Project>
