@@ -30,7 +30,7 @@ jobs:
         targetdir: './tests/TestResults'
         reporttypes: 'lcov'
         # reporttypes: 'html'
-        filefilters: '-*\*.g.cs'
+        # filefilters: '-*\*.g.cs'
 
     # - name: Upload Report
     #   uses: actions/upload-artifact@v4

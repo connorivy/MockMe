@@ -37,6 +37,7 @@ public class MockStoreGenerator : IIncrementalGenerator
         );
 
         //System.Diagnostics.Debugger.Launch();
+        Console.WriteLine("Running source gen");
         context.RegisterSourceOutput(
             compilationAndMethods,
             (ctx, source) =>

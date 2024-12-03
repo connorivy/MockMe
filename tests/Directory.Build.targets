@@ -5,6 +5,7 @@
     BeforeTargets="CoreCompile"
     Condition="'$(IncludeMockMeRef)' == 'True' And '$(MockMeNugetPackageVersion)' == ''"
   >
+    <Exec Command="echo Before core compile exe: $(OutputPath) $(MockMePath)" />
     <Copy SourceFiles="..\..\src\MockMe.Generator\bin\$(Configuration)\netstandard2.0\MockMe.Generator.dll" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="..\..\src\MockMe.Generator\bin\$(Configuration)\netstandard2.0\MockMe.Generator.pdb" DestinationFolder="$(OutputPath)" />
   </Target>
