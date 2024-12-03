@@ -21,7 +21,7 @@ jobs:
       run: |
         dotnet tool install --global dotnet-coverage
         # export PATH="$PATH:/root/.dotnet/tools"
-        dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/" -f cobertura -s ./CodeCoverage.runsettings
+        dotnet-coverage collect "dotnet test -c Debug" -f cobertura -s ./CodeCoverage.runsettings
       
     - name: Generate report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
