@@ -366,3 +366,5 @@ MigrationBackup/
 openSees/lib
 
 output.xml
+
+output.cobertura.xml

@@ -20,15 +20,20 @@ jobs:
     - name: Restore Dependencies
       run: dotnet restore
 
+    - name: Build src projects and test runner
+      run: |
+        dotnet build -c Debug ./src/MockMe/
+        dotnet build -c Debug ./tests/MockMe.Tests.Runner/
+
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
-        dotnet-coverage collect "dotnet test --no-restore -c Release" -f xml
+        dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/" -f cobertura -s ./CodeCoverage.runsettings
       
     - name: Generate report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
       with:
-        reports: './output.xml'
+        reports: './output.cobertura.xml'
         targetdir: './tests/TestResults'
         reporttypes: 'lcov'
         filefilters: '-*\*.g.cs'
@@ -41,7 +46,7 @@ jobs:
 
     - name: Pack NuGet Packages
       # run: dotnet pack --configuration Release --no-build --output ./packages --version 0.0.1-dev.$GITHUB_RUN_ID
-      run: dotnet pack --configuration Release --no-build --output ./packages /p:Version=0.0.1-dev
+      run: dotnet pack --configuration Release --output ./packages /p:Version=0.0.1-dev
 
     - name: Upload NuGet Packages
       uses: actions/upload-artifact@v4

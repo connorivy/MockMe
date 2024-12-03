@@ -9,19 +9,19 @@
                     <CodeCoverage>
                         <ModulePaths>
                             <Exclude>
-                                <!--<ModulePath>.*MockMe.Tests.dll$</ModulePath>
-                                <ModulePath>.*Tests.*</ModulePath>-->
+                                <ModulePath>.MockMe.Tests.ExampleClasses.dll$</ModulePath>
+                                <!--<ModulePath>.*Tests.*</ModulePath>-->
                             </Exclude>
                         </ModulePaths>
                         <Sources>
                             <Exclude>
-                                <!--<Source>.*Polysharp.*</Source>
-                                <Source>.*.g.cs$</Source>-->
+                                <Source>.*Polysharp.*</Source>
+                                <Source>.*.g.cs$</Source>
                             </Exclude>
                         </Sources>
 
                         <CollectFromChildProcesses>True</CollectFromChildProcesses>
-                        <UseVerifiableInstrumentation>False</UseVerifiableInstrumentation>
+                        <!--<UseVerifiableInstrumentation>False</UseVerifiableInstrumentation>-->
                         <!--<UseVerifiableInstrumentation>False</UseVerifiableInstrumentation>-->
                         <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
                         <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
