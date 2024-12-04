@@ -13,6 +13,7 @@ MockMe is a library for mocking dependencies in your production code. Unlike oth
 Download NuGet package, then the source generators and the "MockMe.Mock" type will be available in your project.
 
 ```csharp
+using MockMe;
 
 var mock = Mock.Me(default(MyRepo)); // rebuild test project after writing this to help IDE fill in IntelliSense
 
