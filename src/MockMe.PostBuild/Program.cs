@@ -5,7 +5,7 @@ using MockMe.PostBuild.Extensions;
 using Mono.Cecil;
 
 # if DEBUG
-System.Diagnostics.Debugger.Launch();
+//System.Diagnostics.Debugger.Launch();
 # endif
 
 Console.WriteLine("Hello, Task!");
@@ -33,14 +33,6 @@ using var definitionAssembly = AssemblyDefinition.ReadAssembly(
 );
 
 List<MockReplacementInfo> genericTypes = definitionAssembly.GetMockReplacementInfo();
-
-var g1 = genericTypes
-    .Where(info => info.TypeToReplace.AssemblyName != testAssemblyName)
-    .GroupBy(info => info.TypeToReplace.AssemblyName);
-
-var g2 = genericTypes
-    .Where(info => info.TypeToReplace.AssemblyName == testAssemblyName)
-    .GroupBy(info => info.TypeToReplace.AssemblyName);
 
 var genericTypesWithTestAssemblyLast = genericTypes
     .Where(info => info.TypeToReplace.AssemblyName != testAssemblyName)

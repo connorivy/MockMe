@@ -9,6 +9,7 @@
     <Import_RootNamespace>MockMe.Tests.Overloads</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ArgumentModifierTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AsyncMethodOverloadTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AsyncOfTMethodOverloadsTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IndexerTests.cs" />

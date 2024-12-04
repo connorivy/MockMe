@@ -9,6 +9,10 @@ namespace MockMe.Tests.Overloads
     [ExcludeFromCodeCoverage]
     internal sealed class AllOverloads
     {
+        public int OutArgument(out int arg) => throw new NotImplementedException();
+
+        public int OutArgument(int arg) => throw new NotImplementedException();
+
 #pragma warning disable CS0628 // New protected member declared in sealed type
         protected int ProtectedProp { get; set; }
 

@@ -1,6 +1,6 @@
 namespace MockMe.Mocks;
 
-internal abstract class CallbackManager
+public abstract class CallbackManagerBase
 {
     protected int? NumCallbacksRegisteredBeforeReturn { get; private set; }
 
@@ -12,7 +12,18 @@ internal abstract class CallbackManager
     protected abstract int GetNumCallbacks();
 }
 
-internal class ActionCallbackManager<TCallback> : CallbackManager
+public interface ICallbackManagerBase<TCallback>
+{
+    public void AddCallback(TCallback action);
+}
+
+public interface ICallbackManager : ICallbackManagerBase<Action> { }
+
+public interface ICallbackManager<TArgCollection>
+    : ICallbackManager,
+        ICallbackManagerBase<Action<TArgCollection>> { }
+
+public abstract class CallbackManagerBase<TCallback> : CallbackManagerBase
 {
     internal List<TCallback>? Callbacks { get; private set; }
 
@@ -59,8 +70,14 @@ internal class ActionCallbackManager<TCallback> : CallbackManager
     protected override int GetNumCallbacks() => this.Callbacks?.Count ?? 0;
 }
 
-internal sealed class CallbackManager<TCallback>(Func<Action, TCallback> toCallback)
-    : ActionCallbackManager<TCallback>
+public sealed class CallbackManager() : CallbackManagerBase<Action>, ICallbackManager { }
+
+public sealed class CallbackManager<TArgCollection>
+    : CallbackManagerBase<Action<TArgCollection>>,
+        ICallbackManager<TArgCollection>
 {
+    private static readonly Func<Action, Action<TArgCollection>> toCallback = static action =>
+        (_) => action();
+
     public void AddCallback(Action action) => this.AddCallback(toCallback(action));
 }

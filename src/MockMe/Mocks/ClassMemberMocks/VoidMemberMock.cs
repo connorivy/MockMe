@@ -1,494 +1,130 @@
-using MockMe.Extensions;
-
 namespace MockMe.Mocks.ClassMemberMocks;
 
-public abstract class VoidMemberMockWithArgsBase<TSelf, TCallback>
-    : IMemberMockWithArgs<TSelf, TCallback>,
-        IMockCallbackRetriever<TCallback>
-    where TSelf : VoidMemberMockWithArgsBase<TSelf, TCallback>
+public abstract class VoidMemberMockBase<TSelf, TCallback, TCallbackManager>
+    :
+    //IMemberMockWithArgs<TSelf, TCallback>,
+    IMockCallbackRetriever<TCallback>
+    where TSelf : VoidMemberMockBase<TSelf, TCallback, TCallbackManager>
+    where TCallbackManager : CallbackManagerBase<TCallback>
 {
-    private readonly CallbackManager<TCallback> callbackManager;
+    internal TCallbackManager CallbackManager { get; }
 
-    internal VoidMemberMockWithArgsBase(CallbackManager<TCallback> callbackManager)
+    internal VoidMemberMockBase(TCallbackManager callbackManager)
     {
-        this.callbackManager = callbackManager;
+        this.CallbackManager = callbackManager;
     }
 
     public TSelf Callback(TCallback callback)
     {
-        this.callbackManager.AddCallback(callback);
-        return (TSelf)this;
-    }
-
-    public TSelf Callback(Action callback)
-    {
-        this.callbackManager.AddCallback(callback);
+        this.CallbackManager.AddCallback(callback);
         return (TSelf)this;
     }
 
     IEnumerable<TCallback> IMockCallbackRetriever<TCallback>.GetCallbacksRegisteredAfterReturnCall() =>
-        this.callbackManager.GetCallbacksRegisteredAfterReturnCall();
+        this.CallbackManager.GetCallbacksRegisteredAfterReturnCall();
 
     IEnumerable<TCallback> IMockCallbackRetriever<TCallback>.GetCallbacksRegisteredBeforeReturnCall() =>
-        this.callbackManager.GetCallbacksRegisteredBeforeReturnCall();
+        this.CallbackManager.GetCallbacksRegisteredBeforeReturnCall();
 }
 
-public class VoidMemberMock<TArg1>
-    : VoidMemberMockWithArgsBase<VoidMemberMock<TArg1>, Action<TArg1>>
+public interface IVoidMemberMockBase<out TSelf, TCallback, out TCallbackManager>
+    : IMockCallbackRetriever<TCallback>
+    where TSelf : IVoidMemberMockBase<TSelf, TCallback, TCallbackManager>
+    where TCallbackManager : CallbackManagerBase<TCallback>
 {
-    public VoidMemberMock()
-        : base(new(ActionUtils.CallbackFunc<TArg1>())) { }
+    internal TCallbackManager CallbackManager { get; }
+
+    public TSelf Callback(TCallback callback)
+    {
+        this.CallbackManager.AddCallback(callback);
+        return (TSelf)this;
+    }
+
+    IEnumerable<TCallback> IMockCallbackRetriever<TCallback>.GetCallbacksRegisteredAfterReturnCall() =>
+        this.CallbackManager.GetCallbacksRegisteredAfterReturnCall();
+
+    IEnumerable<TCallback> IMockCallbackRetriever<TCallback>.GetCallbacksRegisteredBeforeReturnCall() =>
+        this.CallbackManager.GetCallbacksRegisteredBeforeReturnCall();
 }
 
-public class VoidMemberMock<TArg1, TArg2>
-    : VoidMemberMockWithArgsBase<VoidMemberMock<TArg1, TArg2>, Action<TArg1, TArg2>>
+public interface IVoidMemberMock<out TSelf> : IVoidMemberMockBase<TSelf, Action, CallbackManager>
+    where TSelf : IVoidMemberMock<TSelf> { }
+
+public interface IVoidMemberMock<out TSelf, TArgCollection>
+    : IVoidMemberMockBase<TSelf, Action<TArgCollection>, CallbackManager<TArgCollection>>
+    where TSelf : IVoidMemberMock<TSelf, TArgCollection>
 {
-    public VoidMemberMock()
-        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2>())) { }
+    public TSelf Callback(Action callback)
+    {
+        this.CallbackManager.AddCallback(callback);
+        return (TSelf)this;
+    }
 }
 
-public class VoidMemberMock<TArg1, TArg2, TArg3>
-    : VoidMemberMockWithArgsBase<VoidMemberMock<TArg1, TArg2, TArg3>, Action<TArg1, TArg2, TArg3>>
+public class VoidMemberMockBase<TSelf> : IMockCallbackRetriever<Action>
+    where TSelf : VoidMemberMockBase<TSelf>
 {
-    public VoidMemberMock()
-        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3>())) { }
+    public VoidMemberMockBase()
+        : this(new CallbackManager()) { }
+
+    internal VoidMemberMockBase(CallbackManager callbackManager)
+    {
+        this.CallbackManager = callbackManager;
+    }
+
+    internal CallbackManager CallbackManager { get; }
+
+    public TSelf Callback(Action callback)
+    {
+        this.CallbackManager.AddCallback(callback);
+        return (TSelf)this;
+    }
+
+    IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredAfterReturnCall() =>
+        this.CallbackManager.GetCallbacksRegisteredAfterReturnCall();
+
+    IEnumerable<Action> IMockCallbackRetriever<Action>.GetCallbacksRegisteredBeforeReturnCall() =>
+        this.CallbackManager.GetCallbacksRegisteredBeforeReturnCall();
 }
 
-public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4>
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<TArg1, TArg2, TArg3, TArg4>,
-        Action<TArg1, TArg2, TArg3, TArg4>
-    >
+public class VoidMemberMock : VoidMemberMockBase<VoidMemberMock> { }
+
+public class VoidMemberMockBase<TSelf, TArgCollection>
+    : IMockCallbackRetriever<Action<TArgCollection>>
+    where TSelf : VoidMemberMockBase<TSelf, TArgCollection>
 {
-    public VoidMemberMock()
-        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4>())) { }
+    public VoidMemberMockBase()
+        : this(new CallbackManager<TArgCollection>()) { }
+
+    internal VoidMemberMockBase(CallbackManager<TArgCollection> callbackManager)
+    {
+        this.CallbackManager = callbackManager;
+    }
+
+    internal CallbackManager<TArgCollection> CallbackManager { get; }
+
+    public TSelf Callback(Action callback)
+    {
+        this.CallbackManager.AddCallback(callback);
+        return (TSelf)this;
+    }
+
+    public TSelf Callback(Action<TArgCollection> callback)
+    {
+        this.CallbackManager.AddCallback(callback);
+        return (TSelf)this;
+    }
+
+    IEnumerable<Action<TArgCollection>> IMockCallbackRetriever<
+        Action<TArgCollection>
+    >.GetCallbacksRegisteredAfterReturnCall() =>
+        this.CallbackManager.GetCallbacksRegisteredAfterReturnCall();
+
+    IEnumerable<Action<TArgCollection>> IMockCallbackRetriever<
+        Action<TArgCollection>
+    >.GetCallbacksRegisteredBeforeReturnCall() =>
+        this.CallbackManager.GetCallbacksRegisteredBeforeReturnCall();
 }
 
-public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5>
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5>,
-        Action<TArg1, TArg2, TArg3, TArg4, TArg5>
-    >
-{
-    public VoidMemberMock()
-        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5>())) { }
-}
-
-public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>,
-        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>
-    >
-{
-    public VoidMemberMock()
-        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>())) { }
-}
-
-public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>,
-        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>
-    >
-{
-    public VoidMemberMock()
-        : base(new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>())) { }
-}
-
-public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>,
-        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>
-    >
-{
-    public VoidMemberMock()
-        : base(
-            new(ActionUtils.CallbackFunc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>())
-        ) { }
-}
-
-public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>,
-        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>
-    >
-{
-    public VoidMemberMock()
-        : base(
-            new(
-                ActionUtils.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8,
-                    TArg9
-                >()
-            )
-        ) { }
-}
-
-public class VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>,
-        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>
-    >
-{
-    public VoidMemberMock()
-        : base(
-            new(
-                ActionUtils.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8,
-                    TArg9,
-                    TArg10
-                >()
-            )
-        ) { }
-}
-
-public class VoidMemberMock<
-    TArg1,
-    TArg2,
-    TArg3,
-    TArg4,
-    TArg5,
-    TArg6,
-    TArg7,
-    TArg8,
-    TArg9,
-    TArg10,
-    TArg11
->
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11
-        >,
-        Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>
-    >
-{
-    public VoidMemberMock()
-        : base(
-            new(
-                ActionUtils.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8,
-                    TArg9,
-                    TArg10,
-                    TArg11
-                >()
-            )
-        ) { }
-}
-
-public class VoidMemberMock<
-    TArg1,
-    TArg2,
-    TArg3,
-    TArg4,
-    TArg5,
-    TArg6,
-    TArg7,
-    TArg8,
-    TArg9,
-    TArg10,
-    TArg11,
-    TArg12
->
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11,
-            TArg12
-        >,
-        Action<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11,
-            TArg12
-        >
-    >
-{
-    public VoidMemberMock()
-        : base(
-            new(
-                ActionUtils.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8,
-                    TArg9,
-                    TArg10,
-                    TArg11,
-                    TArg12
-                >()
-            )
-        ) { }
-}
-
-public class VoidMemberMock<
-    TArg1,
-    TArg2,
-    TArg3,
-    TArg4,
-    TArg5,
-    TArg6,
-    TArg7,
-    TArg8,
-    TArg9,
-    TArg10,
-    TArg11,
-    TArg12,
-    TArg13
->
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11,
-            TArg12,
-            TArg13
-        >,
-        Action<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11,
-            TArg12,
-            TArg13
-        >
-    >
-{
-    public VoidMemberMock()
-        : base(
-            new(
-                ActionUtils.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8,
-                    TArg9,
-                    TArg10,
-                    TArg11,
-                    TArg12,
-                    TArg13
-                >()
-            )
-        ) { }
-}
-
-public class VoidMemberMock<
-    TArg1,
-    TArg2,
-    TArg3,
-    TArg4,
-    TArg5,
-    TArg6,
-    TArg7,
-    TArg8,
-    TArg9,
-    TArg10,
-    TArg11,
-    TArg12,
-    TArg13,
-    TArg14
->
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11,
-            TArg12,
-            TArg13,
-            TArg14
-        >,
-        Action<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11,
-            TArg12,
-            TArg13,
-            TArg14
-        >
-    >
-{
-    public VoidMemberMock()
-        : base(
-            new(
-                ActionUtils.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8,
-                    TArg9,
-                    TArg10,
-                    TArg11,
-                    TArg12,
-                    TArg13,
-                    TArg14
-                >()
-            )
-        ) { }
-}
-
-public class VoidMemberMock<
-    TArg1,
-    TArg2,
-    TArg3,
-    TArg4,
-    TArg5,
-    TArg6,
-    TArg7,
-    TArg8,
-    TArg9,
-    TArg10,
-    TArg11,
-    TArg12,
-    TArg13,
-    TArg14,
-    TArg15
->
-    : VoidMemberMockWithArgsBase<
-        VoidMemberMock<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11,
-            TArg12,
-            TArg13,
-            TArg14,
-            TArg15
-        >,
-        Action<
-            TArg1,
-            TArg2,
-            TArg3,
-            TArg4,
-            TArg5,
-            TArg6,
-            TArg7,
-            TArg8,
-            TArg9,
-            TArg10,
-            TArg11,
-            TArg12,
-            TArg13,
-            TArg14,
-            TArg15
-        >
-    >
-{
-    public VoidMemberMock()
-        : base(
-            new(
-                ActionUtils.CallbackFunc<
-                    TArg1,
-                    TArg2,
-                    TArg3,
-                    TArg4,
-                    TArg5,
-                    TArg6,
-                    TArg7,
-                    TArg8,
-                    TArg9,
-                    TArg10,
-                    TArg11,
-                    TArg12,
-                    TArg13,
-                    TArg14,
-                    TArg15
-                >()
-            )
-        ) { }
-}
+public class VoidMemberMock<TArgCollection>
+    : VoidMemberMockBase<VoidMemberMock<TArgCollection>, TArgCollection> { }

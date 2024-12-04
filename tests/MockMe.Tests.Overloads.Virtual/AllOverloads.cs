@@ -9,6 +9,10 @@ namespace MockMe.Tests.Overloads
     [ExcludeFromCodeCoverage]
     internal class AllOverloads
     {
+        public int OutArgument(out int arg) => throw new NotImplementedException();
+
+        public int OutArgument(int arg) => throw new NotImplementedException();
+
         protected virtual int ProtectedProp { get; set; }
 
         protected virtual int ProtectedMethod() => throw new NotImplementedException();

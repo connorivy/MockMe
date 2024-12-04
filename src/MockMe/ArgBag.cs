@@ -1,16 +1,16 @@
 namespace MockMe;
 
-public class ArgBag<T1>(Arg<T1> arg1) : IArgBag<T1>
+public class ArgBag<T1>(Arg<T1> arg1) : IArgBag<OriginalArgBag<T1>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
 
-    public bool AllArgsSatisfy(T1 arg1)
+    public bool AllArgsSatisfy(OriginalArgBag<T1> originalArgBag)
     {
-        return this.Arg1.IsSatisfiedBy(arg1);
+        return this.Arg1.IsSatisfiedBy(originalArgBag.IntArg1);
     }
 }
 
-public class ArgBag<T1, T2>(Arg<T1> arg1, Arg<T2> arg2) : IArgBag<ValueTuple<T1, T2>>
+public class ArgBag<T1, T2>(Arg<T1> arg1, Arg<T2> arg2) : IArgBag<OriginalArgBag<T1, T2>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -20,11 +20,12 @@ public class ArgBag<T1, T2>(Arg<T1> arg1, Arg<T2> arg2) : IArgBag<ValueTuple<T1,
         return this.Arg1.IsSatisfiedBy(arg1) && this.Arg2.IsSatisfiedBy(arg2);
     }
 
-    public bool AllArgsSatisfy((T1, T2) args) => this.AllArgsSatisfy(args.Item1, args.Item2);
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2> args) =>
+        this.AllArgsSatisfy(args.IntArg1, args.IntArg2);
 }
 
 public class ArgBag<T1, T2, T3>(Arg<T1> arg1, Arg<T2> arg2, Arg<T3> arg3)
-    : IArgBag<ValueTuple<T1, T2, T3>>
+    : IArgBag<OriginalArgBag<T1, T2, T3>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -37,12 +38,12 @@ public class ArgBag<T1, T2, T3>(Arg<T1> arg1, Arg<T2> arg2, Arg<T3> arg3)
             && this.Arg3.IsSatisfiedBy(arg3);
     }
 
-    public bool AllArgsSatisfy((T1, T2, T3) args) =>
-        this.AllArgsSatisfy(args.Item1, args.Item2, args.Item3);
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3> args) =>
+        this.AllArgsSatisfy(args.IntArg1, args.IntArg2, args.IntArg3);
 }
 
 public class ArgBag<T1, T2, T3, T4>(Arg<T1> arg1, Arg<T2> arg2, Arg<T3> arg3, Arg<T4> arg4)
-    : IArgBag<ValueTuple<T1, T2, T3, T4>>
+    : IArgBag<OriginalArgBag<T1, T2, T3, T4>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -57,8 +58,8 @@ public class ArgBag<T1, T2, T3, T4>(Arg<T1> arg1, Arg<T2> arg2, Arg<T3> arg3, Ar
             && this.Arg4.IsSatisfiedBy(arg4);
     }
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4) args) =>
-        this.AllArgsSatisfy(args.Item1, args.Item2, args.Item3, args.Item4);
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3, T4> args) =>
+        this.AllArgsSatisfy(args.IntArg1, args.IntArg2, args.IntArg3, args.IntArg4);
 }
 
 public class ArgBag<T1, T2, T3, T4, T5>(
@@ -67,7 +68,7 @@ public class ArgBag<T1, T2, T3, T4, T5>(
     Arg<T3> arg3,
     Arg<T4> arg4,
     Arg<T5> arg5
-) : IArgBag<ValueTuple<T1, T2, T3, T4, T5>>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -84,8 +85,8 @@ public class ArgBag<T1, T2, T3, T4, T5>(
             && this.Arg5.IsSatisfiedBy(arg5);
     }
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5) args) =>
-        this.AllArgsSatisfy(args.Item1, args.Item2, args.Item3, args.Item4, args.Item5);
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3, T4, T5> args) =>
+        this.AllArgsSatisfy(args.IntArg1, args.IntArg2, args.IntArg3, args.IntArg4, args.IntArg5);
 }
 
 public class ArgBag<T1, T2, T3, T4, T5, T6>(
@@ -95,7 +96,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6>(
     Arg<T4> arg4,
     Arg<T5> arg5,
     Arg<T6> arg6
-) : IArgBag<(T1, T2, T3, T4, T5, T6)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -112,8 +113,15 @@ public class ArgBag<T1, T2, T3, T4, T5, T6>(
         && this.Arg5.IsSatisfiedBy(arg5)
         && this.Arg6.IsSatisfiedBy(arg6);
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5, T6) args) =>
-        this.AllArgsSatisfy(args.Item1, args.Item2, args.Item3, args.Item4, args.Item5, args.Item6);
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3, T4, T5, T6> args) =>
+        this.AllArgsSatisfy(
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6
+        );
 }
 
 public class ArgBag<T1, T2, T3, T4, T5, T6, T7>(
@@ -124,7 +132,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7>(
     Arg<T5> arg5,
     Arg<T6> arg6,
     Arg<T7> arg7
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -143,15 +151,15 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7>(
         && this.Arg6.IsSatisfiedBy(arg6)
         && this.Arg7.IsSatisfiedBy(arg7);
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5, T6, T7) args) =>
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3, T4, T5, T6, T7> args) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7
         );
 }
 
@@ -164,7 +172,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8>(
     Arg<T6> arg6,
     Arg<T7> arg7,
     Arg<T8> arg8
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7, T8)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -194,16 +202,16 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8>(
         && this.Arg7.IsSatisfiedBy(arg7)
         && this.Arg8.IsSatisfiedBy(arg8);
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5, T6, T7, T8) args) =>
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8> args) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7,
-            args.Item8
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7,
+            args.IntArg8
         );
 }
 
@@ -217,7 +225,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
     Arg<T7> arg7,
     Arg<T8> arg8,
     Arg<T9> arg9
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -250,17 +258,17 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
         && this.Arg8.IsSatisfiedBy(arg8)
         && this.Arg9.IsSatisfiedBy(arg9);
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5, T6, T7, T8, T9) args) =>
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9> args) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7,
-            args.Item8,
-            args.Item9
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7,
+            args.IntArg8,
+            args.IntArg9
         );
 }
 
@@ -275,7 +283,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
     Arg<T8> arg8,
     Arg<T9> arg9,
     Arg<T10> arg10
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -311,18 +319,18 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
         && this.Arg9.IsSatisfiedBy(arg9)
         && this.Arg10.IsSatisfiedBy(arg10);
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) args) =>
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> args) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7,
-            args.Item8,
-            args.Item9,
-            args.Item10
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7,
+            args.IntArg8,
+            args.IntArg9,
+            args.IntArg10
         );
 }
 
@@ -338,7 +346,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
     Arg<T9> arg9,
     Arg<T10> arg10,
     Arg<T11> arg11
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -377,19 +385,19 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
         && this.Arg10.IsSatisfiedBy(arg10)
         && this.Arg11.IsSatisfiedBy(arg11);
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) args) =>
+    public bool AllArgsSatisfy(OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> args) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7,
-            args.Item8,
-            args.Item9,
-            args.Item10,
-            args.Item11
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7,
+            args.IntArg8,
+            args.IntArg9,
+            args.IntArg10,
+            args.IntArg11
         );
 }
 
@@ -406,7 +414,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
     Arg<T10> arg10,
     Arg<T11> arg11,
     Arg<T12> arg12
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -448,20 +456,22 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
         && this.Arg11.IsSatisfiedBy(arg11)
         && this.Arg12.IsSatisfiedBy(arg12);
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) args) =>
+    public bool AllArgsSatisfy(
+        OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> args
+    ) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7,
-            args.Item8,
-            args.Item9,
-            args.Item10,
-            args.Item11,
-            args.Item12
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7,
+            args.IntArg8,
+            args.IntArg9,
+            args.IntArg10,
+            args.IntArg11,
+            args.IntArg12
         );
 }
 
@@ -479,7 +489,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
     Arg<T11> arg11,
     Arg<T12> arg12,
     Arg<T13> arg13
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -524,21 +534,23 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
         && this.Arg12.IsSatisfiedBy(arg12)
         && this.Arg13.IsSatisfiedBy(arg13);
 
-    public bool AllArgsSatisfy((T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13) args) =>
+    public bool AllArgsSatisfy(
+        OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> args
+    ) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7,
-            args.Item8,
-            args.Item9,
-            args.Item10,
-            args.Item11,
-            args.Item12,
-            args.Item13
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7,
+            args.IntArg8,
+            args.IntArg9,
+            args.IntArg10,
+            args.IntArg11,
+            args.IntArg12,
+            args.IntArg13
         );
 }
 
@@ -557,7 +569,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
     Arg<T12> arg12,
     Arg<T13> arg13,
     Arg<T14> arg14
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -606,23 +618,23 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
         && this.Arg14.IsSatisfiedBy(arg14);
 
     public bool AllArgsSatisfy(
-        (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14) args
+        OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> args
     ) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7,
-            args.Item8,
-            args.Item9,
-            args.Item10,
-            args.Item11,
-            args.Item12,
-            args.Item13,
-            args.Item14
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7,
+            args.IntArg8,
+            args.IntArg9,
+            args.IntArg10,
+            args.IntArg11,
+            args.IntArg12,
+            args.IntArg13,
+            args.IntArg14
         );
 }
 
@@ -642,7 +654,7 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,
     Arg<T13> arg13,
     Arg<T14> arg14,
     Arg<T15> arg15
-) : IArgBag<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>
+) : IArgBag<OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>>
 {
     public Arg<T1> Arg1 { get; } = arg1;
     public Arg<T2> Arg2 { get; } = arg2;
@@ -694,23 +706,23 @@ public class ArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,
         && this.Arg15.IsSatisfiedBy(arg15);
 
     public bool AllArgsSatisfy(
-        (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) args
+        OriginalArgBag<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> args
     ) =>
         this.AllArgsSatisfy(
-            args.Item1,
-            args.Item2,
-            args.Item3,
-            args.Item4,
-            args.Item5,
-            args.Item6,
-            args.Item7,
-            args.Item8,
-            args.Item9,
-            args.Item10,
-            args.Item11,
-            args.Item12,
-            args.Item13,
-            args.Item14,
-            args.Item15
+            args.IntArg1,
+            args.IntArg2,
+            args.IntArg3,
+            args.IntArg4,
+            args.IntArg5,
+            args.IntArg6,
+            args.IntArg7,
+            args.IntArg8,
+            args.IntArg9,
+            args.IntArg10,
+            args.IntArg11,
+            args.IntArg12,
+            args.IntArg13,
+            args.IntArg14,
+            args.IntArg15
         );
 }

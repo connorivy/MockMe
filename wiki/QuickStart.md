@@ -10,9 +10,9 @@ var mock = Mock.Me<Calculator>();
 // specify that 'Add(1, 1)' should return 99
 mock.Setup.Add(1, 1).Returns(99);
 
-// the returns method also takes a function with the required arguments
+// the returns method also takes a function with an argument that is a collection of the arguments that the method takes.
 // specify that 'Add(x, y)' should return x * y
-mock.Setup.Add(5, 5).Returns((x, y) => x * y);
+mock.Setup.Add(5, 5).Returns(args => args.x * args.y);
 
 // properties are broken down futher into 'Get()' and 'Set(T propValue)' methods.
 // if there isn't a public setter, then only the 'Get()' method will exist
@@ -89,11 +89,11 @@ mock.Setup.Add(1, 1)
 // capture invocation arguments
 int? firstParameter = null;
 mock.Setup.Add(2, 2)
-    .Callback((x, _) => firstParameter = x); // the variable 'firstParameter' will be assigned
+    .Callback(args => xParameter = args.x); // the variable 'firstParameter' will be assigned
 
 // access instances of objects that are assigned to properties
 CalculatorType? typeUsedBySetter
-mock.Setup.CalculatorType.Set(Arg.Any()).Callback(t => typeUsedBySetter = t);
+mock.Setup.CalculatorType.Set(Arg.Any()).Callback(args => typeUsedBySetter = args.Value);
 ```
 
 # Assertions

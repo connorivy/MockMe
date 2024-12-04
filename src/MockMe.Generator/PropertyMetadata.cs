@@ -89,7 +89,7 @@ public class SetupPropertyMetadata
         $"private global::MockMe.Mocks.ClassMemberMocks.MemberMock<{this.PropertyType}>? {this.GetterFieldName};";
 
     protected virtual string SetterField() =>
-        $"private List<ArgBagWithVoidMemberMock<{this.PropertyType}>>? {this.SetterFieldName};";
+        $"private List<ArgBagWithMock<PropertySetterArgs<{this.PropertyType}>>>? {this.SetterFieldName};";
 
     protected virtual string Body() =>
         $@"
@@ -127,20 +127,25 @@ public class IndexerSetupPropertyMetadata : SetupPropertyMetadata
     public required string IndexerType { get; init; }
 
     protected override string GetterField() =>
-        $"private List<ArgBagWithMemberMock<{this.IndexerType}, {this.PropertyType}>>? {this.GetterFieldName};";
+        $"private List<ArgBagWithMock<IndexerGetterArgs<{this.IndexerType}>>>? {this.GetterFieldName};";
 
     protected override string SetterField() =>
-        $"private List<ArgBagWithVoidMemberMock<{this.IndexerType}, {this.PropertyType}>>? {this.SetterFieldName};";
+        $"private List<ArgBagWithMock<IndexerSetterArgs<{this.IndexerType}, {this.PropertyType}>>>? {this.SetterFieldName};";
 
-    protected override string Body() =>
-        $@"
-        public global::MockMe.Mocks.ClassMemberMocks.{(this.HasGet() ? "Get" : "")}{(this.HasSet() ? "Set" : "")}PropertyMock<{this.IndexerType}, {this.PropertyType}> this[global::MockMe.Arg<{this.IndexerType}> index] =>
+    protected override string Body()
+    {
+        string mockType =
+            $"global::MockMe.Mocks.ClassMemberMocks.{(this.HasGet() ? "Get" : "")}{(this.HasSet() ? "Set" : "")}PropertyMock<{this.IndexerType}, {this.PropertyType}>";
+
+        return $@"
+        public {mockType} this[global::MockMe.Arg<{this.IndexerType}> index] =>
             new(
-                {(this.HasGet() ? $"SetupMethod(this.{this.GetterFieldName} ??= new(), index)".AddSuffixIfNotEmpty(this.HasSet() ? "," : "") : "")}
+                {(this.HasGet() ? $"SetupMethod<IndexerGetterArgs<{this.IndexerType}>, global::MockMe.Mocks.ClassMemberMocks.MemberMock<IndexerGetterArgs<{this.IndexerType}>, {this.PropertyType}>>(this.{this.GetterFieldName} ??= new(), new ArgBag<{this.IndexerType}>(index))".AddSuffixIfNotEmpty(this.HasSet() ? "," : "") : "")}
                 {(this.HasSet() ? $"this.{this.SetterFieldName} ??= new()," : "")}
                 {(this.HasSet() ? $"index" : "")}
             );
 ";
+    }
 }
 
 public class AssertPropertyMetadata

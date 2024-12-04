@@ -75,6 +75,56 @@ public static class MethodSymbolExtensions
         );
     }
 
+    public static string GetParametersWithOriginalTypesAndNoModifiers(this IMethodSymbol method)
+    {
+        if (method.Parameters.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        return string.Join(
+            ", ",
+            method.Parameters.Select(p =>
+            {
+                var paramString = $"{p.Type.ToFullTypeString()} {p.Name}";
+                //if (p.HasExplicitDefaultValue)
+                //{
+                //    var defaultValue =
+                //        p.ExplicitDefaultValue != null ? p.ExplicitDefaultValue.ToString() : "null";
+                //    paramString += $" = {defaultValue}";
+                //}
+                return paramString;
+            })
+        );
+    }
+
+    public static string GetParametersWithModifiersAndNoTypes(this IMethodSymbol method)
+    {
+        if (method.Parameters.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        return string.Join(
+            ", ",
+            method.Parameters.Select(p =>
+            {
+                var modifiers = p.RefKind switch
+                {
+                    RefKind.Ref => "ref ",
+                    RefKind.Out => "out ",
+                    RefKind.In => "in ",
+                    //RefKind.RefReadOnlyParameter => "ref readonly ",
+                    RefKind.None or _ => "",
+                };
+
+                var paramString = $"{modifiers} {p.Name}";
+
+                return paramString;
+            })
+        );
+    }
+
     public static string GetParametersWithoutTypesAndModifiers(this IMethodSymbol method) =>
         string.Join(", ", method.Parameters.Select(p => p.Name));
 
@@ -140,7 +190,9 @@ public static class MethodSymbolExtensions
     public static string GetUniqueMethodName(this IMethodSymbol methodSymbol)
     {
         var methodName = methodSymbol.Name;
-        var parameterTypes = methodSymbol.Parameters.Select(p => p.Type.Name);
+        var parameterTypes = methodSymbol.Parameters.Select(p =>
+            (p.RefKind == RefKind.None ? "" : p.RefKind.ToString()) + p.Type.Name
+        );
         var uniqueMethodName = $"{methodName}_{string.Join("_", parameterTypes)}";
         return uniqueMethodName;
     }

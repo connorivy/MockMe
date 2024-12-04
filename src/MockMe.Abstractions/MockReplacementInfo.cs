@@ -1,27 +1,14 @@
 namespace MockMe.Abstractions;
 
-public class MockReplacementInfo
+public class MockReplacementInfo(GenericMethodInfo typeToReplace, GenericMethodInfo sourceType)
 {
-    public MockReplacementInfo(GenericMethodInfo typeToReplace, GenericMethodInfo sourceType)
-    {
-        this.TypeToReplace = typeToReplace;
-        this.SourceType = sourceType;
-    }
-
-    public GenericMethodInfo TypeToReplace { get; }
-    public GenericMethodInfo SourceType { get; }
+    public GenericMethodInfo TypeToReplace { get; } = typeToReplace;
+    public GenericMethodInfo SourceType { get; } = sourceType;
 }
 
-public class GenericMethodInfo
+public class GenericMethodInfo(string assemblyName, string typeFullName, string methodName)
 {
-    public GenericMethodInfo(string assemblyName, string typeFullName, string methodName)
-    {
-        this.AssemblyName = assemblyName;
-        this.TypeFullName = typeFullName;
-        this.MethodName = methodName;
-    }
-
-    public string AssemblyName { get; }
-    public string TypeFullName { get; }
-    public string MethodName { get; }
+    public string AssemblyName { get; } = assemblyName;
+    public string TypeFullName { get; } = typeFullName;
+    public string MethodName { get; } = methodName;
 }

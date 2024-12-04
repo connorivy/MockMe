@@ -18,6 +18,26 @@ namespace MockMe.Tests
         }
 
         [Fact]
+        public void CalculatorAdd_WhenReturnIsFunc_ShouldCallFunc()
+        {
+            var calculatorMock = Mock.Me<Calculator>();
+
+            calculatorMock.Setup.Add(1, 2).Returns(() => 9999);
+
+            Assert.Equal(9999, calculatorMock.MockedObject.Add(1, 2));
+        }
+
+        [Fact]
+        public void CalculatorAdd_WhenReturnIsFuncOfT_ShouldCallFuncOfT()
+        {
+            var calculatorMock = Mock.Me<Calculator>();
+
+            calculatorMock.Setup.Add(10, 55).Returns(args => args.x * args.y);
+
+            Assert.Equal(550, calculatorMock.MockedObject.Add(10, 55));
+        }
+
+        [Fact]
         public void ICalculatorAdd_ShouldReturnConfiguredValue()
         {
             var calculatorMock = Mock.Me<ICalculator>();

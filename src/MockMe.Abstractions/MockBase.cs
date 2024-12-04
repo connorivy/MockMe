@@ -22,15 +22,11 @@ public abstract class SealedTypeMock<TObjectToMock> : MockBase<TObjectToMock>
         mock.MockedObject;
 }
 
-public abstract class InterfaceMock<TObjectToMock, TCallTracker> : MockBase<TObjectToMock>
+public abstract class InterfaceMock<TObjectToMock, TCallTracker>(TCallTracker callTracker)
+    : MockBase<TObjectToMock>
     where TCallTracker : TObjectToMock
 {
-    protected TCallTracker CallTracker { get; }
-
-    protected InterfaceMock(TCallTracker callTracker)
-    {
-        this.CallTracker = callTracker;
-    }
+    protected TCallTracker CallTracker { get; } = callTracker;
 
     public override TObjectToMock MockedObject => this.CallTracker;
 
