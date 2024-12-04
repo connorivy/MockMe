@@ -14,7 +14,7 @@ Download NuGet package, then the source generators and the "MockMe.Mock" type wi
 
 ```csharp
 
-var mock = Mock.Me(default(MyRepo));
+var mock = Mock.Me(default(MyRepo)); // rebuild test project after writing this to help IDE fill in IntelliSense
 
 mock.Setup.ExpensiveDatabaseCall().Returns(99);
 
