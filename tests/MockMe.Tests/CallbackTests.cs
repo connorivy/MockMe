@@ -8,7 +8,7 @@ public class CallbackTests
     [Fact]
     public void Callback_IsCalled()
     {
-        var calculatorMock = Mock.Me<Calculator>();
+        var calculatorMock = Mock.Me(default(Calculator));
 
         int numTimesCalled = 0;
         calculatorMock.Setup.Add(Arg.Any(), Arg.Any()).Callback(() => numTimesCalled++);
@@ -23,7 +23,7 @@ public class CallbackTests
     [Fact]
     public void Callback_IsCalledWithCorrectArgs()
     {
-        var calculatorMock = Mock.Me<Calculator>();
+        var calculatorMock = Mock.Me(default(Calculator));
 
         int multResult = 0;
         calculatorMock
@@ -40,7 +40,7 @@ public class CallbackTests
     [Fact]
     public void MultipleCallbacks_AreCalledInOrder()
     {
-        var calculatorMock = Mock.Me<Calculator>();
+        var calculatorMock = Mock.Me(default(Calculator));
 
         int? first = null;
         int? second = null;
@@ -96,7 +96,7 @@ public class CallbackTests
     [Fact]
     public void CallbacksBeforeAndAfterReturn_AreCalledInOrder()
     {
-        var calculatorMock = Mock.Me<Calculator>();
+        var calculatorMock = Mock.Me(default(Calculator));
 
         bool callback1Called = false;
         bool returnCalled = false;

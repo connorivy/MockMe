@@ -27,7 +27,7 @@ namespace MockMe.Tests.Overloads
         [InlineData(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)]
         public void VoidOverload_CallbackAndAssertShouldWork(params int[] ints)
         {
-            var mock = Mock.Me<AllOverloads>(null);
+            var mock = Mock.Me(default(AllOverloads));
 
             int numCalls = 0;
 

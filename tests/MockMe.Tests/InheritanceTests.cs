@@ -44,7 +44,7 @@ namespace MockMe.Tests
         [Fact]
         public void ChildClassWhichCallsBase_ShouldStillWork_WhenMocked()
         {
-            var mock = Mock.Me<ChildClass>();
+            var mock = Mock.Me(default(ChildClass));
 
             ChildClass notMocked = new();
 
@@ -54,7 +54,7 @@ namespace MockMe.Tests
         [Fact]
         public void ChildClassWhichOverridesBase_ShouldStillWork_WhenMocked()
         {
-            var mock = Mock.Me<ChildClass>();
+            var mock = Mock.Me(default(ChildClass));
 
             ChildClass notMocked = new();
 

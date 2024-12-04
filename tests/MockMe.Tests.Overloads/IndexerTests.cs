@@ -8,7 +8,7 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerGetForInt_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
+            var mock = Mock.Me(default(AllOverloads));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<int>()].Get().Callback(() => numCalls++).Returns("hello indexer");
@@ -28,7 +28,7 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerSetForInt_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
+            var mock = Mock.Me(default(AllOverloads));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<int>()].Set(Arg.Any()).Callback(() => numCalls++);
@@ -48,7 +48,7 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void IndexerGetForString_ReturnsAndCallbackShouldWork()
         {
-            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
+            var mock = Mock.Me(default(AllOverloads));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<string>()].Get().Callback(() => numCalls++).Returns(99);
@@ -66,7 +66,7 @@ namespace MockMe.Tests.Overloads
         [Fact]
         public void SetOnlyIndexer_AssertAndCallbackShouldWork()
         {
-            var mock = Mock.Me<AllOverloads>(default(AllOverloads));
+            var mock = Mock.Me(default(AllOverloads));
 
             int numCalls = 0;
             mock.Setup[Arg.Any<double>()].Set(Arg.Any()).Callback(() => numCalls++);

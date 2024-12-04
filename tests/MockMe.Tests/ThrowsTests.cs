@@ -9,7 +9,7 @@ namespace MockMe.Tests
         [Fact]
         public void Throws_ShouldThrowException()
         {
-            var mock = Mock.Me<Calculator>();
+            var mock = Mock.Me(default(Calculator));
 
             mock.Setup.Add(Arg.Any(), Arg.Any()).Throws(new InvalidCastException()); // throw random exception
 
@@ -21,7 +21,7 @@ namespace MockMe.Tests
         [Fact]
         public void ReturnFollowedByThrows_ShouldReturnThenThrowException()
         {
-            var mock = Mock.Me<Calculator>();
+            var mock = Mock.Me(default(Calculator));
 
             mock.Setup.Add(Arg.Any(), Arg.Any())
                 .Returns(9, 99, 999)
@@ -38,7 +38,7 @@ namespace MockMe.Tests
         [Fact]
         public void Throws_ShouldGiveAccurateAssertInfo()
         {
-            var mock = Mock.Me<Calculator>();
+            var mock = Mock.Me(default(Calculator));
 
             mock.Setup.Add(Arg.Any(), Arg.Any()).Throws(new InvalidCastException()); // throw random exception
 

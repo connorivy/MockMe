@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using MockMe.Tests.ExampleClasses;
 using Xunit;
 
 namespace MockMe.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class PotentiallyInlinedMethods
     {
         public int AddNormal(int x, int y) => x + y;
@@ -15,6 +17,7 @@ namespace MockMe.Tests
         public int AddAggressiveInline(int x, int y) => x + y;
     }
 
+    [ExcludeFromCodeCoverage]
     public class InlineTestCaller
     {
         private readonly PotentiallyInlinedMethods potentiallyInlinedMethods;
@@ -34,6 +37,7 @@ namespace MockMe.Tests
 
     public class InliningTests
     {
+        [ExcludeFromCodeCoverage]
         public class CalculatorManager
         {
             private readonly Calculator calculator;
@@ -55,7 +59,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
             calculatorMock.Setup.Add(3, 5).Returns(99, 999, 9999);
             CalculatorManager calculatorManager = new(calculatorMock);
 
@@ -67,7 +71,7 @@ namespace MockMe.Tests
         [Fact]
         public void AddMethod_ShouldReturnConfiguredValue()
         {
-            var inlineMock = Mock.Me<PotentiallyInlinedMethods>();
+            var inlineMock = Mock.Me(default(PotentiallyInlinedMethods));
 
             inlineMock.Setup.AddNoInline(Arg.Any(), Arg.Any()).Returns(99);
             inlineMock.Setup.AddNormal(Arg.Any(), Arg.Any()).Returns(999);
