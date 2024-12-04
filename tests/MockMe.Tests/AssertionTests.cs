@@ -11,7 +11,7 @@ namespace MockMe.Tests
         [Fact]
         public void TestWasCalled_ForMethodWithNoArgsAndNoReturnVal()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             Assert.ThrowsAny<MockMeException>(() => calculatorMock.Assert.TurnOff().WasCalled());
 
@@ -48,7 +48,7 @@ namespace MockMe.Tests
         [Fact]
         public void SetCalculatorType_PropertySetterWasCalled()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             Assert.ThrowsAny<MockMeException>(
                 () =>
@@ -69,7 +69,7 @@ namespace MockMe.Tests
         [Fact]
         public void SetICalculatorType_PropertySetterWasCalled()
         {
-            var calculatorMock = Mock.Me<ICalculator>();
+            var calculatorMock = Mock.Me(default(ICalculator));
 
             Assert.ThrowsAny<MockMeException>(
                 () =>

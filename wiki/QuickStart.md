@@ -5,7 +5,7 @@ You can control the return value of public methods and properties by using the '
 
 ```csharp
 
-var mock = Mock.Me<Calculator>();
+var mock = Mock.Me(default(Calculator));
 
 // specify that 'Add(1, 1)' should return 99
 mock.Setup.Add(1, 1).Returns(99);
@@ -43,7 +43,7 @@ calc["string indexer"]; // result is 9.999
 
 ```csharp
 
-var mock = Mock.Me<Calculator>();
+var mock = Mock.Me(default(Calculator));
 
 // return no matter the arguments passed into the 'Add' method
 mock.Setup.Add(Arg.Any(), Arg.Any()).Returns(99);
@@ -70,7 +70,7 @@ mock.Add(5, 5); // result is 555
 
 ```csharp
 
-var mock = Mock.Me<Calculator>();
+var mock = Mock.Me(default(Calculator));
 
 int numCalls = 0;
 mock.Setup.Add(1, 1)
@@ -100,7 +100,7 @@ mock.Setup.CalculatorType.Set(Arg.Any()).Callback(args => typeUsedBySetter = arg
 
 ```csharp
 
-var mock = Mock.Me<Calculator>();
+var mock = Mock.Me(default(Calculator));
 
 // called at least once
 mock.Assert.Add(1, 1).WasCalled();

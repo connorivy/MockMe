@@ -10,7 +10,7 @@ namespace MockMe.Tests
         [Fact]
         public void ArgAny_ShouldCoverAnyArgument()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             Calculator calculator = calculatorMock;
 

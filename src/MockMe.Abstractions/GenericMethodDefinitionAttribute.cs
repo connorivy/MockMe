@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MockMe.Abstractions;
 
+[ExcludeFromCodeCoverage]
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
 public class GenericMethodDefinitionAttribute(
     string typeToReplaceAssemblyName,
@@ -18,6 +20,4 @@ public class GenericMethodDefinitionAttribute(
     public string SourceTypeAssemblyName { get; } = sourceTypeAssemblyName;
     public string SourceTypeFullName { get; } = sourceTypeFullName;
     public string SourceTypeMethodName { get; } = sourceTypeMethodName;
-
-    public static string GetCoolMessage() => "This only comes from abstractions";
 }

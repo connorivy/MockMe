@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using MockMe.Abstractions;
 using MockMe.Generator.Extensions;
 using MockMe.Generator.MockGenerators.TypeGenerators;
 
@@ -64,12 +62,6 @@ namespace {NamespaceName}
                 Dictionary<ITypeSymbol, string> createMockSymbolToNameDict = [];
                 foreach (var typeToMock in GetTypesToBeMocked(source.Left, source.Right))
                 {
-                    string patchCall = "";
-                    //if (typeToMock.TypeKind != TypeKind.Interface)
-                    //{
-                    //    patchCall = "EnsurePatch();";
-                    //}
-
                     string genericConstraint;
                     if (typeToMock.IsSealed)
                     {
@@ -115,10 +107,8 @@ namespace {NamespaceName}
                     sourceBuilder.AppendLine(
                         @$"
         [global::System.CodeDom.Compiler.GeneratedCode(""MockMe"", ""{MockMeVersion}"")]
-        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMockName}Mock{genericArgs} {StoreMethodName}<T>(global::{typeToMock}? unusedInstance{(typeToMock.IsSealed ? "" : " = null")})
-            {genericConstraint}
+        public static global::MockMe.Generated.{typeToMock.ContainingNamespace}.{typeToMockName}Mock{genericArgs} {StoreMethodName}(global::{typeToMock}? unusedInstance)
         {{
-            {patchCall}
             return new();
         }}"
                     );
@@ -175,15 +165,16 @@ namespace {NamespaceName}
                 method.Expression is MemberAccessExpressionSyntax memberAccess
                 && memberAccess.Expression is IdentifierNameSyntax identifierName
                 && identifierName.Identifier.Text == StoreClassName
-                && memberAccess.Name is GenericNameSyntax genericName
-                && genericName.TypeArgumentList.Arguments.Count == 1
-                && genericName.Identifier.Text == StoreMethodName
+                && method.ArgumentList.Arguments.Count == 1
+                && method.ArgumentList.Arguments[0].Expression
+                    is DefaultExpressionSyntax defaultExpression
+            //&& memberAccess.Name is GenericNameSyntax genericName
+            //&& genericName.TypeArgumentList.Arguments.Count == 1
+            //&& genericName.Identifier.Text == StoreMethodName
             )
             {
                 var model = compilation.GetSemanticModel(method.SyntaxTree);
-                var genericArgSymbol = model
-                    .GetTypeInfo(genericName.TypeArgumentList.Arguments[0])
-                    .Type;
+                var genericArgSymbol = model.GetTypeInfo(defaultExpression.Type).Type;
 
                 if (
                     genericArgSymbol is not null
@@ -212,26 +203,9 @@ namespace {NamespaceName}
 {{
     internal static partial class {StoreClassName}
     {{
-        public static Mock<T> {StoreMethodName}<T>(global::{NamespaceName}.DummyClass unusedInstance)
-            where T : global::{NamespaceName}.DummyClass
+        public static object {StoreMethodName}(global::{NamespaceName}.DummyClass unusedInstance)
         {{
-            throw new NotImplementedException();
-        }}
-
-        private static bool isPatched;
-        private static readonly object LockObj = new();
-
-        private static void EnsurePatch()
-        {{
-            lock (LockObj)
-            {{
-                if (!isPatched)
-                {{
-                    var harmony = new global::HarmonyLib.Harmony(""com.mockme.patch"");
-                    harmony.PatchAll();
-                    isPatched = true;
-                }}
-            }}
+            throw new global::System.NotImplementedException();
         }}
     }}
 }}

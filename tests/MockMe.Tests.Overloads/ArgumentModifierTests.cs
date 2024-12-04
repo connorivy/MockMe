@@ -8,7 +8,7 @@ public class ArgumentModifierTests
     [Fact]
     public void OutKeyword_WhenConfiguredInReturnCall_ShouldSetTheCorrectValue()
     {
-        var mock = Mock.Me<AllOverloads>(default(AllOverloads));
+        var mock = Mock.Me(default(AllOverloads));
 
         mock.Setup.OutArgument(out _)
             .Returns(args =>
@@ -28,7 +28,7 @@ public class ArgumentModifierTests
     [Fact]
     public void OutKeyword_WhenConfiguredInCallbackCall_ShouldSetTheCorrectValue()
     {
-        var mock = Mock.Me<AllOverloads>(default(AllOverloads));
+        var mock = Mock.Me(default(AllOverloads));
 
         mock.Setup.OutArgument(out _).Callback(args => args.arg = 55).Returns(99);
 
@@ -43,7 +43,7 @@ public class ArgumentModifierTests
     [Fact]
     public void ParametersNotPassedByReference_ShouldNotHaveASetter()
     {
-        var mock = Mock.Me<AllOverloads>(default(AllOverloads));
+        var mock = Mock.Me(default(AllOverloads));
 
         var outParamType = typeof(AllOverloadsMockSetup.OutArgument_OutInt32Collection);
         var regularParamType = typeof(AllOverloadsMockSetup.OutArgument_Int32Collection);

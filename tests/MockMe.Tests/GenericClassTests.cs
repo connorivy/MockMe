@@ -31,8 +31,8 @@ namespace MockMe.Tests
         [Fact]
         public void MultipleValueTypeOverloads_ShouldReturnConfiguredValues()
         {
-            var mockInt = Mock.Me<ConnorsCoolGenericType<int>>();
-            var mockDouble = Mock.Me<ConnorsCoolGenericType<double>>();
+            var mockInt = Mock.Me(default(ConnorsCoolGenericType<int>));
+            var mockDouble = Mock.Me(default(ConnorsCoolGenericType<double>));
 
             mockInt.Setup.GetRandomVal().Returns(99);
             mockDouble.Setup.GetRandomVal().Returns(99.99);
@@ -50,8 +50,8 @@ namespace MockMe.Tests
         [Fact]
         public void MultipleCustomStructOverloads_ShouldReturnConfiguredValues()
         {
-            var mockCool = Mock.Me<ConnorsCoolGenericType<ConnorsCoolReadonlyStruct>>();
-            var mockEvil = Mock.Me<ConnorsCoolGenericType<ConnorsEvilMutableStruct>>();
+            var mockCool = Mock.Me(default(ConnorsCoolGenericType<ConnorsCoolReadonlyStruct>));
+            var mockEvil = Mock.Me(default(ConnorsCoolGenericType<ConnorsEvilMutableStruct>));
 
             mockCool.Setup.GetRandomVal().Returns(new ConnorsCoolReadonlyStruct());
             mockEvil.Setup.GetRandomVal().Returns(new ConnorsEvilMutableStruct());
@@ -71,8 +71,8 @@ namespace MockMe.Tests
         [Fact]
         public void RefAndValueTypeOverloads_ShouldReturnConfiguredValues()
         {
-            var mockInt = Mock.Me<ConnorsCoolGenericType<int>>();
-            var mockString = Mock.Me<ConnorsCoolGenericType<string>>();
+            var mockInt = Mock.Me(default(ConnorsCoolGenericType<int>));
+            var mockString = Mock.Me(default(ConnorsCoolGenericType<string>));
 
             mockInt.Setup.GetRandomVal().Returns(99);
             mockString.Setup.GetRandomVal().Returns("returnVal");
@@ -90,8 +90,8 @@ namespace MockMe.Tests
         [Fact]
         public void MultipleReferenceTypeOverloads_ShouldReturnConfiguredValues()
         {
-            var mockObject = Mock.Me<ConnorsCoolGenericType<object>>();
-            var mockString = Mock.Me<ConnorsCoolGenericType<string>>();
+            var mockObject = Mock.Me(default(ConnorsCoolGenericType<object>));
+            var mockString = Mock.Me(default(ConnorsCoolGenericType<string>));
 
             object myObj = new();
 
@@ -111,7 +111,7 @@ namespace MockMe.Tests
         [Fact]
         public void PropertyOfGenericClassType_ShouldReturnConfiguredValues()
         {
-            var mockString = Mock.Me<ConnorsCoolGenericType<string>>();
+            var mockString = Mock.Me(default(ConnorsCoolGenericType<string>));
 
             mockString.Setup.MyCoolProp.Get().Returns("returnVal");
             string? setVal = null;

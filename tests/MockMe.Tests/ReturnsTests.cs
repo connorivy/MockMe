@@ -10,7 +10,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
@@ -20,7 +20,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_WhenReturnIsFunc_ShouldCallFunc()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             calculatorMock.Setup.Add(1, 2).Returns(() => 9999);
 
@@ -30,7 +30,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_WhenReturnIsFuncOfT_ShouldCallFuncOfT()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             calculatorMock.Setup.Add(10, 55).Returns(args => args.x * args.y);
 
@@ -40,7 +40,7 @@ namespace MockMe.Tests
         [Fact]
         public void ICalculatorAdd_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<ICalculator>();
+            var calculatorMock = Mock.Me(default(ICalculator));
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
@@ -50,7 +50,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_WhenCalledByANonMock_ShouldCallOriginalCode()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
@@ -64,7 +64,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_WhenReturnIsCalledManyTimes_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             calculatorMock.Setup.Add(1, 2).Returns(9999);
 
@@ -78,7 +78,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorAdd_WhenReturnIsCalledManyTimesWithDifferentValues_ShouldReturnConfiguredValue()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             calculatorMock.Setup.Add(1, 2).Returns(9, 99, 999, 9999, 99999);
 
@@ -92,7 +92,7 @@ namespace MockMe.Tests
         [Fact]
         public void CalculatorType_ShouldReturnConfiguredPropertyValue()
         {
-            var calculatorMock = Mock.Me<Calculator>();
+            var calculatorMock = Mock.Me(default(Calculator));
 
             calculatorMock.Setup.CalculatorType.Get().Returns(CalculatorType.Graphing);
 
@@ -102,7 +102,7 @@ namespace MockMe.Tests
         [Fact]
         public void ICalculatorType_ShouldReturnConfiguredPropertyValue()
         {
-            var calculatorMock = Mock.Me<ICalculator>();
+            var calculatorMock = Mock.Me(default(ICalculator));
 
             calculatorMock.Setup.CalculatorType.Get().Returns(CalculatorType.Graphing);
 
@@ -112,7 +112,7 @@ namespace MockMe.Tests
         [Fact]
         public async Task CalculatorAddAsync_ShouldReturnConfiguredPropertyValue()
         {
-            var calculatorMock = Mock.Me<ComplexCalculator>(default(ComplexCalculator));
+            var calculatorMock = Mock.Me(default(ComplexCalculator));
 
             calculatorMock.Setup.MultiplyAsync(1, 1).ReturnsAsync(9);
 
@@ -128,7 +128,7 @@ namespace MockMe.Tests
         [Fact]
         public async Task CalculatorAddAsync_WhenReturnIsNotConfigured_ShouldReturnCompletedTask()
         {
-            var calculatorMock = Mock.Me<ComplexCalculator>(default(ComplexCalculator));
+            var calculatorMock = Mock.Me(default(ComplexCalculator));
 
             ComplexCalculator calc = calculatorMock;
 
@@ -140,7 +140,7 @@ namespace MockMe.Tests
         [Fact]
         public async Task CalculatorWaitAsync_WhenReturnIsNotConfigured_ShouldReturnCompletedTask()
         {
-            var calculatorMock = Mock.Me<ComplexCalculator>(default(ComplexCalculator));
+            var calculatorMock = Mock.Me(default(ComplexCalculator));
 
             ComplexCalculator calc = calculatorMock;
 

@@ -5,7 +5,8 @@ using System.Reflection;
 Console.WriteLine("Hello, World!");
 
 var testsFolderPath = Path.Combine(
-    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        ?? throw new InvalidOperationException("path must not be null"),
     "..",
     "..",
     "..",

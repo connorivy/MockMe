@@ -1,5 +1,4 @@
 using MockMe.Extensions;
-using MockMe.Mocks.ClassMemberMocks;
 
 namespace MockMe;
 
@@ -53,12 +52,7 @@ public class MockCallTracker
                     continue;
                 }
 
-                var localReturn = CallMemberMockBase<
-                    TReturn,
-                    TOriginalArgCollection,
-                    TCallback,
-                    TReturnCall
-                >(
+                var localReturn = CallMemberMockBase(
                     argBag.Mock,
                     argCollection,
                     callbackAction,

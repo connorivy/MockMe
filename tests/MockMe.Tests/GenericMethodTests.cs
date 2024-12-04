@@ -9,11 +9,11 @@ namespace MockMe.Tests
         [Fact]
         public void GenericMethod_ShouldReturnConfiguredValue()
         {
-            var mock = Mock.Me<ComplexCalculator>();
+            var mock = Mock.Me(default(ComplexCalculator));
 
             mock.Setup.ComputeHashForObjects<int>(Arg.Any()).Returns(99);
 
-            ComplexCalculator calc = (ComplexCalculator)mock;
+            ComplexCalculator calc = mock;
 
             var result = calc.ComputeHashForObjects(new int[] { 1, 2, 3, 4, 5 });
             Assert.Equal(99, result);
@@ -22,7 +22,7 @@ namespace MockMe.Tests
         [Fact]
         public void GenericMethodWithMultipleGenericArgs_ShouldReturnConfiguredValue()
         {
-            var mock = Mock.Me<ClassWithGenericMethods>();
+            var mock = Mock.Me(default(ClassWithGenericMethods));
 
             mock.Setup.ThreeGenericTypes<string, int, double>(Arg.Any(), Arg.Any(), Arg.Any())
                 .Returns("asdf");
