@@ -15,13 +15,29 @@ Download NuGet package, then the source generators and the "MockMe.Mock" type wi
 ```csharp
 using MockMe;
 
-var mock = Mock.Me(default(MyRepo)); // rebuild test project after writing this to help IDE fill in IntelliSense
+sealed class MyRepo
+{
+    public int ExpensiveDatabaseCall() => // some code;
+}
 
+// use this syntax to trigger the source generator to make a mock of the provided type
+// the 'mock' object will have 3 properties: Setup, Assert, and MockedObject
+// hint: rebuild test project after writing this line or IntelliSense may not work correctly
+var mock = Mock.Me(default(MyRepo)); 
+
+// the mock.Setup object has an identical interface to the original object
+// from there you can configure method behavior with 'Returns', 'Callback', 'Throws', etc
 mock.Setup.ExpensiveDatabaseCall().Returns(99);
 
+// the mock.MockedObject is a special instance of the mocked type which has the modified behavior
+// other instances of the mocked type will have the original behavior
 MyRepo myRepo = mock.MockedObject;
+int result = myRepo.ExpensiveDatabaseCall();
 
-Assert.Equal(99, myRepo.ExpensiveDatabaseCall());
+Assert.Equal(99, result);
+
+// the mock.Assert object also has an identical interface to the original object.
+// you can use it to assert certain mock behaviors
 mock.Assert.ExpensiveDatabaseCall().WasCalled();
 
 ```
