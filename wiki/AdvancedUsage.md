@@ -9,7 +9,7 @@ class MyCoolClass
     }
 }
 
-var mock = Mock.Me<MyCoolClass>();
+var mock = Mock.Me(default(MyCoolClass));
 
 // the out parameter can be discarded, as it doesn't do anything here.
 // the only reason it is here is because dropping it could lead to conflicts with other method overloads

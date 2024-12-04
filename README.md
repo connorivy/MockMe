@@ -1,5 +1,9 @@
 ![MockMeFull](https://github.com/user-attachments/assets/43d8b58f-98b0-4469-95c3-7e5ca0683ffc)
 
+___
+
+[![Coverage Status](https://coveralls.io/repos/github/connorivy/MockMe/badge.svg?branch=main)](https://coveralls.io/github/connorivy/MockMe?branch=main)
+
 ## What is it?
 
 MockMe is a library for mocking dependencies in your production code. Unlike other libraries that can only mock interfaces and virtual methods, MockMe can mock sealed classes and non-virtual methods.
@@ -10,7 +14,7 @@ Download NuGet package, then the source generators and the "MockMe.Mock" type wi
 
 ```csharp
 
-var mock = Mock.Me<MyRepo>();
+var mock = Mock.Me(default(MyRepo));
 
 mock.Setup.ExpensiveDatabaseCall().Returns(99);
 
@@ -21,4 +25,4 @@ mock.Assert.ExpensiveDatabaseCall().WasCalled();
 
 ```
 
-Check out the [Wiki](https://github.com/connorivy/MockMe/wiki) for more examples.
+Check out the [Wiki](https://github.com/connorivy/MockMe/wiki/QuickStart) for more examples.
