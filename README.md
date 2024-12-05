@@ -10,15 +10,19 @@ MockMe is a library for mocking dependencies in your unit test projects. Unlike 
 
 ## Getting Started
 
-Download NuGet package, then the source generators and the "MockMe.Mock" type will be available in your project.
-
+Imagine you have the following repository class
 ```csharp
-using MockMe;
-
 sealed class MyRepo
 {
     public int ExpensiveDatabaseCall() => // some code;
 }
+```
+
+Download the MockMe NuGet package, then the source generators and the "MockMe.Mock" type will be available in your project.
+Then you can customize the behavior of the repository class as below.
+
+```csharp
+using MockMe;
 
 // use this syntax to trigger the source generator to make a mock of the provided type
 // the 'mock' object will have 3 properties: Setup, Assert, and MockedObject
