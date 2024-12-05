@@ -6,7 +6,7 @@ ___
 
 ## What is it?
 
-MockMe is a library for mocking dependencies in your production code. Unlike other libraries that can only mock interfaces and virtual methods, MockMe can mock sealed classes and non-virtual methods.
+MockMe is a library for mocking dependencies in your unit test projects. Unlike other libraries that can only mock interfaces and virtual methods, MockMe can mock sealed classes and non-virtual methods.
 
 ## Getting Started
 
@@ -43,3 +43,7 @@ mock.Assert.ExpensiveDatabaseCall().WasCalled();
 ```
 
 Check out the [Wiki](https://github.com/connorivy/MockMe/wiki/QuickStart) for more examples.
+
+## Give it a Star 
+
+If you like this project, please give it a star!
