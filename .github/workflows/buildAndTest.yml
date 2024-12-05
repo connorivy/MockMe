@@ -80,13 +80,13 @@ jobs:
       run: dotnet nuget list source
 
     - name: Restore dependencies
-      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev" /p:TargetFramework=${{ matrix.dotnet }}
+      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev" /p:TargetFramework=net${{ matrix.dotnet }}
 
     - name: Build
-      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:TargetFramework=${{ matrix.dotnet }}
+      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:TargetFramework=net${{ matrix.dotnet }}
 
     - name: Test
-      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:TargetFramework=${{ matrix.dotnet }}
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:TargetFramework=net${{ matrix.dotnet }}
 
   # test-windows:
   #   runs-on: windows-latest
