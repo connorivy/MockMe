@@ -11,7 +11,7 @@ class MyCoolClass
 
 var mock = Mock.Me(default(MyCoolClass));
 
-// the out parameter can be discarded, as it doesn't do anything here.
+// the out parameter can be discarded, as it doesn't do anything when used by the Setup or Assert property methods.
 // the only reason it is here is because dropping it could lead to conflicts with other method overloads
 mock.Setup.TryGetVal(Arg.Any(), out _).Returns(args => 
 {
