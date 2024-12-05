@@ -8,8 +8,6 @@ using Mono.Cecil;
 //System.Diagnostics.Debugger.Launch();
 # endif
 
-Console.WriteLine("Hello, Task!");
-
 var testAssemblyPath = args[0];
 var binLocation =
     Path.GetDirectoryName(testAssemblyPath)

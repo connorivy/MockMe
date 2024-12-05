@@ -7,15 +7,15 @@
     <MockMeAssembly Condition="$(MockMeAssembly) == ''">$(MockMePath)MockMe.dll</MockMeAssembly>
   </PropertyGroup>
   
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo After Build: $(MockMeAssembly) $(MockMePath)" />
-  </Target>
+  </Target>-->
 
   <ItemGroup>
     <JsonFiles Include="$(MockMePath)*.json" />
   </ItemGroup>
   <Target Name="CopyRuntimeConfig" BeforeTargets="ReplaceGenericMethods">
-    <Exec Command="echo CopyRuntimeConfig: $(OutputPath) $(MockMePath)" />
+    <!--<Exec Command="echo CopyRuntimeConfig: $(OutputPath) $(MockMePath)" />-->
     <Copy SourceFiles="@(JsonFiles)" DestinationFolder="$(OutputPath)" />
   </Target>
   

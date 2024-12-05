@@ -1,3 +1,29 @@
+# Example class to mock
+
+The following examples assume you are mocking a `Calculator` class which looks like this
+```csharp
+public sealed class Calculator
+{
+    public int Add(int x, int y) { }
+
+    public Task<int> AddAsync(int x, int y) { }
+
+    public CalculatorType CalculatorType { get; set; }
+ 
+    public double this[string index]
+    {
+         get { }
+         set { }
+    }
+}
+
+public enum CalculatorType
+{
+    Standard,
+    Scientific,
+    Graphing,
+}
+```
 # Controlling Return Value
 
 You can control the return value of public methods and properties by using the 'Setup' property combined with the 'Returns' method.

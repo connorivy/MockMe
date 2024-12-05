@@ -210,36 +210,10 @@ namespace {NamespaceName}
     }}
 }}
 #pragma warning restore";
+
         context.AddSource(
             "Mock.DummyDeclaration.g.cs",
             SourceText.From(mockStoreSource, Encoding.UTF8)
         );
-
-        //AppDomain.CurrentDomain.TypeResolve += new ResolveEventHandler(HandleTypeResolve);
-        //// Load the assembly
-        //var assemblyPath = Path.Combine(
-        //    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-        //    "MockMe.SampleMocks.dll"
-        //);
-        //var assembly = AssemblyDefinition.ReadAssembly(assemblyPath);
-        //// Find the type to delete
-        ////
-        //var typeToRemove = assembly.MainModule.Types.FirstOrDefault(t => t.Name == "Calculator");
-        //if (typeToRemove != null)
-        //{
-        //    assembly.MainModule.Types.Remove(typeToRemove);
-        //}
-        //var outputPath = "MockMe.SampleMocks.dll";
     }
-
-    //static Assembly HandleTypeResolve(object sender, ResolveEventArgs args)
-    //{
-    //    Console.WriteLine("TypeResolve event handler.");
-
-    //    // Save the dynamic assembly, and then load it using its
-    //    // display name. Return the loaded assembly.
-    //    //
-    //    //ab.Save(moduleName);
-    //    return Assembly.Load(Assembly.GetExecutingAssembly().Location);
-    //}
 }
