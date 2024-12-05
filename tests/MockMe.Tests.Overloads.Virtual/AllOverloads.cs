@@ -7,7 +7,7 @@ namespace MockMe.Tests.Overloads
 #pragma warning restore CA1716 // Using reserved word in namespace
 {
     [ExcludeFromCodeCoverage]
-    internal class AllOverloads
+    public class AllOverloads
     {
         public int OutArgument(out int arg) => throw new NotImplementedException();
 

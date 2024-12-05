@@ -9,6 +9,7 @@
     <IncludeMockMeRef Condition="'$(IncludeMockMeRef)' == ''">True</IncludeMockMeRef>
     <WarningsNotAsErrors>
       CA1822; <!-- Mark members as static -->
+      CA1861; <!-- Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array -->
       IDE0161; <!-- Convert to file-scoped namespace -->
       IDE0130; <!-- Namespace does not match folder structure -->
       IDE0034; <!-- Simplify 'default' expression -->
