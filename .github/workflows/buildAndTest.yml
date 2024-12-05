@@ -20,6 +20,7 @@ jobs:
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
+        export PATH="$PATH:/root/.dotnet/tools"
         dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/" -f cobertura -s ./CodeCoverage.runsettings
       
     - name: Generate report
@@ -28,7 +29,6 @@ jobs:
         reports: './output.cobertura.xml'
         targetdir: './tests/TestResults'
         reporttypes: 'lcov'
-        # reporttypes: 'html'
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
@@ -76,17 +76,11 @@ jobs:
     - name: Create local package feed
       run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
 
-    - name: Print NuGet Sources
-      run: dotnet nuget list source
-
-    - name: Restore dependencies
-      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev" /p:TargetFramework=net${{ matrix.dotnet }}
-
     - name: Build
-      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:TargetFramework=net${{ matrix.dotnet }}
+      run: dotnet build ./tests/MockMe.Tests.slnf -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
 
     - name: Test
-      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:TargetFramework=net${{ matrix.dotnet }}
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
 
   # test-windows:
   #   runs-on: windows-latest

@@ -3,7 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1716 // Using reserved word in namespace
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace MockMe.Tests.Overloads
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 #pragma warning restore CA1716 // Using reserved word in namespace
 {
     [ExcludeFromCodeCoverage]
