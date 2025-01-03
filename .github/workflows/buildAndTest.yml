@@ -82,6 +82,11 @@ jobs:
     - name: Create local package feed
       run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
 
+    - name: Clean previous build artifacts
+      run: |
+        find . -type d -name 'bin' -exec rm -rf {} +
+        find . -type d -name 'obj' -exec rm -rf {} +
+
     - name: Build
       run: dotnet build ./tests/MockMe.Tests.slnf -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
 
