@@ -2,6 +2,7 @@
   "solution": {
     "path": "..\\MockMe.sln",
     "projects": [
+      "tests\\MockMe Tests With Path Spaces\\MockMe Tests With Path Spaces.csproj",
       "tests\\MockMe.Tests.ExampleClasses\\MockMe.Tests.ExampleClasses.csproj",
       "tests\\MockMe.Tests.Overloads.Interface\\MockMe.Tests.Overloads.Interface.csproj",
       "tests\\MockMe.Tests.Overloads.Sealed\\MockMe.Tests.Overloads.Sealed.csproj",
