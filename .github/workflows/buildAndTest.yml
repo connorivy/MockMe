@@ -87,11 +87,8 @@ jobs:
         find . -type d -name 'bin' -exec rm -rf {} +
         find . -type d -name 'obj' -exec rm -rf {} +
 
-    - name: Restore
-      run: dotnet restore
-
     - name: Build
-      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
+      run: dotnet build ./tests/MockMe.Tests.slnf -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
 
     - name: Test
       run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
