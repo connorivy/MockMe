@@ -11,13 +11,12 @@
     <Exec Command="echo After Build: $(MockMeAssembly) $(MockMePath)" />
   </Target>-->
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <JsonFiles Include="$(MockMePath)*.json" />
   </ItemGroup>
   <Target Name="CopyRuntimeConfig" BeforeTargets="ReplaceGenericMethods">
-    <!--<Exec Command="echo CopyRuntimeConfig: $(OutputPath) $(MockMePath)" />-->
     <Copy SourceFiles="@(JsonFiles)" DestinationFolder="$(OutputPath)" />
-  </Target>
+  </Target>-->
   
   <!--<UsingTask TaskName="MockMe.Build.ReplaceGenericMethods" AssemblyFile="$(MockMeAssembly)" />-->
 
