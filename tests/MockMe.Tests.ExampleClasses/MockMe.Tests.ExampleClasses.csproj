@@ -2,7 +2,10 @@
   
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RollForward>major</RollForward>
+    <RollForward>Major</RollForward>
+    <RuntimeOptions>
+      <RollForward>Major</RollForward>
+    </RuntimeOptions>
   </PropertyGroup>
   
 </Project>
