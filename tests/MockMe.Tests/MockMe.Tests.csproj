@@ -12,7 +12,6 @@
     <PackageReference Include="coverlet.collector" Version="6.0.0" />-->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.11.1" />
-    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>

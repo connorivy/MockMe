@@ -17,6 +17,10 @@ jobs:
       with:
         dotnet-version: '9.0.x'
 
+    - name: Build harmony
+      run: |
+        dotnet build ./Harmony/Harmony/Harmony.csproj -c ReleaseThin
+
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
