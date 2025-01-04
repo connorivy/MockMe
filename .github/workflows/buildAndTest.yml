@@ -30,12 +30,12 @@ jobs:
       run: |
         dotnet tool install --global dotnet-coverage
         export PATH="$PATH:/root/.dotnet/tools"
-        dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/ -c Release --no-build" -f cobertura -s ./CodeCoverage.runsettings
+        dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/ -c Release --no-build" -f xml -s ./CodeCoverage.runsettings
       
     - name: Generate report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.3
       with:
-        reports: './output.cobertura.xml'
+        reports: './output.xml'
         targetdir: './tests/TestResults'
         reporttypes: 'lcov'
 
