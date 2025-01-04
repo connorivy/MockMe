@@ -6,7 +6,7 @@ on:
 
 jobs:
   build_and_pack:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       ContinuousIntegrationBuild: true
 
