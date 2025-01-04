@@ -88,7 +88,7 @@ jobs:
         find . -type d -name 'obj' -exec rm -rf {} +
 
     - name: Build
-      run: dotnet build ./tests/MockMe.Tests.slnf -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
+      run: dotnet build ./tests/MockMe.Tests.slnf -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }} -maxcpucount:1
 
     - name: Test
       run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
