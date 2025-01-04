@@ -24,7 +24,7 @@ jobs:
     - name: Build harmony and test runner
       run: |
         dotnet build ./Harmony/Harmony/Harmony.csproj -c ReleaseThin
-        dotnet build ./test/MockMe.Tests.Runner/MockMe.Tests.Runner.csproj -c Release
+        dotnet build ./tests/MockMe.Tests.Runner/MockMe.Tests.Runner.csproj -c Release
 
     - name: Test And Collect CodeCov
       run: |
