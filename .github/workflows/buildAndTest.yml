@@ -87,6 +87,8 @@ jobs:
         find . -type d -name 'bin' -exec rm -rf {} +
         find . -type d -name 'obj' -exec rm -rf {} +
 
+    # stack overflow thread for why I'm using maxcpucount
+    # https://stackoverflow.com/questions/72267139/msbuild-error-msb4018-cannot-access-project-assets-json-in-net-5-build
     - name: Build
       run: dotnet build ./tests/MockMe.Tests.slnf -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }} -maxcpucount:1
 
