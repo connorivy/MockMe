@@ -20,30 +20,32 @@ jobs:
   build_and_pack:
     runs-on: ubuntu-latest
 
+    env:
+      ContinuousIntegrationBuild: true
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - name: Setup .NET 9
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '9.0.x'
 
+    - name: Build harmony and test runner
+      run: |
+        dotnet build ./Harmony/Harmony/Harmony.csproj -f net6.0 -c ReleaseThin
+        dotnet build ./tests/MockMe.Tests.Runner/MockMe.Tests.Runner.csproj -c Release
+
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
-        dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/" -f cobertura -s ./CodeCoverage.runsettings
-      
-    - name: Generate report
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
-      with:
-        reports: './output.cobertura.xml'
-        targetdir: './tests/TestResults'
-        reporttypes: 'lcov'
-        # reporttypes: 'html'
+        dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/ -c Release --no-build" -f cobertura -s ./CodeCoverage.runsettings
 
     - name: Coveralls
-      uses: coverallsapp/github-action@master
+      uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        path-to-lcov: ./tests/TestResults/lcov.info
+        file: ./output.cobertura.xml
