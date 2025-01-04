@@ -3,11 +3,15 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)..\'))" />
 
   <PropertyGroup>
+    <MockMeTestsTargetFramework Condition="'$(MockMeTestsTargetFramework)' == ''">net6.0</MockMeTestsTargetFramework>
+    <TargetFramework>$(MockMeTestsTargetFramework)</TargetFramework>
     <LangVersion>10</LangVersion>
     <RollForward>major</RollForward>
     <IncludeMockMeRef Condition="'$(IncludeMockMeRef)' == ''">True</IncludeMockMeRef>
     <WarningsNotAsErrors>
       CA1822; <!-- Mark members as static -->
+      CA1861; <!-- Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array -->
+      IDE0060; <!--Remove unused parameter-->
       IDE0161; <!-- Convert to file-scoped namespace -->
       IDE0130; <!-- Namespace does not match folder structure -->
       IDE0034; <!-- Simplify 'default' expression -->
@@ -26,10 +30,15 @@
     <ProjectReference Include="..\..\src\MockMe.Generator\MockMe.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\src\MockMe\MockMe.csproj" />
     <ProjectReference Include="..\..\src\MockMe.PostBuild\MockMe.PostBuild.csproj" />
+    
+    <Reference Include="0Harmony">
+      <HintPath>..\..\Harmony\Harmony\bin\ReleaseThin\net6.0\0Harmony.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(IncludeMockMeRef)' == 'True' And '$(MockMeNugetPackageVersion)' == ''">
     <MockMePath>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\</MockMePath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <Import Project="..\src\MockMe\Build\MockMe.targets" Condition="'$(IncludeMockMeRef)' == 'True' And '$(MockMeNugetPackageVersion)' == ''" />

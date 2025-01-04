@@ -11,15 +11,22 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - name: Setup .NET 9
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '9.0.x'
 
+    - name: Build harmony
+      run: |
+        dotnet build ./Harmony/Harmony/Harmony.csproj -c ReleaseThin
+
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
+        export PATH="$PATH:/root/.dotnet/tools"
         dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/" -f cobertura -s ./CodeCoverage.runsettings
       
     - name: Generate report
@@ -28,7 +35,6 @@ jobs:
         reports: './output.cobertura.xml'
         targetdir: './tests/TestResults'
         reporttypes: 'lcov'
-        # reporttypes: 'html'
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
@@ -76,17 +82,18 @@ jobs:
     - name: Create local package feed
       run: dotnet nuget add source ${{ github.workspace }}/packages --name localNuGet
 
-    - name: Print NuGet Sources
-      run: dotnet nuget list source
+    - name: Clean previous build artifacts
+      run: |
+        find . -type d -name 'bin' -exec rm -rf {} +
+        find . -type d -name 'obj' -exec rm -rf {} +
 
-    - name: Restore dependencies
-      run: dotnet restore /p:MockMeNugetPackageVersion="0.0.1-dev"
-
+    # stack overflow thread for why I'm using maxcpucount
+    # https://stackoverflow.com/questions/72267139/msbuild-error-msb4018-cannot-access-project-assets-json-in-net-5-build
     - name: Build
-      run: dotnet build ./tests/MockMe.Tests.slnf --no-restore -c Release /p:MockMeNugetPackageVersion="0.0.1-dev"
+      run: dotnet build ./tests/MockMe.Tests.slnf -c Release /p:MockMeNugetPackageVersion="0.0.1-dev" /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }} -maxcpucount:1
 
     - name: Test
-      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal
+      run: dotnet test ./tests/MockMe.Tests.slnf --no-build -c Release --verbosity normal /p:MockMeTestsTargetFramework=net${{ matrix.dotnet }} -f net${{ matrix.dotnet }}
 
   # test-windows:
   #   runs-on: windows-latest

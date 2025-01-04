@@ -10,6 +10,8 @@
                         <ModulePaths>
                             <Exclude>
                                 <ModulePath>.MockMe.Tests.ExampleClasses.dll$</ModulePath>
+                                <ModulePath>.0Harmony.dll$</ModulePath>
+                                <ModulePath>.MockMe.Generator.dll$</ModulePath>
                                 <!--<ModulePath>.*Tests.*</ModulePath>-->
                             </Exclude>
                         </ModulePaths>

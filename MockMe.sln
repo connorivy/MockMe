@@ -52,6 +52,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Tests.Overloads.Virt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe.Tests.Runner", "tests\MockMe.Tests.Runner\MockMe.Tests.Runner.csproj", "{71009957-1245-48AD-BE28-7377CF50DA6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockMe Tests With Path Spaces", "tests\MockMe Tests With Path Spaces\MockMe Tests With Path Spaces.csproj", "{21B57A75-EE1A-D96F-57EF-82EAF1A767EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,10 @@ Global
 		{71009957-1245-48AD-BE28-7377CF50DA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71009957-1245-48AD-BE28-7377CF50DA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71009957-1245-48AD-BE28-7377CF50DA6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21B57A75-EE1A-D96F-57EF-82EAF1A767EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21B57A75-EE1A-D96F-57EF-82EAF1A767EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21B57A75-EE1A-D96F-57EF-82EAF1A767EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21B57A75-EE1A-D96F-57EF-82EAF1A767EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,6 +120,7 @@ Global
 		{E08ADBB1-7CB8-4BFF-9BAC-485DC7822719} = {134D18E2-ECAC-4571-B7BE-0C10796D5555}
 		{2F9424F6-0BB5-4BD8-92A7-3625A666111F} = {134D18E2-ECAC-4571-B7BE-0C10796D5555}
 		{71009957-1245-48AD-BE28-7377CF50DA6B} = {134D18E2-ECAC-4571-B7BE-0C10796D5555}
+		{21B57A75-EE1A-D96F-57EF-82EAF1A767EE} = {134D18E2-ECAC-4571-B7BE-0C10796D5555}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF07A0CA-1140-44DC-9E7E-F99E65D9EF97}
