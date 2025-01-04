@@ -23,13 +23,13 @@ jobs:
 
     - name: Build harmony and test runner
       run: |
-        dotnet build ./Harmony/Harmony/Harmony.csproj -c ReleaseThin
+        dotnet build ./Harmony/Harmony/Harmony.csproj -f net6.0 -c ReleaseThin
         dotnet build ./tests/MockMe.Tests.Runner/MockMe.Tests.Runner.csproj -c Release
 
     - name: Test And Collect CodeCov
       run: |
         dotnet tool install --global dotnet-coverage
-        export PATH="$PATH:/root/.dotnet/tools"
+        # export PATH="$PATH:/root/.dotnet/tools"
         dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/ -c Release --no-build" -f cobertura -s ./CodeCoverage.runsettings
 
     - name: Coveralls
