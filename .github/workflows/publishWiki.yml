@@ -46,7 +46,7 @@ jobs:
         dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/ -c Release --no-build" -f cobertura -s ./CodeCoverage.runsettings
 
     - name: Generate report
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.4.3
       with:
         reports: './output.cobertura.xml'
         targetdir: './tests/TestResults'
