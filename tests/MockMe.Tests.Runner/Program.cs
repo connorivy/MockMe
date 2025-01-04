@@ -50,7 +50,10 @@ foreach (var x in Directory.GetFiles(generatorBinPath))
     Console.WriteLine(x);
 }
 
-Assembly.LoadFrom(Path.Combine(generatorBinPath, "MockMe.Generator.dll"));
+if (IsCiBuild())
+{
+    Assembly.LoadFrom(Path.Combine(generatorBinPath, "MockMe.Generator.dll"));
+}
 
 ProcessStartInfo buildStartInfo =
     new() { FileName = "dotnet", Arguments = $"build --no-incremental -c Debug" };
@@ -67,3 +70,9 @@ using Process test =
     Process.Start(testStartInfo) ?? throw new InvalidOperationException("process must not be null");
 
 await test.WaitForExitAsync();
+
+static bool IsCiBuild() =>
+    bool.TryParse(
+        Environment.GetEnvironmentVariable("ContinuousIntegrationBuild"),
+        out bool isCiBuild
+    ) && isCiBuild;
