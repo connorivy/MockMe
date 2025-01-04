@@ -31,19 +31,12 @@ jobs:
         dotnet tool install --global dotnet-coverage
         export PATH="$PATH:/root/.dotnet/tools"
         dotnet-coverage collect "dotnet run --project ./tests/MockMe.Tests.Runner/ -c Release --no-build" -f cobertura -s ./CodeCoverage.runsettings
-      
-    - name: Generate report
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
-      with:
-        reports: './output.cobertura.xml'
-        targetdir: './tests/TestResults'
-        reporttypes: 'lcov'
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        path-to-lcov: ./tests/TestResults/lcov.info
+        file: ./output.cobertura.xml
 
     - name: Pack NuGet Packages
       run: dotnet pack --configuration Release --output ./packages /p:Version=0.0.1-dev
