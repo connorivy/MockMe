@@ -21,6 +21,6 @@
   <!--<UsingTask TaskName="MockMe.Build.ReplaceGenericMethods" AssemblyFile="$(MockMeAssembly)" />-->
 
   <Target Name="ReplaceGenericMethods" AfterTargets="PostBuildEvent">
-    <Exec Command='dotnet --roll-forward Major "$(MockMePath)MockMe.PostBuild.dll" "$(MSBuildProjectDirectory)\$(OutputPath)$(ProjectName).dll"' />
+    <Exec Command='dotnet --roll-forward Major "$(MockMePath)MockMe.PostBuild.dll" "$(MSBuildProjectDirectory)\$(OutputPath)$(AssemblyName).dll"' />
   </Target>
 </Project>
