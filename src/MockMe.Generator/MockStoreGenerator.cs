@@ -36,7 +36,9 @@ public class MockStoreGenerator : IIncrementalGenerator
             methodDeclarations.Collect()
         );
 
+#if DEBUG
         //System.Diagnostics.Debugger.Launch();
+#endif
         context.RegisterSourceOutput(
             compilationAndMethods,
             (ctx, source) =>
@@ -161,10 +163,23 @@ namespace {NamespaceName}
         HashSet<ITypeSymbol> usedSymbols = [];
         foreach (var method in methods.Distinct())
         {
+            if (method.Expression is not MemberAccessExpressionSyntax memberAccessExpression)
+            {
+                continue;
+            }
+
+            var identifierName =
+                memberAccessExpression.Expression as IdentifierNameSyntax
+                ?? (memberAccessExpression.Expression as MemberAccessExpressionSyntax)?.Name
+                    as IdentifierNameSyntax;
+
+            if (identifierName is null)
+            {
+                continue;
+            }
+
             if (
-                method.Expression is MemberAccessExpressionSyntax memberAccess
-                && memberAccess.Expression is IdentifierNameSyntax identifierName
-                && identifierName.Identifier.Text == StoreClassName
+                identifierName.Identifier.Text == StoreClassName
                 && method.ArgumentList.Arguments.Count == 1
                 && method.ArgumentList.Arguments[0].Expression
                     is DefaultExpressionSyntax defaultExpression
