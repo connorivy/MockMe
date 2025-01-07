@@ -168,11 +168,6 @@ namespace {NamespaceName}
                 continue;
             }
 
-            if (method.ToString().Contains("MockMe.Mock"))
-            {
-                ;
-            }
-
             var identifierName =
                 memberAccessExpression.Expression as IdentifierNameSyntax
                 ?? (memberAccessExpression.Expression as MemberAccessExpressionSyntax)?.Name

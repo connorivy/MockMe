@@ -6,7 +6,7 @@ namespace MockMe.Tests;
 
 public class NewClass
 {
-    public string Name { get; }
+    public string Name => throw new NotImplementedException();
 
     public double GetRandomNum() => throw new NotImplementedException();
 
