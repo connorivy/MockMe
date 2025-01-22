@@ -1,4 +1,5 @@
 using System;
+using MockMe.Tests.ExampleClasses.Interfaces;
 using Xunit;
 
 namespace MockMe.Tests
@@ -59,6 +60,22 @@ namespace MockMe.Tests
             ChildClass notMocked = new();
 
             Assert.Equal(55, notMocked.Return55FromChildMethodOverride());
+        }
+
+        [Fact]
+        public void ICalculator_ShouldImplementAllInterfaceMethods()
+        {
+            var calculatorMock = Mock.Me(default(ICalculator));
+
+            calculatorMock.Setup.Add(Arg.Any(), Arg.Any()).Returns(args => args.x + args.y);
+            calculatorMock.Setup.Subtract(Arg.Any(), Arg.Any()).Returns(args => args.a - args.b);
+            calculatorMock.Setup.Multiply(Arg.Any(), Arg.Any()).Returns(args => args.x * args.y);
+            calculatorMock.Setup.Divide(Arg.Any(), Arg.Any()).Returns(args => args.a / args.b);
+
+            Assert.Equal(4, calculatorMock.MockedObject.Add(2, 2));
+            Assert.Equal(2, calculatorMock.MockedObject.Subtract(4, 2));
+            Assert.Equal(4, calculatorMock.MockedObject.Multiply(2, 2));
+            Assert.Equal(2, calculatorMock.MockedObject.Divide(4, 2));
         }
     }
 }

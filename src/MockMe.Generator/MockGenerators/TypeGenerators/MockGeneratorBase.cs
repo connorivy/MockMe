@@ -122,39 +122,44 @@ namespace {thisNamespace}
         Dictionary<string, PropertyMetadata> callTrackerMeta = [];
         Dictionary<string, SetupPropertyMetadata> setupMeta = [];
         Dictionary<string, AssertPropertyMetadata> assertMeta = [];
-        foreach (var method in this.TypeSymbolToMock.GetMembers())
+
+        foreach (var interfaceSymbol in this.TypeSymbolToMock.AllInterfaces.Concat(new[] {this.TypeSymbolToMock}))
         {
-            if (method is not IMethodSymbol methodSymbol)
+            foreach (var method in interfaceSymbol.GetMembers())
             {
-                continue;
+                if (method is not IMethodSymbol methodSymbol)
+                {
+                    continue;
+                }
+
+                if (methodSymbol.MethodKind == MethodKind.Constructor)
+                {
+                    continue;
+                }
+
+                MethodMockGeneratorBase? methodGenerator = MethodGeneratorFactory.Create(
+                    methodSymbol,
+                    this
+                );
+
+                if (methodGenerator is null)
+                {
+                    continue;
+                }
+
+                PatchMethodGeneratorFactory
+                    .Create(interfaceSymbol, methodSymbol)
+                    ?.AddPatchMethod(sb, assemblyAttributesSource, staticConstructor,
+                        this.TypeName);
+
+                methodGenerator.AddOriginalCollectionType(setupBuilder);
+                methodGenerator.AddMethodSetupToStringBuilder(setupBuilder, setupMeta);
+                methodGenerator.AddMethodCallTrackerToStringBuilder(
+                    callTrackerBuilder,
+                    callTrackerMeta
+                );
+                methodGenerator.AddMethodToAsserterClass(asserterBuilder, assertMeta);
             }
-
-            if (methodSymbol.MethodKind == MethodKind.Constructor)
-            {
-                continue;
-            }
-
-            MethodMockGeneratorBase? methodGenerator = MethodGeneratorFactory.Create(
-                methodSymbol,
-                this
-            );
-
-            if (methodGenerator is null)
-            {
-                continue;
-            }
-
-            PatchMethodGeneratorFactory
-                .Create(this.TypeSymbolToMock, methodSymbol)
-                ?.AddPatchMethod(sb, assemblyAttributesSource, staticConstructor, this.TypeName);
-
-            methodGenerator.AddOriginalCollectionType(setupBuilder);
-            methodGenerator.AddMethodSetupToStringBuilder(setupBuilder, setupMeta);
-            methodGenerator.AddMethodCallTrackerToStringBuilder(
-                callTrackerBuilder,
-                callTrackerMeta
-            );
-            methodGenerator.AddMethodToAsserterClass(asserterBuilder, assertMeta);
         }
 
         staticConstructor.AppendLine(
