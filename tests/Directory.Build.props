@@ -16,6 +16,8 @@
       IDE0130; <!-- Namespace does not match folder structure -->
       IDE0034; <!-- Simplify 'default' expression -->
       AD0001; <!-- XUnit inline data. This messes up when passing empty array into 'params' method -->
+      CA1716; <!--Using reserved word in namespace-->
+      CA1715; <!--Identifiers should have correct prefix-->
       $(WarningsNotAsErrors)
     </WarningsNotAsErrors>
 

@@ -92,7 +92,18 @@ foreach (var group in genericTypesWithTestAssemblyLast)
         );
 
         //ILReplacer.Replace(assembly, methodToReplace, replacementMethod);
-        ILManipulator.InsertMethodBodyBeforeExisting(assembly, methodToReplace, replacementMethod);
+        try
+        {
+            ILManipulator.InsertMethodBodyBeforeExisting(
+                assembly,
+                methodToReplace,
+                replacementMethod
+            );
+        }
+        catch
+        {
+            // todo...
+        }
     }
 
     assembly.Write(currentAssemblyPath, new() { WriteSymbols = true });
