@@ -1,62 +1,16 @@
 using System;
 using MockMe.Asserters;
+using MockMe.Tests.Overloads;
 using Xunit;
 
 namespace MockMe.Tests
 {
-    public enum EnumLong : long
-    {
-        Unknown = 0,
-        First = 1
-    }
-
-    public class ClassWithDefaultArgs
-    {
-        private const string Dummy = "Hello World";
-
-        public void MethodWithPrimitiveDefault(int i = 5)
-        {
-        }
-
-        public void MethodWithNullableDefault(int? arg = 15)
-        {
-        }
-
-        public void MethodWithBoolDefault(bool value = true)
-        {
-        }
-
-        public void MethodWithConstStringDefault(string greeting = Dummy)
-        {
-        }
-
-        public void MethodWithStringDefault(string greeting = "Hello World")
-        {
-        }
-
-        public void MethodWithDateTimeDefault(DateTime date = default)
-        {
-        }
-
-        public void MethodWithEnumLongDefault(EnumLong value = EnumLong.First)
-        {
-        }
-
-        public void MethodWithEnumDefault(DayOfWeek day = DayOfWeek.Monday)
-        {
-        }
-
-        public void MethodWithMultipleDefaults(double factor = 1.0, bool enabled = true, string label = "default")
-        {
-        }
-    }
-
     public class DefaultArgTests
     {
         [Fact]
         public void GetParametersWithArgTypesAndModifiers_Should_SkipDefaultValues()
         {
-            var mock = Mock.Me(default(ClassWithDefaultArgs));
+            var mock = Mock.Me(default(AllDefaultArgs));
 
             {
                 int result = 0;
@@ -96,7 +50,8 @@ namespace MockMe.Tests
 
             {
                 string result = "";
-                mock.Setup.MethodWithConstStringDefault(Arg.Any()).Callback(args => result = args.greeting);
+                mock.Setup.MethodWithConstStringDefault(Arg.Any())
+                    .Callback(args => result = args.greeting);
                 mock.MockedObject.MethodWithConstStringDefault();
                 mock.Assert.MethodWithConstStringDefault(Arg.Any()).WasCalled();
                 Assert.Equal("Hello World", result);
@@ -108,7 +63,8 @@ namespace MockMe.Tests
 
             {
                 string result = "";
-                mock.Setup.MethodWithStringDefault(Arg.Any()).Callback(args => result = args.greeting);
+                mock.Setup.MethodWithStringDefault(Arg.Any())
+                    .Callback(args => result = args.greeting);
                 mock.MockedObject.MethodWithStringDefault();
                 mock.Assert.MethodWithStringDefault(Arg.Any()).WasCalled();
                 Assert.Equal("Hello World", result);
@@ -120,7 +76,8 @@ namespace MockMe.Tests
 
             {
                 DateTime result = default;
-                mock.Setup.MethodWithDateTimeDefault(Arg.Any()).Callback(args => result = args.date);
+                mock.Setup.MethodWithDateTimeDefault(Arg.Any())
+                    .Callback(args => result = args.date);
                 mock.MockedObject.MethodWithDateTimeDefault();
                 mock.Assert.MethodWithDateTimeDefault(Arg.Any()).WasCalled();
                 Assert.Equal(default(DateTime), result);
@@ -132,7 +89,8 @@ namespace MockMe.Tests
 
             {
                 EnumLong result = default;
-                mock.Setup.MethodWithEnumLongDefault(Arg.Any()).Callback(args => result = args.value);
+                mock.Setup.MethodWithEnumLongDefault(Arg.Any())
+                    .Callback(args => result = args.value);
                 mock.MockedObject.MethodWithEnumLongDefault();
                 mock.Assert.MethodWithEnumLongDefault(Arg.Any()).WasCalled();
                 Assert.Equal(EnumLong.First, result);
