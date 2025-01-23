@@ -133,27 +133,15 @@ public static class MethodSymbolExtensions
     }
 
     public static string GetUniqueMethodName(this IMethodSymbol methodSymbol)
-        => GenerateUniqueName(methodSymbol, false);
-    public static string GetUniqueStoreName(this IMethodSymbol methodSymbol)
-        => GenerateUniqueName(methodSymbol, true);
-
-    private static string GenerateUniqueName(IMethodSymbol methodSymbol, bool includeContainingType)
     {
         var methodName = methodSymbol.Name;
-        var parameterTypes = string.Join("_", methodSymbol.Parameters.Select(p =>
+        var parameterTypes = methodSymbol.Parameters.Select(p =>
             (p.RefKind == RefKind.None ? "" : p.RefKind.ToString()) + p.Type.Name
-        ));
-        if (!includeContainingType)
-        {
-            return $"{methodName}_{parameterTypes}";
-        }
+        );
+        var uniqueMethodName =
+            $"{methodName}_{string.Join("_", methodSymbol.TypeParameters.Select(p => p.Name)).AddSuffixIfNotEmpty("_")}{string.Join("_", parameterTypes)}";
 
-        var containingType = methodSymbol.ContainingType?.Name ?? "global";
-        var accessModifier = methodSymbol.DeclaredAccessibility;
-        var returnType = methodSymbol.ReturnType.Name;
-        var typeParameters = string.Join("_", methodSymbol.TypeParameters.Select(tp => tp.Name));
-
-        return $"{containingType}_{accessModifier}_{returnType}_{methodName}_{typeParameters}_{parameterTypes}";
+        return uniqueMethodName;
     }
 
     private static string GetDefaultValueForType(ITypeSymbol type, object? explicitValue)
@@ -174,7 +162,6 @@ public static class MethodSymbolExtensions
             case string s:
                 return $"\"{s}\"";
         }
-
 
         if (type.TypeKind == TypeKind.Enum && type is INamedTypeSymbol namedEnum)
         {
@@ -197,10 +184,11 @@ public static class MethodSymbolExtensions
             ulong ulongValue => FindEnumMember(enumType, ulongValue),
             null => $"{enumType.ToFullTypeString()} /* unknown null */",
             // Fallback for unexpected cases:
-            _ => $"{enumType.ToFullTypeString()} /* unknown = {rawValue} */"
+            _ => $"{enumType.ToFullTypeString()} /* unknown = {rawValue} */",
         };
 
-    private static string FindEnumMember<T>(INamedTypeSymbol enumType, T value) where T : struct, IComparable
+    private static string FindEnumMember<T>(INamedTypeSymbol enumType, T value)
+        where T : struct, IComparable
     {
         foreach (var member in enumType.GetMembers().OfType<IFieldSymbol>())
         {

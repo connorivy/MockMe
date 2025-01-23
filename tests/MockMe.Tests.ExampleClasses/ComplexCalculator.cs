@@ -1,11 +1,26 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-
-//using MockMe.Tests.NuGet;
+using MockMe.Tests.ExampleClasses.Interfaces;
 
 namespace MockMe.Tests.ExampleClasses
 {
+    public interface ISymbolVisitor
+    {
+        void VisitAddition(IAddition addition);
+        void VisitSubtraction(ISubtraction subtraction);
+        void VisitMultiplication(IMultiplication multiplication);
+        void VisitDivision(IDivision division);
+    }
+
+    public interface ISymbolVisitor<out T>
+    {
+        T VisitAddition(IAddition addition);
+        T VisitSubtraction(ISubtraction subtraction);
+        T VisitMultiplication(IMultiplication multiplication);
+        T VisitDivision(IDivision division);
+    }
+
     public class ComplexCalculator
     {
         public int ComputeHashForObjects<T>(T[] values)
@@ -37,5 +52,9 @@ namespace MockMe.Tests.ExampleClasses
         {
             throw new NotImplementedException();
         }
+
+        public void Accept(ISymbolVisitor visitor) => throw new NotImplementedException();
+
+        public T Accept<T>(ISymbolVisitor<T> visitor) => throw new NotImplementedException();
     }
 }

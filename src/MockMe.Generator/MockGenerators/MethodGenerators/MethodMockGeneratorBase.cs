@@ -171,9 +171,9 @@ internal abstract class MethodMockGeneratorBase
         return this.methodSymbol.GetUniqueMethodName() + "Collection";
     }
 
-    protected string GetBagStoreName() => this.methodSymbol.GetUniqueStoreName() + "BagStore";
+    protected string GetBagStoreName() => this.methodSymbol.GetUniqueMethodName() + "BagStore";
 
-    protected string GetCallStoreName() => this.methodSymbol.GetUniqueStoreName() + "CallStore";
+    protected string GetCallStoreName() => this.methodSymbol.GetUniqueMethodName() + "CallStore";
 
     protected string GetSetupMethod()
     {

@@ -6,13 +6,8 @@ namespace MockMe.Generator.MockGenerators.TypeGenerators;
 internal class InterfaceMockGenerator(INamedTypeSymbol typeSymbol, string typeName)
     : MockGeneratorBase(typeSymbol, typeName)
 {
-    // Gather all interfaces, including inherited ones, and ensure distinct results
     public override string GetCallTrackerBaseClass(ITypeSymbol typeSymbol) =>
-        typeSymbol.AllInterfaces
-            .Concat(new[] { typeSymbol })
-            .Distinct(SymbolEqualityComparer.Default)
-            .Select(i => i?.ToFullTypeString() ?? "")
-            .Aggregate((current, next) => $"{current}, {next}");
+        typeSymbol.ToFullTypeString();
 
     public override string GetConstructorAndProps(ITypeSymbol typeSymbol) =>
         @$"
