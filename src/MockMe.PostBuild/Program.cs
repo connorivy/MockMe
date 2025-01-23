@@ -100,7 +100,7 @@ foreach (var group in genericTypesWithTestAssemblyLast)
                 replacementMethod
             );
         }
-        catch (Exception ex)
+        catch
         {
             // todo...
         }
