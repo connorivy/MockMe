@@ -123,7 +123,11 @@ namespace {thisNamespace}
         Dictionary<string, SetupPropertyMetadata> setupMeta = [];
         Dictionary<string, AssertPropertyMetadata> assertMeta = [];
 
-        foreach (var interfaceSymbol in this.TypeSymbolToMock.AllInterfaces.Concat(new[] {this.TypeSymbolToMock}))
+        foreach (
+            var interfaceSymbol in this.TypeSymbolToMock.AllInterfaces.Concat(
+                [this.TypeSymbolToMock]
+            )
+        )
         {
             foreach (var method in interfaceSymbol.GetMembers())
             {
@@ -149,8 +153,12 @@ namespace {thisNamespace}
 
                 PatchMethodGeneratorFactory
                     .Create(interfaceSymbol, methodSymbol)
-                    ?.AddPatchMethod(sb, assemblyAttributesSource, staticConstructor,
-                        this.TypeName);
+                    ?.AddPatchMethod(
+                        sb,
+                        assemblyAttributesSource,
+                        staticConstructor,
+                        this.TypeName
+                    );
 
                 methodGenerator.AddOriginalCollectionType(setupBuilder);
                 methodGenerator.AddMethodSetupToStringBuilder(setupBuilder, setupMeta);
