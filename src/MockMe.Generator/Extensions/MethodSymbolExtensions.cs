@@ -128,12 +128,26 @@ public static class MethodSymbolExtensions
     }
 
     public static string GetUniqueMethodName(this IMethodSymbol methodSymbol)
+        => GenerateUniqueName(methodSymbol, false);
+    public static string GetUniqueStoreName(this IMethodSymbol methodSymbol)
+        => GenerateUniqueName(methodSymbol, true);
+
+    private static string GenerateUniqueName(IMethodSymbol methodSymbol, bool includeContainingType)
     {
         var methodName = methodSymbol.Name;
-        var parameterTypes = methodSymbol.Parameters.Select(p =>
+        var parameterTypes = string.Join("_", methodSymbol.Parameters.Select(p =>
             (p.RefKind == RefKind.None ? "" : p.RefKind.ToString()) + p.Type.Name
-        );
-        var uniqueMethodName = $"{methodName}_{string.Join("_", parameterTypes)}";
-        return uniqueMethodName;
+        ));
+        if (!includeContainingType)
+        {
+            return $"{methodName}_{parameterTypes}";
+        }
+
+        var containingType = methodSymbol.ContainingType?.Name ?? "global";
+        var accessModifier = methodSymbol.DeclaredAccessibility;
+        var returnType = methodSymbol.ReturnType.Name;
+        var typeParameters = string.Join("_", methodSymbol.TypeParameters.Select(tp => tp.Name));
+
+        return $"{containingType}_{accessModifier}_{returnType}_{methodName}_{typeParameters}_{parameterTypes}";
     }
 }
