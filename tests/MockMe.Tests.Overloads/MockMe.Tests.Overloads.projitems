@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ArgumentModifierTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AsyncMethodOverloadTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AsyncOfTMethodOverloadsTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DefaultArgTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IndexerTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PropertyTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SyncMethodOverloadsTests.cs" />
