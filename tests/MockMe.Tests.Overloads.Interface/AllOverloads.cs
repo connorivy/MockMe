@@ -4,6 +4,11 @@ using System.Threading.Tasks;
 namespace MockMe.Tests.Overloads
 #pragma warning restore IDE0130 // Using reserved word in namespace
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Style",
+        "IDE0040:Add accessibility modifiers",
+        Justification = "<Pending>"
+    )]
     internal interface AllOverloads
     {
         public int OutArgument(out int arg);
@@ -15,19 +20,19 @@ namespace MockMe.Tests.Overloads
         internal int InternalProp { get; set; }
         internal int InternalMethod();
 
-        double this[double index] { set; }
-        string this[int index] { get; set; }
-        int this[string index] { get; set; }
+        public double this[double index] { set; }
+        public string this[int index] { get; set; }
+        public int this[string index] { get; set; }
 
         internal int this[float index] { get; set; }
         protected int this[decimal index] { get; set; }
 
-        int Prop_GetInit { get; init; }
-        int Prop_GetOnly { get; }
-        int Prop_GetSet { get; set; }
-        int Prop_SetOnly { set; }
+        public int Prop_GetInit { get; init; }
+        public int Prop_GetOnly { get; }
+        public int Prop_GetSet { get; set; }
+        public int Prop_SetOnly { set; }
 
-        Task<int> AsyncOfTReturn();
+        public Task<int> AsyncOfTReturn();
         Task<int> AsyncOfTReturn(int p1);
         Task<int> AsyncOfTReturn(int p1, int p2);
         Task<int> AsyncOfTReturn(int p1, int p2, int p3);
