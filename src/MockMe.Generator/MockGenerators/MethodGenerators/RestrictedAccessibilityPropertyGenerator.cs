@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
@@ -14,11 +14,14 @@ internal class RestrictedAccessibilityPropertyGenerator(IMethodSymbol methodSymb
     )
     {
         var methodName = this.methodSymbol.GetPropertyName();
+        bool isGet = this.methodSymbol.MethodKind == MethodKind.PropertyGet;
+        var propertyType =  this.GetPropertyType(isGet);
+        var uniqueMethodName = methodName + propertyType;
 
-        if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
+        if (!callTrackerMeta.TryGetValue(uniqueMethodName, out var propMeta))
         {
             propMeta = new() { Name = methodName, ReturnType = this.returnType };
-            callTrackerMeta.Add(methodName, propMeta);
+            callTrackerMeta.Add(uniqueMethodName, propMeta);
         }
 
         if (methodSymbol.MethodKind == MethodKind.PropertyGet)

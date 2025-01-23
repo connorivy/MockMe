@@ -144,6 +144,12 @@ public static class MethodSymbolExtensions
         return uniqueMethodName;
     }
 
+    public static string GetUniqueStoreName(this IMethodSymbol methodSymbol)
+    {
+        var containingType = methodSymbol.ContainingType?.Name ?? "global";
+        return $"{containingType}_{methodSymbol.GetUniqueMethodName()}";
+    }
+
     private static string GetDefaultValueForType(ITypeSymbol type, object? explicitValue)
     {
         // If the compiler recognized a default value, it sets HasExplicitDefaultValue = true,

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
@@ -14,11 +15,13 @@ internal class InitPropertyGenerator(IMethodSymbol methodSymbol)
     )
     {
         var methodName = this.methodSymbol.GetPropertyName();
+        var uniqueMethodName = methodName
+            + this.methodSymbol.Parameters.First().Type.ToFullReturnTypeString();
 
-        if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
+        if (!callTrackerMeta.TryGetValue(uniqueMethodName, out var propMeta))
         {
             propMeta = new() { Name = methodName, ReturnType = this.returnType };
-            callTrackerMeta.Add(methodName, propMeta);
+            callTrackerMeta.Add(uniqueMethodName, propMeta);
         }
         propMeta.HasInit = true;
 
