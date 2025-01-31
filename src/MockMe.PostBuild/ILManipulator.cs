@@ -1,14 +1,13 @@
 using MockMe.PostBuild.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
 namespace MockMe.PostBuild;
 
 internal class ILManipulator
 {
-    //public static void InsertMethodBodyBeforeExisting() { }
-
     public static void InsertMethodBodyBeforeExisting(
         AssemblyDefinition methodAssembly,
         MethodDefinition originalMethod,
@@ -32,6 +31,9 @@ internal class ILManipulator
             );
         }
 
+        originalMethod.Body.SimplifyMacros();
+        methodToInsert.Body.SimplifyMacros();
+
         var newInstructions = GetImportedInstructionsToInsert(
             methodAssembly.MainModule,
             originalMethod,
@@ -39,6 +41,9 @@ internal class ILManipulator
             methodToInsert.Body.Instructions,
             originalFirstInstruction
         );
+
+        methodToInsert.Body.OptimizeMacros();
+        originalMethod.Body.OptimizeMacros();
 
         foreach (var newInstruction in newInstructions)
         {

@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using MockMe.Generator.Extensions;
 
