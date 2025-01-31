@@ -32,8 +32,8 @@ internal class ClassMethodPatchMethodGenerator(
 
         var isVoidReturnType = this.MethodSymbol.ReturnType.SpecialType == SpecialType.System_Void;
 
-        List<IParameterSymbol> refOrOutParameters = this
-            .MethodSymbol.Parameters.Where(p => p.RefKind is RefKind.Ref or RefKind.Out)
+        List<IParameterSymbol> outParameters = this
+            .MethodSymbol.Parameters.Where(p => p.RefKind is RefKind.Out)
             .ToList();
 
         string callEnd = this.MethodSymbol.MethodKind switch
@@ -59,11 +59,11 @@ internal class ClassMethodPatchMethodGenerator(
                 }}"
             );
 
-            foreach (var p in refOrOutParameters)
+            foreach (var p in outParameters)
             {
                 sb.Append(
                     $@"
-    {p.Name} = default({p.Type.ToFullTypeString()});"
+                {p.Name} = default({p.Type.ToFullTypeString()});"
                 );
             }
 
@@ -115,16 +115,10 @@ internal class ClassMethodPatchMethodGenerator(
             );
 
             assemblyAttributesSource.AppendLine(
-                $@"
-[assembly: global::MockMe.Abstractions.GenericMethodDefinition(
-    ""{this.TypeSymbol.ContainingNamespace}"",
-    ""{this.TypeSymbol}"",
-    ""{this.MethodSymbol.Name}"",
-    ""{thisNamespace}"",
-    ""{thisNamespace}.{this.TypeSymbol.Name}Mock"",
-    ""{this.MethodSymbol.Name}""
-)]
-"
+                this.TypeSymbol.GetGenericMethodDefinitionAttribute(
+                    this.MethodSymbol.Name,
+                    thisNamespace
+                )
             );
         }
     }

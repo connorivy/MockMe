@@ -90,16 +90,10 @@ internal class GenericClassMethodPatchMethodGenerator(
         );
 
         assemblyAttributesSource.AppendLine(
-            $@"
-[assembly: global::MockMe.Abstractions.GenericMethodDefinition(
-    ""{this.TypeSymbol.ContainingNamespace}"",
-    ""{this.TypeSymbol.ContainingNamespace}.{this.TypeSymbol.MetadataName}"",
-    ""{this.MethodSymbol.Name}"",
-    ""{thisNamespace}"",
-    ""{thisNamespace}.{typeSymbolName}Mock{this.TypeSymbol.MetadataName[^2..]}"",
-    ""{this.MethodSymbol.Name}""
-)]
-"
+            this.TypeSymbol.GetGenericMethodDefinitionAttribute(
+                this.MethodSymbol.Name,
+                thisNamespace
+            )
         );
     }
 }

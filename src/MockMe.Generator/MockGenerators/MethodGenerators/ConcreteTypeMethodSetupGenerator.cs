@@ -22,8 +22,8 @@ internal class ConcreteTypeMethodSetupGenerator(
             return sb;
         }
 
-        List<IParameterSymbol> refOrOutParameters = this
-            .methodSymbol.Parameters.Where(p => p.RefKind is RefKind.Ref or RefKind.Out)
+        List<IParameterSymbol> outParamerters = this
+            .methodSymbol.Parameters.Where(p => p.RefKind is RefKind.Out)
             .ToList();
 
         sb.AppendLine(
@@ -33,7 +33,7 @@ internal class ConcreteTypeMethodSetupGenerator(
         {{"
         );
 
-        foreach (var p in refOrOutParameters)
+        foreach (var p in outParamerters)
         {
             sb.Append(
                 $@"
@@ -69,6 +69,9 @@ internal class ConcreteTypeMethodSetupGenerator(
         List<IParameterSymbol> refOrOutParameters = this
             .methodSymbol.Parameters.Where(p => p.RefKind is RefKind.Ref or RefKind.Out)
             .ToList();
+        List<IParameterSymbol> outParameters = refOrOutParameters
+            .Where(p => p.RefKind is RefKind.Out)
+            .ToList();
 
         if (this.methodSymbol.DeclaredAccessibility != Accessibility.Public)
         {
@@ -89,7 +92,7 @@ internal class ConcreteTypeMethodSetupGenerator(
             {{"
             );
 
-            foreach (var p in refOrOutParameters)
+            foreach (var p in outParameters)
             {
                 sb.Append(
                     $@"
@@ -147,7 +150,7 @@ internal class ConcreteTypeMethodSetupGenerator(
             {{"
             );
 
-            foreach (var p in refOrOutParameters)
+            foreach (var p in outParameters)
             {
                 sb.Append(
                     $@"
@@ -190,8 +193,8 @@ internal class ConcreteTypeMethodSetupGenerator(
 
         var parametersDefinition = this.methodSymbol.GetParametersWithArgTypesAndModifiers();
         var parameters = this.methodSymbol.GetParametersWithoutTypesAndModifiers();
-        List<IParameterSymbol> refOrOutParameters = this
-            .methodSymbol.Parameters.Where(p => p.RefKind is RefKind.Ref or RefKind.Out)
+        List<IParameterSymbol> outParameters = this
+            .methodSymbol.Parameters.Where(p => p.RefKind is RefKind.Out)
             .ToList();
 
         if (this.methodSymbol.TypeParameters.Length > 0)
@@ -202,7 +205,7 @@ internal class ConcreteTypeMethodSetupGenerator(
                 {{"
             );
 
-            foreach (var p in refOrOutParameters)
+            foreach (var p in outParameters)
             {
                 sb.Append(
                     $@"
@@ -233,7 +236,7 @@ internal class ConcreteTypeMethodSetupGenerator(
                 {{"
             );
 
-            foreach (var p in refOrOutParameters)
+            foreach (var p in outParameters)
             {
                 sb.Append(
                     $@"

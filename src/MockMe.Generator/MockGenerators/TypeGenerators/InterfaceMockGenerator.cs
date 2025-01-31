@@ -11,7 +11,7 @@ internal class InterfaceMockGenerator(INamedTypeSymbol typeSymbol, string typeNa
 
     public override string GetConstructorAndProps(ITypeSymbol typeSymbol) =>
         @$"
-        public {this.mockTypeName}() : base(CreateCallTracker(out var setup, out var asserter))
+        public {this.TypeName}Mock() : base(CreateCallTracker(out var setup, out var asserter))
         {{
             this.Setup = setup;
             this.Assert = asserter;

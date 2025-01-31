@@ -22,8 +22,13 @@ public class Arg<T>
 
     public bool IsSatisfiedBy(T? other)
     {
-        if (this.value is not null && this.wasValueSet)
+        if (this.wasValueSet)
         {
+            if (this.value is null)
+            {
+                return other is null;
+            }
+
             return this.value.Equals(other);
         }
 

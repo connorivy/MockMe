@@ -5,7 +5,7 @@ using MockMe.PostBuild.Extensions;
 using Mono.Cecil;
 
 # if DEBUG
-//System.Diagnostics.Debugger.Launch();
+// System.Diagnostics.Debugger.Launch();
 # endif
 
 var testAssemblyPath = args[0];
@@ -77,23 +77,22 @@ foreach (var group in genericTypesWithTestAssemblyLast)
 
     foreach (MockReplacementInfo mockReplacementInfo in group)
     {
-        TypeDefinition typeToReplace = assembly.MainModule.GetType(
-            mockReplacementInfo.TypeToReplace.TypeFullName
-        );
-        MethodDefinition methodToReplace = typeToReplace.Methods.First(m =>
-            m.Name == mockReplacementInfo.TypeToReplace.MethodName
-        );
-
-        TypeDefinition replacementType = definitionAssembly.MainModule.GetType(
-            mockReplacementInfo.SourceType.TypeFullName
-        );
-        MethodDefinition replacementMethod = replacementType.Methods.First(m =>
-            m.Name == mockReplacementInfo.SourceType.MethodName
-        );
-
-        //ILReplacer.Replace(assembly, methodToReplace, replacementMethod);
         try
         {
+            TypeDefinition typeToReplace = assembly.MainModule.GetType(
+                mockReplacementInfo.TypeToReplace.TypeFullName
+            );
+            MethodDefinition methodToReplace = typeToReplace.Methods.First(m =>
+                m.Name == mockReplacementInfo.TypeToReplace.MethodName
+            );
+
+            TypeDefinition replacementType = definitionAssembly.MainModule.GetType(
+                mockReplacementInfo.SourceType.TypeFullName
+            );
+            MethodDefinition replacementMethod = replacementType.Methods.First(m =>
+                m.Name == mockReplacementInfo.SourceType.MethodName
+            );
+
             ILManipulator.InsertMethodBodyBeforeExisting(
                 assembly,
                 methodToReplace,
