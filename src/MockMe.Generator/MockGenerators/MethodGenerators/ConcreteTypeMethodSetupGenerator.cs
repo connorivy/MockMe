@@ -51,7 +51,7 @@ internal class ConcreteTypeMethodSetupGenerator(
 
         //return sb.AppendLine(
         //    $@"
-        //private {this.GetBagStoreType()}? {this.GetBagStoreName()};
+        //private {this.GetBagStoreType()}? {this.GetUniqueStoreName()};
         //public {this.memberMockType} {this.MethodName()}{this.methodSymbol.GetGenericParameterStringInBrackets()}({this.methodSymbol.GetParametersWithArgTypesAndModifiers()}) =>
         //    {this.GetSetupMethod()}"
         //);

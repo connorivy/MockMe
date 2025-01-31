@@ -72,8 +72,9 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
         var propertyType = isGet
             ? this.returnType
             : this.methodSymbol.Parameters[0].Type.ToFullReturnTypeString();
+        var uniqueMethodName = methodName + propertyType;
 
-        if (!callTrackerMeta.TryGetValue(methodName, out var propMeta))
+        if (!callTrackerMeta.TryGetValue(uniqueMethodName, out var propMeta))
         {
             propMeta = new()
             {
@@ -81,7 +82,7 @@ internal class PropertyGenerator(IMethodSymbol methodSymbol) : MethodMockGenerat
                 ReturnType = propertyType,
                 //IndexerType = indexerType,
             };
-            callTrackerMeta.Add(methodName, propMeta);
+            callTrackerMeta.Add(uniqueMethodName, propMeta);
         }
 
         if (isGet)
