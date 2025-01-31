@@ -7,9 +7,13 @@
     <LangVersion>latest</LangVersion>
     <IsPackable>true</IsPackable>
 
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>The concrete type mocking library for .NET</Description>
     <Authors>connorivy</Authors>
     <PackageIcon>MockMeM.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/connorivy/MockMe</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageTags>Mock Mocking SourceGenerator</PackageTags>
    </PropertyGroup>
   
   <ItemGroup>
