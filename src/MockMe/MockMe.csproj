@@ -50,6 +50,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Version)' != ''">
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     <None Update="Build\MockMe.targets" Pack="true" PackagePath="build\MockMe.targets" />
     <None Include="$(MSBuildProjectDirectory)\..\MockMe.Generator\bin\$(Configuration)\netstandard2.0\MockMe.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(MSBuildProjectDirectory)\..\MockMe.Abstractions\bin\$(Configuration)\netstandard2.0\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
