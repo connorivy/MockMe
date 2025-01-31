@@ -17,6 +17,10 @@ namespace MockMe.Tests.Overloads
 
         public int OutArgument(int arg) => throw new NotImplementedException();
 
+        public int RefIntArgument(ref int arg) => throw new NotImplementedException();
+
+        public int RefStringArgument(ref string arg) => throw new NotImplementedException();
+
         protected virtual int ProtectedProp { get; set; }
 
         protected virtual int ProtectedMethod() => throw new NotImplementedException();

@@ -15,6 +15,10 @@ namespace MockMe.Tests.Overloads
 
         public int OutArgument(int arg) => throw new NotImplementedException();
 
+        public int RefIntArgument(ref int arg) => throw new NotImplementedException();
+
+        public int RefStringArgument(ref string arg) => throw new NotImplementedException();
+
 #pragma warning disable CS0628 // New protected member declared in sealed type
         protected int ProtectedProp { get; set; }
 

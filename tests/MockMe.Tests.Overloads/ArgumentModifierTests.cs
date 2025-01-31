@@ -1,3 +1,4 @@
+using System;
 using MockMe.Generated.MockMe.Tests.Overloads;
 using Xunit;
 
@@ -56,6 +57,67 @@ public class ArgumentModifierTests
 
         Assert.Equal("hello", outArg);
         mock.Assert.OutStringArgument(out _).WasCalled();
+    }
+
+    [Fact]
+    public void RefKeyword_ForValueType_ShouldSetTheCorrectValue()
+    {
+        var mock = Mock.Me(default(AllOverloads));
+
+        Arg<int> anyArg = Arg.Any();
+        mock.Setup.RefIntArgument(ref anyArg).Callback(args => args.arg += 10).Returns(1);
+
+        AllOverloads allOverloads = mock.MockedObject;
+
+        var refArgValue = 5;
+        _ = allOverloads.RefIntArgument(ref refArgValue);
+
+        Assert.Equal(15, refArgValue);
+        mock.Assert.RefIntArgument(ref anyArg).WasCalled();
+    }
+
+    [Fact]
+    public void RefKeyword_ForReferenceType_ShouldSetTheCorrectValue()
+    {
+        var mock = Mock.Me(default(AllOverloads));
+
+        Arg<string> anyArg = Arg.Any();
+        mock.Setup.RefStringArgument(ref anyArg).Callback(args => args.arg += ", World").Returns(1);
+
+        AllOverloads allOverloads = mock.MockedObject;
+
+        var refArgValue = "Hello";
+        _ = allOverloads.RefStringArgument(ref refArgValue);
+
+        Assert.Equal("Hello, World", refArgValue);
+        mock.Assert.RefStringArgument(ref anyArg).WasCalled();
+    }
+
+    [Fact]
+    public void ArgPassedByRef_ShouldStillCorrectlyConfigureMock()
+    {
+        var mock = Mock.Me(default(AllOverloads));
+
+        Arg<int> anyArg = 5;
+        mock.Setup.RefIntArgument(ref anyArg).Callback(args => args.arg += 10).Returns(1);
+
+        Arg<int> negativeArg = new(i => i < 0);
+        mock.Setup.RefIntArgument(ref negativeArg).Callback(args => args.arg -= 100).Returns(1);
+
+        AllOverloads allOverloads = mock.MockedObject;
+
+        var refArgValue = 5;
+        _ = allOverloads.RefIntArgument(ref refArgValue);
+        Assert.Equal(15, refArgValue);
+
+        var refNegativeValue = -1;
+        _ = allOverloads.RefIntArgument(ref refNegativeValue);
+        Assert.Equal(-101, refNegativeValue);
+
+        var refZeroValue = 0;
+        int retValue = allOverloads.RefIntArgument(ref refZeroValue);
+        Assert.Equal(0, refZeroValue);
+        Assert.Equal(0, retValue);
     }
 
     [Fact]
