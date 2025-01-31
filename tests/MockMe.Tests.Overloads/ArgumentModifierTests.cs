@@ -40,6 +40,24 @@ public class ArgumentModifierTests
         mock.Assert.OutArgument(out _).WasCalled();
     }
 
+    /// <summary>
+    /// Regression test for this issue
+    /// https://github.com/connorivy/MockMe/issues/43
+    /// </summary>
+    [Fact]
+    public void OutKeyword_ForReferenceType_ShouldSetTheCorrectValue()
+    {
+        var mock = Mock.Me(default(AllOverloads));
+
+        mock.Setup.OutStringArgument(out _).Callback(args => args.arg = "hello").Returns(1);
+
+        AllOverloads allOverloads = mock.MockedObject;
+        _ = allOverloads.OutStringArgument(out var outArg);
+
+        Assert.Equal("hello", outArg);
+        mock.Assert.OutStringArgument(out _).WasCalled();
+    }
+
     [Fact]
     public void ParametersNotPassedByReference_ShouldNotHaveASetter()
     {

@@ -12,6 +12,7 @@ namespace MockMe.Tests.Overloads
     internal interface AllOverloads
     {
         public int OutArgument(out int arg);
+        public int OutStringArgument(out string arg);
         public int OutArgument(int arg);
 
         protected int ProtectedProp { get; set; }
