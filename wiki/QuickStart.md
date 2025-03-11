@@ -115,7 +115,7 @@ mock.Setup.Add(1, 1)
 // capture invocation arguments
 int? firstParameter = null;
 mock.Setup.Add(2, 2)
-    .Callback(args => xParameter = args.x); // the variable 'firstParameter' will be assigned
+    .Callback(args => firstParameter = args.x); // the variable 'firstParameter' will be assigned
 
 // access instances of objects that are assigned to properties
 CalculatorType? typeUsedBySetter
